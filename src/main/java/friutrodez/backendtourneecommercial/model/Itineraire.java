@@ -25,7 +25,6 @@ public class Itineraire {
 
     @OneToOne
     @JoinColumn(name = "id",nullable = false)
-    @Column(nullable = false)
     private Utilisateur utilisateur;
 
 }
