@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.util.Assert;
 
 import java.sql.*;
@@ -18,17 +19,9 @@ class UtilisateurRepositoryTest {
     @Autowired
     UtilisateurRepository utilisateurRepository;
 
-
     @Test
-    void testUserCOnnection() throws SQLException {
-        Connection conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/mydatabase", "myuser", "secret");
-        System.out.println(conn.getSchema());
-        PreparedStatement statement = conn.prepareStatement("Select * FROM utilisateur where id = ?");
-        statement.setInt(1,1);
-        ResultSet resultSet =statement.executeQuery();
-
-    }
-    @Test
+    @Transactional
+    @Rollback
     void testCreation() throws SQLException {
         Optional<Utilisateur> utilisateurTrouve = utilisateurRepository.findById(1L);
         if(utilisateurTrouve.isPresent()) {
@@ -41,8 +34,6 @@ class UtilisateurRepositoryTest {
         utilisateur.setPrenom("quelquechose");
         utilisateur.setCodePostal("zef");
         utilisateurRepository.save(utilisateur);
-
-
          utilisateurTrouve = utilisateurRepository.findById(1L);
         Assert.isTrue(utilisateurTrouve.isPresent(),"L'utilisateur n'a pas été trouvé");
 
