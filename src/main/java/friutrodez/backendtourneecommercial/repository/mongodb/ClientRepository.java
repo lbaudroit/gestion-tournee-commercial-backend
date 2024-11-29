@@ -30,4 +30,7 @@ public class ClientRepository   {
     private Query getQuery(String cle,String valeur) {
         return new Query(where(cle).is(valeur));
     }
+    public <T> void sauvegarder(T object) {
+        mongoTemplate.save(object);
+    }
 }

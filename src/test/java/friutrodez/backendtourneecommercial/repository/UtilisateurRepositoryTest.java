@@ -27,13 +27,16 @@ class UtilisateurRepositoryTest {
         if(utilisateurTrouve.isPresent()) {
             utilisateurRepository.deleteById(1L);
         }
+
         Utilisateur utilisateur = new Utilisateur();
        // Attention ne pas utiliser id sinon ça sauvegarde au lieu de créer : Causé peut être par @GeneratedValue
         //utilisateur.setId(1L);
         utilisateur.setNom("en");
         utilisateur.setPrenom("quelquechose");
         utilisateur.setCodePostal("zef");
+
         utilisateurRepository.save(utilisateur);
+
          utilisateurTrouve = utilisateurRepository.findById(1L);
         Assert.isTrue(utilisateurTrouve.isPresent(),"L'utilisateur n'a pas été trouvé");
 

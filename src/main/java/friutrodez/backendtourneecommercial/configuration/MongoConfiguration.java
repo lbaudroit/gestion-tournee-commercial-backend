@@ -1,7 +1,5 @@
-package friutrodez.backendtourneecommercial.configuration.security;
+package friutrodez.backendtourneecommercial.configuration;
 
-import com.mongodb.ConnectionString;
-import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,9 +18,8 @@ public class MongoConfiguration {
         return MongoClients.create(mongoUri);
     }
 
-
     @Bean
-    public MongoTemplate mongoTemplate() throws Exception {
+    public MongoTemplate mongoTemplate() {
         return new MongoTemplate(mongo(), "mydatabase");
     }
 }
