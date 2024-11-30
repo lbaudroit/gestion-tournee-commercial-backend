@@ -1,9 +1,15 @@
 package friutrodez.backendtourneecommercial;
 
+import friutrodez.backendtourneecommercial.repository.ClientRepositoryTest;
+import friutrodez.backendtourneecommercial.repository.UtilisateurRepositoryTest;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.suite.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
+@Suite
+@IncludeTags({"SpringBootTest"})
+@SelectClasses({ClientRepositoryTest.class, ConnexionTest.class, UtilisateurRepositoryTest.class})
 class BackendtourneecommercialApplicationTests {
 
 	@Test

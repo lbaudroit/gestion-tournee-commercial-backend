@@ -3,18 +3,17 @@ package friutrodez.backendtourneecommercial.repository;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mysql.UtilisateurRepository;
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.util.Assert;
 
 import java.sql.*;
 import java.util.Optional;
 
 @SpringBootTest
-
-class UtilisateurRepositoryTest {
+public class UtilisateurRepositoryTest {
 
     @Autowired
     UtilisateurRepository utilisateurRepository;
@@ -37,8 +36,9 @@ class UtilisateurRepositoryTest {
 
         utilisateurRepository.save(utilisateur);
 
+
          utilisateurTrouve = utilisateurRepository.findById(1L);
-        Assert.isTrue(utilisateurTrouve.isPresent(),"L'utilisateur n'a pas été trouvé");
+        Assertions.assertTrue(utilisateurTrouve.isPresent(),"L'utilisateur n'a pas été trouvé");
 
     }
 

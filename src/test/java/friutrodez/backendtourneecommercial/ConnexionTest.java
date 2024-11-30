@@ -2,13 +2,15 @@ package friutrodez.backendtourneecommercial;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+
 
 @SpringBootTest
 public class ConnexionTest {
@@ -23,13 +25,13 @@ public class ConnexionTest {
     @Test
     void ConnexionMySQLTest() throws SQLException {
         Connection conn = DriverManager.getConnection(mySQLURL, userMySQL, passwordMySQL);
-        Assert.assertNotNull(conn);
+        Assertions.assertNotNull(conn);
     }
 
     @Test
 
     void ConnexionMongoDBTest() {
         MongoClient mongoClient = MongoClients.create(mongoUri);
-        Assert.assertNotNull(mongoClient);
+        Assertions.assertNotNull(mongoClient);
     }
 }
