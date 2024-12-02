@@ -8,7 +8,7 @@ services:
     ports:
       - '27017:27017'
     volumes:
-      - ./InitMongo.js:/docker-entrypoint-initdb.d
+      - ./mongoInits:/docker-entrypoint-initdb.d
   mysql:
     image: 'mysql:latest'
     environment:
@@ -19,4 +19,4 @@ services:
     ports:
       - '3306:3306'
     volumes:
-      - ./InitMySQL.sql:/docker-entrypoint-initdb.d
+      - ./mysqlInits:/docker-entrypoint-initdb.d
