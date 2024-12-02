@@ -1,5 +1,6 @@
 package friutrodez.backendtourneecommercial.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
@@ -13,7 +14,7 @@ import lombok.Setter;
 @Setter
 public class Appartient {
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "id")
     private Itineraire itineraire;
 
