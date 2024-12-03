@@ -6,7 +6,7 @@ services:
       - 'MONGO_INITDB_ROOT_PASSWORD=secret'
       - 'MONGO_INITDB_ROOT_USERNAME=root'
     ports:
-      - '27017:27017'
+      - '27018:27017'
     volumes:
       - ./mongoInits:/docker-entrypoint-initdb.d
   mysql:
@@ -17,6 +17,6 @@ services:
       - 'MYSQL_ROOT_PASSWORD=verysecret'
       - 'MYSQL_USER=myuser'
     ports:
-      - '3306:3306'
+      - '3307:3306'
     volumes:
       - ./mysqlInits:/docker-entrypoint-initdb.d
