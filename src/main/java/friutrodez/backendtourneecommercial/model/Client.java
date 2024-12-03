@@ -18,7 +18,7 @@ public class Client {
     @Id
     private String _id;
 
-    private long idUtilisateur;
+    private String idUtilisateur;
 
     private String nomEntreprise;
 
