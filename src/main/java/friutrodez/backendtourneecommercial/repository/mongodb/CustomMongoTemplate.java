@@ -10,7 +10,7 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 /**
  * Template mongo personnalisé pour créer des méthodes générales à tous les types de documents mongo. <br>
  * Evite de répéter du code inutile dans la structure et évite de mettre
- * la classe de la collection à chaque appel 
+ * la classe de la collection à chaque appel
  * de méthode qui utilise la classe mongoTemplate
  * @param <T> le type de la collection
  */
