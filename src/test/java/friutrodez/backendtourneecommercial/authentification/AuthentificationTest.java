@@ -71,6 +71,8 @@ public class AuthentificationTest {
         tokenUtilisateur1 =  objectMapper.readValue(mvcResult.getResponse().getContentAsString(), JwtToken.class);
 
     }
+
+    // Pas important
     @Test
     void testConnexionUtilisateurAvecTokenAutreUtilisateur() throws Exception {
         MvcResult mvcResult = mockMvc.perform(post("/auth/authentifier")
@@ -125,7 +127,7 @@ public class AuthentificationTest {
                 .andExpect(status().isForbidden());
     }
 
-    // Impossible de différencier les connexions avec les tokens
+    // Pas important
     @Test
     void testAppelNonAutoriseeNonCree() throws Exception {
         Utilisateur utilisateurNonCree = new Utilisateur();
@@ -135,6 +137,13 @@ public class AuthentificationTest {
 
         mockMvc.perform(get("/auth")
                         .header("Authorization", "Bearer " + tokenUtilisateur1.token()))
+                .andExpect(status().isForbidden());
+    }
+
+
+    @Test
+    void testAccesSansToken() throws Exception {
+        mockMvc.perform(get("/auth"))
                 .andExpect(status().isForbidden());
     }
 

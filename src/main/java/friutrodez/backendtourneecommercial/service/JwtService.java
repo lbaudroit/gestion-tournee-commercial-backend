@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -54,7 +55,6 @@ public class JwtService  {
     ) {
         String sel = genererSel();
 
-        claimsExtras.put("username",userDetails.getUsername());
 
         return Jwts
                 .builder()
