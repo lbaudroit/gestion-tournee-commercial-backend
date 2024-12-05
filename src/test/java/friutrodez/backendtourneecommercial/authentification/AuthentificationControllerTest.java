@@ -70,8 +70,7 @@ public class AuthentificationControllerTest {
     }
 
     @Test
-
-    void testUtilisateurAuthentification() throws Exception {
+    void testToken() throws Exception {
         Utilisateur testUser = new Utilisateur();
         testUser.setNom("testuser");
         testUser.setPrenom("testPrenom");
@@ -87,16 +86,15 @@ public class AuthentificationControllerTest {
         when(userDetailsMock.getUsername()).thenReturn("testuser");
         when(userDetailsMock.getPassword()).thenReturn("password");
 
-
         when(jwtService.generateToken(any(UserDetails.class)))
                 .thenReturn(expectedToken);
-
 
         mockMvc.perform(post("/auth/creer")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(utilisateurJson))
                 .andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.notNullValue()));
+
         AuthentificationUtilisateur authentificationUtilisateur = new AuthentificationUtilisateur("testuser","password");
 
          mockMvc.perform(post("/auth/authentifier")
@@ -108,9 +106,12 @@ public class AuthentificationControllerTest {
 
          when(jwtService.extractUsername(any(String.class))).thenReturn("testuser");
          when(jwtService.isTokenValid(any(String.class),any(UserDetails.class))).thenReturn(true);
+
          mockMvc.perform(get("/auth")
                  .header("Authorization", "Bearer " + expectedToken))
                  .andExpect(status().isOk()).andExpect(content().string("token fonctionnel"));
 
     }
+
+
 }
