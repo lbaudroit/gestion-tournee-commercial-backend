@@ -26,7 +26,7 @@ public class AuthentificationController {
     @PostMapping(path = "/authentifier")
     public ResponseEntity<JwtToken> authentifier(@RequestBody AuthentificationUtilisateur authentificationUtilisateur) {
         Utilisateur utilisateur = authentificationService.authentifier(authentificationUtilisateur);
-        String jwtToken = jwtService.generateToken(utilisateur);
+        String jwtToken = jwtService.genererToken(utilisateur);
         JwtToken jwtTokenDTO = new JwtToken(jwtToken,jwtService.JWT_EXPIRATION);
         return  ResponseEntity.ok(jwtTokenDTO);
 

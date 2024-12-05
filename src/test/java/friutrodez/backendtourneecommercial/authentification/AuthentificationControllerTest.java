@@ -86,7 +86,7 @@ public class AuthentificationControllerTest {
         when(userDetailsMock.getUsername()).thenReturn("testuser");
         when(userDetailsMock.getPassword()).thenReturn("password");
 
-        when(jwtService.generateToken(any(UserDetails.class)))
+        when(jwtService.genererToken(any(UserDetails.class)))
                 .thenReturn(expectedToken);
 
         mockMvc.perform(post("/auth/creer")
@@ -104,8 +104,8 @@ public class AuthentificationControllerTest {
                 .andExpect(jsonPath("$.token").value(expectedToken))
                 .andExpect(content().string(org.hamcrest.Matchers.notNullValue())).andReturn();
 
-         when(jwtService.extractUsername(any(String.class))).thenReturn("testuser");
-         when(jwtService.isTokenValid(any(String.class),any(UserDetails.class))).thenReturn(true);
+         when(jwtService.extraireNomUtilisateur(any(String.class))).thenReturn("testuser");
+         when(jwtService.tokenEstValide(any(String.class),any(UserDetails.class))).thenReturn(true);
 
          mockMvc.perform(get("/auth")
                  .header("Authorization", "Bearer " + expectedToken))

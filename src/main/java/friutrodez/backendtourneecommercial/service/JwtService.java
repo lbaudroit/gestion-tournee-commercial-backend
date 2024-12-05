@@ -30,59 +30,59 @@ public class JwtService  {
 
     /** durée totale du token **/
     public final int JWT_EXPIRATION = MINUTES * 60 * 1000;
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+    public String extraireNomUtilisateur(String token) {
+        return extraireClaim(token, Claims::getSubject);
     }
 
-    private <T> T extractClaim(String token, Function<Claims,T> subject) {
-        final Claims claims = extractAllClaims(token);
-        return subject.apply(claims);
+    private <T> T extraireClaim(String token, Function<Claims,T> sujet) {
+        final Claims claims = extraireTousClaims(token);
+        return sujet.apply(claims);
     }
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<String,Object>(), userDetails);
+    public String genererToken(UserDetails userDetails) {
+        return genererToken(new HashMap<String,Object>(), userDetails);
     }
 
-    public String generateToken(HashMap<String, Object> extraClaims, UserDetails userDetails) {
-        return buildToken(extraClaims, userDetails, JWT_EXPIRATION);
+    public String genererToken(HashMap<String, Object> claimsExtras, UserDetails userDetails) {
+        return construireToken(claimsExtras, userDetails, JWT_EXPIRATION);
     }
-    
 
-    private String buildToken(
-            HashMap<String, Object> extraClaims,
+
+    private String construireToken(
+            HashMap<String, Object> claimsExtras,
             UserDetails userDetails,
             long expiration
     ) {
         String sel = genererSel();
 
-        extraClaims.put("username",userDetails.getUsername());
+        claimsExtras.put("username",userDetails.getUsername());
 
         return Jwts
                 .builder()
-                .setClaims(extraClaims)
+                .setClaims(claimsExtras)
 
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .setId(sel)
 
-                .signWith(getSigningKey(CLE_ENCRYPTION), SignatureAlgorithm.HS256)
+                .signWith(obtenirCleSignature(CLE_ENCRYPTION), SignatureAlgorithm.HS256)
                 .compact();
     }
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    public boolean tokenEstValide(String token, UserDetails userDetails) {
+        final String username = extraireNomUtilisateur(token);
+        return (username.equals(userDetails.getUsername())) && !tokenEstExpire(token);
     }
 
-    public boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+    public boolean tokenEstExpire(String token) {
+        return extraireExpiration(token).before(new Date());
     }
 
-    public Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
+    public Date extraireExpiration(String token) {
+        return extraireClaim(token, Claims::getExpiration);
     }
-    public Claims extractAllClaims(String token) {
+    public Claims extraireTousClaims(String token) {
         return Jwts.parserBuilder().
-                setSigningKey(getSigningKey(CLE_ENCRYPTION)).
+                setSigningKey(obtenirCleSignature(CLE_ENCRYPTION)).
                 build()
                 .parseClaimsJws(token)
                 .getBody();
@@ -94,7 +94,7 @@ public class JwtService  {
         random.nextBytes(salt);
         return Base64.getEncoder().encodeToString(salt);
     }
-    private SecretKey getSigningKey(String cleEncryption) {
+    private SecretKey obtenirCleSignature(String cleEncryption) {
         byte[] keyBytes = Decoders.BASE64.decode(cleEncryption);
         return Keys.hmacShaKeyFor(keyBytes);
     }
