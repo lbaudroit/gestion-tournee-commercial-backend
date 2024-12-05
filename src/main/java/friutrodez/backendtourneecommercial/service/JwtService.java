@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +23,7 @@ public class JwtService  {
      * On peut utiliser ce site <a href="https://www.devglan.com/online-tools/hmac-sha256-online?ref=blog.tericcabrel.com">...</a>
      * pour créer la clé
      **/
-    private final String ENCRYPTION_KEY = "e4439c7e35d0a8bd1b21bad16ad82a1f21aa399eb3929bd29d2cd0a5c89539eb";
+    private final String CLE_ENCRYPTION = "gd5kn1HM/aj36IU7VsRRwrPuYiFvOYQdB8yIdA4UIaU=";
 
     /** durée en minutes du token **/
     private final int MINUTES = 30;
@@ -37,26 +39,33 @@ public class JwtService  {
         return subject.apply(claims);
     }
     public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+        return generateToken(new HashMap<String,Object>(), userDetails);
     }
 
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+    public String generateToken(HashMap<String, Object> extraClaims, UserDetails userDetails) {
         return buildToken(extraClaims, userDetails, JWT_EXPIRATION);
     }
+    
 
     private String buildToken(
-            Map<String, Object> extraClaims,
+            HashMap<String, Object> extraClaims,
             UserDetails userDetails,
             long expiration
     ) {
+        String sel = genererSel();
+
+        extraClaims.put("username",userDetails.getUsername());
+
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
+
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .setId(sel)
 
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .signWith(getSigningKey(CLE_ENCRYPTION), SignatureAlgorithm.HS256)
                 .compact();
     }
     public boolean isTokenValid(String token, UserDetails userDetails) {
@@ -73,14 +82,20 @@ public class JwtService  {
     }
     public Claims extractAllClaims(String token) {
         return Jwts.parserBuilder().
-                setSigningKey(getSigningKey()).
+                setSigningKey(getSigningKey(CLE_ENCRYPTION)).
                 build()
                 .parseClaimsJws(token)
                 .getBody();
     }
 
-    private SecretKey getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(ENCRYPTION_KEY);
+    private String genererSel() {
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[16];
+        random.nextBytes(salt);
+        return Base64.getEncoder().encodeToString(salt);
+    }
+    private SecretKey getSigningKey(String cleEncryption) {
+        byte[] keyBytes = Decoders.BASE64.decode(cleEncryption);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

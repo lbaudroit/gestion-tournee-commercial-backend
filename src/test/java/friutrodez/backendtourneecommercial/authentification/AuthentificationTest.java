@@ -78,7 +78,7 @@ public class AuthentificationTest {
                         .content(utilisateurJson))
                 .andExpect(status().isOk()).andReturn();
 
-       JwtToken token =  objectMapper.readValue(mvcResult.getResponse().getContentAsString(), JwtToken.class);
+        JwtToken token =  objectMapper.readValue(mvcResult.getResponse().getContentAsString(), JwtToken.class);
 
         mockMvc.perform(get("/auth")
                         .header("Authorization", "Bearer " + token.token()))
