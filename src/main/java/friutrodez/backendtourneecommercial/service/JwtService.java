@@ -17,10 +17,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+/**
+ * Service pour gérer les tokens
+ */
 @Service
 public class JwtService  {
 
-    /** clé d'encryption encrypté en HMAC-SHA256
+    /**
+     * clé d'encryption encrypté en HMAC-SHA256
      * On peut utiliser ce site <a href="https://www.devglan.com/online-tools/hmac-sha256-online?ref=blog.tericcabrel.com">...</a>
      * pour créer la clé
      **/
@@ -48,6 +52,13 @@ public class JwtService  {
     }
 
 
+    /**
+     *
+     * @param claimsExtras les claims à mettre dans le token
+     * @param userDetails l'username de l'utilisateur
+     * @param expiration la date d'expiration
+     * @return un token signé avec son payload
+     */
     private String construireToken(
             HashMap<String, Object> claimsExtras,
             UserDetails userDetails,
@@ -77,9 +88,20 @@ public class JwtService  {
         return extraireExpiration(token).before(new Date());
     }
 
+    /**
+     *
+     * @param token
+     * @return la date d'expiration
+     */
     public Date extraireExpiration(String token) {
         return extraireClaim(token, Claims::getExpiration);
     }
+
+    /**
+     * Extrait les claims. Vérifie avant si la signature du token est correcte avec la clé d'encryption
+     * @param token
+     * @return les claims du token
+     */
     public Claims extraireTousClaims(String token) {
         return Jwts.parserBuilder().
                 setSigningKey(obtenirCleSignature(CLE_ENCRYPTION)).
@@ -88,12 +110,21 @@ public class JwtService  {
                 .getBody();
     }
 
+    /**
+     * Génération de sel pour varier les tokens par utilisateur
+     * @return une string encodé en base64
+     */
     private String genererSel() {
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[16];
         random.nextBytes(salt);
         return Base64.getEncoder().encodeToString(salt);
     }
+
+    /**
+     * @param cleEncryption la clé utilisée pour cryptée
+     * @return une clé hashé en hmac256
+     */
     private SecretKey obtenirCleSignature(String cleEncryption) {
         byte[] keyBytes = Decoders.BASE64.decode(cleEncryption);
         return Keys.hmacShaKeyFor(keyBytes);

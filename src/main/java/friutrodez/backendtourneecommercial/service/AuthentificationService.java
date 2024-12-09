@@ -3,6 +3,7 @@ package friutrodez.backendtourneecommercial.service;
 import friutrodez.backendtourneecommercial.dto.AuthentificationUtilisateur;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mysql.UtilisateurRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,23 +17,36 @@ public class AuthentificationService {
     private final PasswordEncoder encodeurDeMotDePasse;
     private final AuthenticationManager authenticationManager;
 
+    @Autowired
     public AuthentificationService(UtilisateurRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
         this.utilisateurRepository = userRepository;
         this.encodeurDeMotDePasse = passwordEncoder;
         this.authenticationManager = authenticationManager;
     }
 
-    public Utilisateur authentifier(AuthentificationUtilisateur input) {
+    /**
+     * Utilisé cette méthode pour authentifier un utilisateur
+     * @param donneeAuthentification Les données pour authentification
+     * @return l'utilisateur authentifié
+     */
+    public Utilisateur authentifier(AuthentificationUtilisateur donneeAuthentification) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        input.nom(),
-                        input.motDePasse()
+                        donneeAuthentification.nom(),
+                        donneeAuthentification.motDePasse()
                 )
         );
-        return utilisateurRepository.findByNom(input.nom());
+        return utilisateurRepository.findByNom(donneeAuthentification.nom());
     }
-    public Utilisateur CreerUnCompte(Utilisateur input) {
-        input.setMotDePasse(encodeurDeMotDePasse.encode(input.getMotDePasse()));
-        return utilisateurRepository.save(input);
+
+    /**
+     * Creation de l'utilisateur dans la base de donnée avec le mot de passe encryptée
+     * Utilisé cette méthode pour sécuriser les utilisateurs
+     * @param utilisateur a enregistrer en base de donnée
+     * @return l'utilisateur avec le mot de passe encrypté
+     */
+    public Utilisateur CreerUnCompte(Utilisateur utilisateur) {
+        utilisateur.setMotDePasse(encodeurDeMotDePasse.encode(utilisateur.getMotDePasse()));
+        return utilisateurRepository.save(utilisateur);
     }
 }

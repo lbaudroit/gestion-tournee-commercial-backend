@@ -26,19 +26,26 @@ public class SecurityConfiguration {
     AuthenticationProvider authenticationProvider;
 
     /**
-     * Une chaine de securité qui ne filtre actuellement aucune requête.
-     * Permet d'éviter de devoir se connecter
+     * Filtre de l'api pour la sécurisée
      * @param http La requête
-     * @return Une chaine de sécurité qui va déterminer si la requête est acceptée
+     * @return Une chaine de sécurité qui va déterminer la façon dont les requêtes vont être filtrées
      * @throws Exception
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return  http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable()).authorizeHttpRequests(
-                (authorizeHttpRequests)->authorizeHttpRequests.requestMatchers("/auth/*")
-                        .permitAll().requestMatchers("/hello").permitAll().anyRequest().authenticated()
+
+        return // Le csrf (Cross Site Request Forgery) est désactivé
+                // Elle n'est pas utile
+                http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
+                .authorizeHttpRequests(
+                        // Autorise les requêtes de /auth/* et /hello
+                (authorizeHttpRequests)->authorizeHttpRequests.requestMatchers("/auth/*","/hello")
+                        .permitAll()
+                        // Toutes les autres requêtes nécessitent une authentification
+                       .anyRequest().authenticated()
 
         ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                        // Spring ne sauvegarde pas les utilisateurs authentifiées
                 .sessionManagement(
                         (httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.
                         sessionCreationPolicy(SessionCreationPolicy.STATELESS)))
