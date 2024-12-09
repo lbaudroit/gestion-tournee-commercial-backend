@@ -1,6 +1,6 @@
 package friutrodez.backendtourneecommercial.service;
 
-import friutrodez.backendtourneecommercial.dto.AuthentificationUtilisateur;
+import friutrodez.backendtourneecommercial.dto.DonneesAuthentification;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mysql.UtilisateurRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class AuthentificationService {
      * @param donneeAuthentification Les données pour authentification
      * @return l'utilisateur authentifié
      */
-    public Utilisateur authentifier(AuthentificationUtilisateur donneeAuthentification) {
+    public Utilisateur authentifier(DonneesAuthentification donneeAuthentification) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         donneeAuthentification.nom(),

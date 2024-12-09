@@ -75,7 +75,10 @@ public class AuthentificationTest {
 
     }
 
-    // Pas important
+    /**
+     * Pas important
+     * @throws Exception
+     */
     @Test
     void testConnexionUtilisateurAvecTokenAutreUtilisateur() throws Exception {
         MvcResult mvcResult = mockMvc.perform(post("/auth/authentifier")
@@ -130,7 +133,11 @@ public class AuthentificationTest {
                 .andExpect(status().isForbidden());
     }
 
-    // Pas important
+
+    /**
+     * Pas important
+     * @throws Exception
+     */
     @Test
     void testAppelNonAutoriseeNonCree() throws Exception {
         Utilisateur utilisateurNonCree = new Utilisateur();

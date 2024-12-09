@@ -20,6 +20,10 @@ public abstract class CustomMongoTemplate<T>  {
      * mongoTemplate obtenue à partir du bean qui étend cette classe par le constructeur
      */
     public MongoTemplate mongoTemplate;
+
+    /**
+     * La collection donnée par la classe fille
+     */
     private final Class<T> collection;
 
     public CustomMongoTemplate(MongoTemplate mongoTemplate,Class<T> collection){
@@ -30,7 +34,6 @@ public abstract class CustomMongoTemplate<T>  {
         return  mongoTemplate.find(getQuery(cle,valeur),collection);
     }
     public void enlever(String cle,String valeur) {
-        //TODO : gérer le cas ou la collection n'existe pas
         mongoTemplate.remove(getQuery(cle,valeur),collection);
     }
 

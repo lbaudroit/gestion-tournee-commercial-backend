@@ -39,6 +39,13 @@ public class JwtService  {
         return extraireClaim(token, Claims::getSubject);
     }
 
+    /**
+     * Extrait les claims du token
+     * @param token dont extraire les claims
+     * @param sujet du token
+     * @return les claims
+     * @param <T> le sujet
+     */
     private <T> T extraireClaim(String token, Function<Claims,T> sujet) {
         final Claims claims = extraireTousClaims(token);
         return sujet.apply(claims);
@@ -53,7 +60,10 @@ public class JwtService  {
 
 
     /**
-     *
+     * Construit un token avec les informations suivantes:
+     * - clé encryption
+     * - claims donnés
+     * - date d'expiration
      * @param claimsExtras les claims à mettre dans le token
      * @param userDetails l'username de l'utilisateur
      * @param expiration la date d'expiration
@@ -79,11 +89,23 @@ public class JwtService  {
                 .signWith(obtenirCleSignature(CLE_ENCRYPTION), SignatureAlgorithm.HS256)
                 .compact();
     }
+
+    /**
+     * Vérifie si le token valide par rapport à son temps d'expiration et le username dans le token
+     * @param token reçu
+     * @param userDetails reçu
+     * @return true si le token est valide, false sinon
+     */
     public boolean tokenEstValide(String token, UserDetails userDetails) {
         final String username = extraireNomUtilisateur(token);
         return (username.equals(userDetails.getUsername())) && !tokenEstExpire(token);
     }
 
+    /**
+     * Vérifie si la date d'expiration est passée
+     * @param token le token reçu
+     * @return true si la date d'expiration est passée sinon false
+     */
     public boolean tokenEstExpire(String token) {
         return extraireExpiration(token).before(new Date());
     }

@@ -2,26 +2,22 @@ package friutrodez.backendtourneecommercial.authentification;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import friutrodez.backendtourneecommercial.controller.AuthentificationController;
-import friutrodez.backendtourneecommercial.dto.AuthentificationUtilisateur;
+import friutrodez.backendtourneecommercial.dto.DonneesAuthentification;
 import friutrodez.backendtourneecommercial.dto.JwtToken;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.service.AuthentificationService;
 import friutrodez.backendtourneecommercial.service.JwtService;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -95,11 +91,11 @@ public class AuthentificationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.notNullValue()));
 
-        AuthentificationUtilisateur authentificationUtilisateur = new AuthentificationUtilisateur("testuser","password");
+        DonneesAuthentification donneesAuthentification = new DonneesAuthentification("testuser","password");
 
          mockMvc.perform(post("/auth/authentifier")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(authentificationUtilisateur)))
+                .content(objectMapper.writeValueAsString(donneesAuthentification)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").value(expectedToken))
                 .andExpect(content().string(org.hamcrest.Matchers.notNullValue())).andReturn();
