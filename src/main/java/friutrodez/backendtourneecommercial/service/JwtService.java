@@ -19,6 +19,7 @@ import java.util.function.Function;
 
 /**
  * Service pour gérer les tokens
+ * Un token est formé de cette
  */
 @Service
 public class JwtService  {
@@ -133,7 +134,8 @@ public class JwtService  {
     }
 
     /**
-     * Génération de sel pour varier les tokens par utilisateur
+     * Génération de sel pour varier les tokens par utilisateur. <br>
+     * A utiliser pour éviter des tokens similaires lors d'une nouvelle connexion par un même utilisateur
      * @return une string encodé en base64
      */
     private String genererSel() {
