@@ -37,7 +37,7 @@ public class UtilisateurRepositoryTest {
         utilisateurRepository.save(utilisateur);
 
 
-         utilisateurTrouve = utilisateurRepository.findById(1L);
+         utilisateurTrouve = Optional.ofNullable(utilisateurRepository.findByNom("en"));
         Assertions.assertTrue(utilisateurTrouve.isPresent(),"L'utilisateur n'a pas été trouvé");
 
     }

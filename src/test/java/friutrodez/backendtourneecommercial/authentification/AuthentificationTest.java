@@ -77,6 +77,7 @@ public class AuthentificationTest {
 
     /**
      * Pas important
+     * Un utilisateur utilisant le token d'un autre utilisateur ne doit pas pouvoir se connecter
      * @throws Exception
      */
     @Test
@@ -136,6 +137,8 @@ public class AuthentificationTest {
 
     /**
      * Pas important
+     * Un utilisateur qui n'a pas de compte utilisant le token d'un autre utilisateur
+     * ne doit pas pouvoir se connecter
      * @throws Exception
      */
     @Test

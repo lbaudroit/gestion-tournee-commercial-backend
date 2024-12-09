@@ -140,7 +140,7 @@ public class JwtService  {
      */
     private String genererSel() {
         SecureRandom random = new SecureRandom();
-        byte[] salt = new byte[16];
+        byte[] salt = new byte[64];
         random.nextBytes(salt);
         return Base64.getEncoder().encodeToString(salt);
     }

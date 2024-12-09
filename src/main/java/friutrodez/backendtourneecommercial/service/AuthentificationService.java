@@ -42,7 +42,7 @@ public class AuthentificationService {
     /**
      * Creation de l'utilisateur dans la base de donnée avec le mot de passe encryptée
      * Utilisé cette méthode pour sécuriser les utilisateurs
-     * @param utilisateur a enregistrer en base de donnée
+     * @param utilisateur à enregistrer en base de donnée
      * @return l'utilisateur avec le mot de passe encrypté
      */
     public Utilisateur CreerUnCompte(Utilisateur utilisateur) {
