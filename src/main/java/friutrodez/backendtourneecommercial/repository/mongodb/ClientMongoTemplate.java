@@ -18,6 +18,7 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client>   {
 
     @Autowired
     public ClientMongoTemplate(MongoTemplate mongoTemplate) {
+        //TODO : gérer le cas ou la collection n'existe pas
         super(mongoTemplate,Client.class);
     }
 }
