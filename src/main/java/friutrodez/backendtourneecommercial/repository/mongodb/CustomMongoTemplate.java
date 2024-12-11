@@ -34,6 +34,20 @@ public abstract class CustomMongoTemplate<T>  {
         mongoTemplate.remove(getQuery(cle,valeur),collection);
     }
 
+    /**
+     * Enleve une entité par rapport à la clé et la valeur
+     * @param cle la clé
+     * @param valeur la valeur
+     */
+    public void enleverUn(String cle,String valeur) {
+        //TODO : gérer le cas ou la collection n'existe pas
+        mongoTemplate.remove(trouverUn(cle, valeur));
+    }
+
+    public T trouverUn(String cle, String valeur) {
+        return mongoTemplate.findOne(getQuery(cle,valeur),collection);
+    }
+
     public List<T> recupererToutesLesEntites() {
         return  mongoTemplate.findAll(collection);
     }

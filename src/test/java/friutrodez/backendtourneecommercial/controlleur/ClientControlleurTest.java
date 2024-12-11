@@ -45,8 +45,9 @@ public class ClientControlleurTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonClient))
                 .andExpect(status().isOk());
+        Client clientTrouve = clientMongoTemplate.trouverUn("nomEntreprise","entrepriseTest");
+        Assertions.assertEquals(client,clientTrouve);
 
-        //Assertions.a
         clientMongoTemplate.enlever("nomEntreprise","entrepriseTest");
     }
 
