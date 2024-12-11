@@ -20,4 +20,5 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client>   {
     public ClientMongoTemplate(MongoTemplate mongoTemplate) {
         super(mongoTemplate,Client.class);
     }
+
 }

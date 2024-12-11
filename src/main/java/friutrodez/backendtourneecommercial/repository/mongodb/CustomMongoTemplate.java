@@ -20,7 +20,7 @@ public abstract class CustomMongoTemplate<T>  {
      * mongoTemplate obtenue à partir du bean qui étend cette classe par le constructeur
      */
     public MongoTemplate mongoTemplate;
-    private final Class<T> collection;
+    protected final Class<T> collection;
 
     public CustomMongoTemplate(MongoTemplate mongoTemplate,Class<T> collection){
         this.mongoTemplate = mongoTemplate;
@@ -34,14 +34,18 @@ public abstract class CustomMongoTemplate<T>  {
         mongoTemplate.remove(getQuery(cle,valeur),collection);
     }
 
+    public List<T> recupererToutesLesEntites() {
+        return  mongoTemplate.findAll(collection);
+    }
+
     public  boolean existe(String cle,String valeur) {
         return mongoTemplate.exists(getQuery(cle, valeur),collection);
     }
     private Query getQuery(String cle, String valeur) {
         return new Query(where(cle).is(valeur));
     }
-    public void sauvegarder(T object) {
-        mongoTemplate.save(object);
+    public T sauvegarder(T object) {
+        return mongoTemplate.save(object);
     }
 }
 
