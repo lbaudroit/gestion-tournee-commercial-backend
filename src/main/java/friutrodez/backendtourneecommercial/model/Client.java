@@ -1,10 +1,7 @@
 package friutrodez.backendtourneecommercial.model;
 
 import jakarta.persistence.JoinColumn;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -29,7 +26,7 @@ public class Client {
 
     private String descriptif;
 
-    private double[] coordonnees;
+    private Coordonnees coordonnees;
 
     private Contact contact;
 
@@ -49,7 +46,7 @@ public class Client {
                 return Objects.equals(nomEntreprise,client.nomEntreprise);
             }
             // TODO equals de Adresse et contact
-            return Arrays.equals(coordonnees, client.coordonnees);
+            return coordonnees.equals(client.coordonnees);
 
         }
         return false;

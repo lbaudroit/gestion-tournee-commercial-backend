@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mysql.cj.x.protobuf.MysqlxExpr;
 import friutrodez.backendtourneecommercial.controller.ClientControlleur;
 import friutrodez.backendtourneecommercial.model.Client;
+import friutrodez.backendtourneecommercial.model.Coordonnees;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
 import org.junit.jupiter.api.Assertions;
@@ -39,6 +40,7 @@ public class ClientControlleurTest {
         Client client = new Client();
         client.setNomEntreprise("entrepriseTest");
         client.setIdUtilisateur("1");
+        client.setCoordonnees(new Coordonnees(20,20));
 
          String jsonClient= objectMapper.writeValueAsString(client);
         mockMvc.perform(put("/client/creer")
@@ -49,6 +51,38 @@ public class ClientControlleurTest {
         Assertions.assertEquals(client,clientTrouve);
 
         clientMongoTemplate.enlever("nomEntreprise","entrepriseTest");
+    }
+
+    @Test
+    void clientSansNomEtCoordonnee() throws Exception {
+        Client client = new Client();
+        client.setIdUtilisateur("1");
+
+        String jsonClient= objectMapper.writeValueAsString(client);
+        mockMvc.perform(put("/client/creer")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonClient))
+                .andExpect(status().isBadRequest());
+
+        client.setNomEntreprise("entrepriseTest");
+
+        jsonClient= objectMapper.writeValueAsString(client);
+        mockMvc.perform(put("/client/creer")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonClient))
+                .andExpect(status().isBadRequest());
+
+        client.setCoordonnees(new Coordonnees(20,20));
+
+        jsonClient= objectMapper.writeValueAsString(client);
+        mockMvc.perform(put("/client/creer")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonClient))
+                .andExpect(status().isOk());
+
+        clientMongoTemplate.enlever("nomEntreprise","entrepriseTest");
+
+
     }
 
 }
