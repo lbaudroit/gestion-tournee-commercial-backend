@@ -1,12 +1,12 @@
 package friutrodez.backendtourneecommercial.model;
 
 import jakarta.persistence.JoinColumn;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.Arrays;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -26,12 +26,29 @@ public class Client {
 
     private String descriptif;
 
-    private double[] coordonnees;
+    private Coordonnees coordonnees;
 
     private Contact contact;
 
     private boolean clientEffectif;
 
+    /**
+     * Vérifie si l'objet en argument est égaux à l'instance actuelle
+     * @param object
+     * @return True si l'objet à le même nom
+     */
+    @Override
+    public boolean equals(Object object) {
+        if(object instanceof Client) {
+            Client client = (Client) object;
+            // Vérifie en priorité les coordonnées
+            if(coordonnees == null) {
+                return Objects.equals(nomEntreprise,client.nomEntreprise);
+            }
+            // TODO equals de Adresse et contact
+            return coordonnees.equals(client.coordonnees);
 
-
+        }
+        return false;
+    }
 }
