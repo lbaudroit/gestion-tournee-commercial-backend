@@ -1,9 +1,10 @@
 package friutrodez.backendtourneecommercial.controller;
 
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import friutrodez.backendtourneecommercial.model.Client;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,7 @@ public class ClientControlleur {
 
     @GetMapping
     public  ResponseEntity<List<Client>> getTousClients() {
-       return ResponseEntity.ok(clientMongoTemplate.recupererToutesLesEntites());
+       return ResponseEntity.ok(clientMongoTemplate.recupererToutesLesEntitees());
     }
 
     @GetMapping(path="recuperer/")
@@ -36,5 +37,24 @@ public class ClientControlleur {
     @PostMapping(path = "recuperer/")
     public ResponseEntity<List<Client>> getClientsSpecifique(@RequestBody Client client) {
         return  ResponseEntity.ok(clientMongoTemplate.getClientSpecifique(client));
+    }
+
+    @DeleteMapping(path = "supprimer/")
+    public ResponseEntity<String> supprimerClient(@RequestBody Client client) {
+        DeleteResult deleteResult = clientMongoTemplate.supprimer(client);
+        if(!deleteResult.wasAcknowledged()) {
+            return ResponseEntity.badRequest().body("Le client n'a pas été supprimé");
+        }
+        return  ResponseEntity.ok("Le client a été supprimé");
+    }
+
+    @PostMapping(path="modifier/")
+    public ResponseEntity<String> modifierClient(@RequestBody Client modificationClient,@RequestParam(name="id") String id) {
+        modificationClient.set_id(id);
+        UpdateResult updateResult = clientMongoTemplate.modifier(modificationClient,id);
+        if(!updateResult.wasAcknowledged()) {
+            return ResponseEntity.badRequest().body("Le client avec l'id " + id + " n'a pas été modifié." );
+        }
+        return ResponseEntity.ok().body("Le client a été modifié.");
     }
 }

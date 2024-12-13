@@ -1,8 +1,13 @@
 package friutrodez.backendtourneecommercial.repository.mongodb;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
+import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.*;
 
 import java.util.List;
 
@@ -44,7 +49,6 @@ public abstract class CustomMongoTemplate<T>  {
      * @param valeur la valeur
      */
     public void enleverUn(String cle,String valeur) {
-        //TODO : gérer le cas ou la collection n'existe pas
         mongoTemplate.remove(trouverUn(cle, valeur));
     }
 
@@ -52,7 +56,7 @@ public abstract class CustomMongoTemplate<T>  {
         return mongoTemplate.findOne(getQuery(cle,valeur),collection);
     }
 
-    public List<T> recupererToutesLesEntites() {
+    public List<T> recupererToutesLesEntitees() {
         return  mongoTemplate.findAll(collection);
     }
 
@@ -63,15 +67,60 @@ public abstract class CustomMongoTemplate<T>  {
         return new Query(where(cle).is(valeur));
     }
     public T sauvegarder(T object) {
+
         return mongoTemplate.save(object);
     }
 
 
+    /**
+     * Récupérer des clients selon les valeurs du document reçus
+     * @param document
+     * @return les documents correspondant
+     */
+    public List<T> getClientSpecifique(T document) {
+        ObjectMapper mapper = new ObjectMapper();
+        // Il est nécessaire de ne pas inclure les null sinon rien n'est trouvé
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        String entiteJson = "";
+        try {
+            entiteJson = mapper.writeValueAsString(document);
+        } catch (JsonProcessingException ex) {
+            throw new DonneesInvalidesException("La conversion en json n'a pas fonctionnée. Veuillez vérifier les données.");
+        }
+        BasicQuery basicQuery = new BasicQuery(entiteJson);
+        return mongoTemplate.find(basicQuery,collection);
+    }
+
+    public DeleteResult supprimer(T entite) {
+        return mongoTemplate.remove(entite);
+    }
+
+    /**
+     * Modifie le document de la collection appartenant à l'id
+     * @param modificationsApportees les modifications apportées
+     * @param id l'id du document
+     * @return le resultat de la modification
+     */
+    public UpdateResult modifier(T modificationsApportees, String id)  {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        String entiteJson = "";
+        try {
+            entiteJson = mapper.writeValueAsString(modificationsApportees);
+        } catch (JsonProcessingException ex) {
+            throw new DonneesInvalidesException("La conversion en json n'a pas fonctionnée. Veuillez vérifier les données.");
+        }
+        BasicUpdate basicUpdate = new BasicUpdate(entiteJson);
+        Query query = new ConstructeurQuery().ajouterConditionBasique("_id",id).build();
+        return mongoTemplate.updateFirst(query,basicUpdate,collection);
+    }
 
     public ConstructeurQuery getBuilder() {
         return new ConstructeurQuery();
     }
-    class ConstructeurQuery {
+
+
+    class  ConstructeurQuery {
         private Query query;
 
         private Criteria critereEnCours;
@@ -82,12 +131,6 @@ public abstract class CustomMongoTemplate<T>  {
 
         }
 
-        public ConstructeurQuery where(String cle) {
-            //critereEnCours = new Criteria(cle);
-            return this;
-        }
-
-        //public ConstructeurQuery
 
         public ConstructeurQuery ajouterConditionBasique(String cle, String valeur) {
             query.addCriteria(Criteria.where(cle).is(valeur));

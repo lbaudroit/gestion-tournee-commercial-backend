@@ -1,11 +1,9 @@
 package friutrodez.backendtourneecommercial.model;
 
-import jakarta.persistence.JoinColumn;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 @Getter
@@ -30,23 +28,30 @@ public class Client {
 
     private Contact contact;
 
+    /**
+     * Le mapping en json se fera automatiquement
+     * Null n'est pas possible
+     */
     private boolean clientEffectif;
 
     /**
      * Vérifie si l'objet en argument est égaux à l'instance actuelle
-     * @param object
-     * @return True si l'objet à le même nom
+     * @param object à vérifier
+     * @return True si l'objet est égaux
      */
     @Override
     public boolean equals(Object object) {
-        if(object instanceof Client) {
-            Client client = (Client) object;
+        if(object instanceof Client client) {
+            // Vérifie en priorité les ids
+            if(client.get_id() != null && this.get_id() != null ) {
+                return Objects.equals(get_id(),client.get_id());
+            }
             // Vérifie en priorité les coordonnées
-            if(coordonnees == null) {
-                return Objects.equals(nomEntreprise,client.nomEntreprise);
+            if(coordonnees != null && client.coordonnees != null) {
+                return  coordonnees.equals(client.coordonnees);
             }
             // TODO equals de Adresse et contact
-            return coordonnees.equals(client.coordonnees);
+            return Objects.equals(nomEntreprise,client.nomEntreprise);
 
         }
         return false;

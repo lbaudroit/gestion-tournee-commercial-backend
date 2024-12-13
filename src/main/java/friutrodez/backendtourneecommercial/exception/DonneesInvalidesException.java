@@ -5,7 +5,7 @@ package friutrodez.backendtourneecommercial.exception;
  */
 public class DonneesInvalidesException extends RuntimeException{
 
-    DonneesInvalidesException(String message) {
+    public DonneesInvalidesException(String message) {
         super(message);
     }
 }
