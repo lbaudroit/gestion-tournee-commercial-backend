@@ -1,7 +1,7 @@
 package friutrodez.backendtourneecommercial.exception;
 
 /**
- * Exception pour indiquer que que des données sont invalides
+ * Exception pour indiquer que des données sont invalides
  */
 public class DonneesInvalidesException extends RuntimeException{
 

@@ -73,11 +73,11 @@ public abstract class CustomMongoTemplate<T>  {
 
 
     /**
-     * Récupérer des clients selon les valeurs du document reçus
+     * Récupérer des entités selon les valeurs du document reçu
      * @param document
-     * @return les documents correspondant
+     * @return les documents correspondants
      */
-    public List<T> getClientSpecifique(T document) {
+    public List<T> getEntitesDepuis(T document) {
         ObjectMapper mapper = new ObjectMapper();
         // Il est nécessaire de ne pas inclure les null sinon rien n'est trouvé
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -99,7 +99,7 @@ public abstract class CustomMongoTemplate<T>  {
      * Modifie le document de la collection appartenant à l'id
      * @param modificationsApportees les modifications apportées
      * @param id l'id du document
-     * @return le resultat de la modification
+     * @return le résultat de la modification
      */
     public UpdateResult modifier(T modificationsApportees, String id)  {
         ObjectMapper mapper = new ObjectMapper();

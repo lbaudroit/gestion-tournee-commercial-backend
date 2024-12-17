@@ -14,8 +14,8 @@ public class ExceptionHandlerAPI{
 
     /**
      * Gère les exceptions (Donnees Invalides Exception)
-     * @param exception
-     * @return
+     * @param exception l'exception d'origine
+     * @return une réponse
      */
     @ExceptionHandler(DonneesInvalidesException.class)
     public ResponseEntity<String> gererDonneesInvalidesException(DonneesInvalidesException exception) {

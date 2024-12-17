@@ -35,8 +35,8 @@ public class ClientControlleur {
     }
 
     @PostMapping(path = "recuperer/")
-    public ResponseEntity<List<Client>> getClientsSpecifique(@RequestBody Client client) {
-        return  ResponseEntity.ok(clientMongoTemplate.getClientSpecifique(client));
+    public ResponseEntity<List<Client>> getClientsDepuis(@RequestBody Client client) {
+        return  ResponseEntity.ok(clientMongoTemplate.getEntitesDepuis(client));
     }
 
     @DeleteMapping(path = "supprimer/")
@@ -49,9 +49,9 @@ public class ClientControlleur {
     }
 
     @PostMapping(path="modifier/")
-    public ResponseEntity<String> modifierClient(@RequestBody Client modificationClient,@RequestParam(name="id") String id) {
-        modificationClient.set_id(id);
-        UpdateResult updateResult = clientMongoTemplate.modifier(modificationClient,id);
+    public ResponseEntity<String> modifierClient(@RequestParam(name="id") String id, @RequestBody Client modifications) {
+        modifications.set_id(id);
+        UpdateResult updateResult = clientMongoTemplate.modifier(modifications,id);
         if(!updateResult.wasAcknowledged()) {
             return ResponseEntity.badRequest().body("Le client avec l'id " + id + " n'a pas été modifié." );
         }

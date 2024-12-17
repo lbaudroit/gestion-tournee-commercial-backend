@@ -5,7 +5,7 @@ package friutrodez.backendtourneecommercial.exception;
  */
 public class DonneesManquantesException extends RuntimeException{
 
-    DonneesManquantesException(String message) {
+    public DonneesManquantesException(String message) {
         super(message);
     }
 }

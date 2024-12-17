@@ -48,17 +48,17 @@ public class ClientRepositoryTest {
         clientMongoTemplate.mongoTemplate.insert(List.of(client,client2),Client.class);
 
         List<Client> clients =  clientMongoTemplate.trouverPar("nomEntreprise","entreprise113244");
-        Assertions.assertTrue( clients
-                .size() == 2,"L'insertion n'a pas fonctionné. " + clients.size() + " a été inséré");
-        Client recherche = new Client();
+        Assertions.assertEquals( clients
+                .size(), 2,"L'insertion n'a pas fonctionné. " + clients.size() + " a été inséré");
+        Client donneesRecherche = new Client();
 
-        recherche.setNomEntreprise("entreprise113244");
-        recherche.setClientEffectif(true);
+        donneesRecherche.setNomEntreprise("entreprise113244");
+        donneesRecherche.setClientEffectif(true);
 
 
-        List<Client> clientsTrouves = clientMongoTemplate.getClientSpecifique(recherche);
+        List<Client> clientsTrouves = clientMongoTemplate.getEntitesDepuis(donneesRecherche);
 
-        Assertions.assertTrue(clientsTrouves.size() == 2 , "Les deux clients n'ont pas été trouvés. Taille de la liste " + clientsTrouves.size() );
+        Assertions.assertEquals(clientsTrouves.size(), 2 , "Les deux clients n'ont pas été trouvés. Taille de la liste " + clientsTrouves.size() );
         clientMongoTemplate.enlever("nomEntreprise","entreprise113244");
 
     }
