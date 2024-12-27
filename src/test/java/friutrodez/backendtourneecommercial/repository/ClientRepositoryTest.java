@@ -12,8 +12,9 @@ public class ClientRepositoryTest {
 
     @Autowired
     ClientMongoTemplate clientRepository;
+
     @Test
-    void testCreation(){
+    void testCreation() {
         Client client = new Client();
         client.setNomEntreprise("entreprise1");
         client.setDescriptif("Une entreprise");
@@ -21,10 +22,10 @@ public class ClientRepositoryTest {
         clientRepository.sauvegarder(client);
 
         Assertions.assertTrue(clientRepository.existe("nomEntreprise",
-                "entreprise1"),"Le client n'a pas été créé");
+                "entreprise1"), "Le client n'a pas été créé");
 
-        
-        clientRepository.enlever("nomEntreprise","entreprise1");
+
+        clientRepository.enlever("nomEntreprise", "entreprise1");
     }
 
 

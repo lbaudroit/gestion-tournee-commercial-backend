@@ -1,12 +1,9 @@
 package friutrodez.backendtourneecommercial.controlleur;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mysql.cj.x.protobuf.MysqlxExpr;
 import friutrodez.backendtourneecommercial.controller.ClientControlleur;
 import friutrodez.backendtourneecommercial.model.Client;
 import friutrodez.backendtourneecommercial.model.Coordonnees;
-import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -36,21 +33,21 @@ public class ClientControlleurTest {
     @Test
     void creationClientTest() throws Exception {
 
-        clientMongoTemplate.enlever("nomEntreprise","entrepriseTest");
+        clientMongoTemplate.enlever("nomEntreprise", "entrepriseTest");
         Client client = new Client();
         client.setNomEntreprise("entrepriseTest");
         client.setIdUtilisateur("1");
-        client.setCoordonnees(new Coordonnees(20,20));
+        client.setCoordonnees(new Coordonnees(20, 20));
 
-         String jsonClient= objectMapper.writeValueAsString(client);
+        String jsonClient = objectMapper.writeValueAsString(client);
         mockMvc.perform(put("/client/creer")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonClient))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonClient))
                 .andExpect(status().isOk());
-        Client clientTrouve = clientMongoTemplate.trouverUn("nomEntreprise","entrepriseTest");
-        Assertions.assertEquals(client,clientTrouve);
+        Client clientTrouve = clientMongoTemplate.trouverUn("nomEntreprise", "entrepriseTest");
+        Assertions.assertEquals(client, clientTrouve);
 
-        clientMongoTemplate.enlever("nomEntreprise","entrepriseTest");
+        clientMongoTemplate.enlever("nomEntreprise", "entrepriseTest");
     }
 
     @Test
@@ -58,7 +55,7 @@ public class ClientControlleurTest {
         Client client = new Client();
         client.setIdUtilisateur("1");
 
-        String jsonClient= objectMapper.writeValueAsString(client);
+        String jsonClient = objectMapper.writeValueAsString(client);
         mockMvc.perform(put("/client/creer")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonClient))
@@ -66,21 +63,21 @@ public class ClientControlleurTest {
 
         client.setNomEntreprise("entrepriseTest");
 
-        jsonClient= objectMapper.writeValueAsString(client);
+        jsonClient = objectMapper.writeValueAsString(client);
         mockMvc.perform(put("/client/creer")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonClient))
                 .andExpect(status().isBadRequest());
 
-        client.setCoordonnees(new Coordonnees(20,20));
+        client.setCoordonnees(new Coordonnees(20, 20));
 
-        jsonClient= objectMapper.writeValueAsString(client);
+        jsonClient = objectMapper.writeValueAsString(client);
         mockMvc.perform(put("/client/creer")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonClient))
                 .andExpect(status().isOk());
 
-        clientMongoTemplate.enlever("nomEntreprise","entrepriseTest");
+        clientMongoTemplate.enlever("nomEntreprise", "entrepriseTest");
 
 
     }
