@@ -41,16 +41,16 @@ public class AuthentificationServiceTest {
         utilisateur.setNom("nomTest");
         utilisateur.setPrenom("prenomTest");
 
-        Assertions.assertThrows(Exception.class,()->authentificationService.CreerUnCompte(utilisateur),"Le mot de passe est valide");
+        Assertions.assertThrows(Exception.class,()->authentificationService.CreerUnCompte(utilisateur),"Le mot de passe est invalide");
 
         utilisateur.setMotDePasse("12345678");
-        Assertions.assertThrows(Exception.class,()->authentificationService.CreerUnCompte(utilisateur),"Le mot de passe est valide");
+        Assertions.assertThrows(Exception.class,()->authentificationService.CreerUnCompte(utilisateur),"Le mot de passe est invalide");
 
         utilisateur.setMotDePasse("123456aA");
-        Assertions.assertThrows(Exception.class,()->authentificationService.CreerUnCompte(utilisateur),"Le mot de passe est valide");
+        Assertions.assertThrows(Exception.class,()->authentificationService.CreerUnCompte(utilisateur),"Le mot de passe est invalide");
 
         utilisateur.setMotDePasse("1234aA.");
-        Assertions.assertThrows(Exception.class,()->authentificationService.CreerUnCompte(utilisateur),"Le mot de passe est valide");
+        Assertions.assertThrows(Exception.class,()->authentificationService.CreerUnCompte(utilisateur),"Le mot de passe est invalide");
 
 
     }

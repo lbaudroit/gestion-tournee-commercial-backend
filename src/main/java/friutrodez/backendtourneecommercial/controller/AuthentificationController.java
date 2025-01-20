@@ -43,6 +43,7 @@ public class AuthentificationController {
        return ResponseEntity.ok(utilisateurCreer);
     }
 
+
     /**
      * STUB
      * méthode de test pour tester le token après authentification
