@@ -32,4 +32,9 @@ public class Utilisateur {
     private String codePostal;
 
     private String ville;
+
+    // TODO créer un record(Coordonnees) avec les coordonnées
+    private Float longitude;
+
+    private Float latitude;
 }

@@ -32,6 +32,4 @@ public class Client {
 
     private boolean clientEffectif;
 
-
-
 }

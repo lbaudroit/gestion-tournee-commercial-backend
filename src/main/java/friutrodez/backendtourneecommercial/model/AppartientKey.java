@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
 
 import java.io.Serializable;
 
@@ -12,12 +13,13 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Getter
 @Setter
-@Entity
-public class Appartient {
+@Embeddable
+public class AppartientKey {
 
-    @EmbeddedId
-    private AppartientKey idEmbedded;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn()
+    private Itineraire itineraire;
 
-    private int position;
+    private String clientId;
+
 }
-

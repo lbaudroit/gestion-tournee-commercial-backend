@@ -24,7 +24,7 @@ public class Itineraire {
     private String nom;
 
     @OneToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "id",nullable = false)
+    @JoinColumn(name = "id_utilisateur",nullable = false)
     private Utilisateur utilisateur;
 
 }
