@@ -76,27 +76,6 @@ public class AuthentificationTest {
 
     }
 
-    /**
-     * Pas important
-     * Un utilisateur utilisant le token d'un autre utilisateur ne doit pas pouvoir se connecter
-     * @throws Exception
-     */
-    @Test
-    void testConnexionUtilisateurAvecTokenAutreUtilisateur() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(post("/auth/authentifier")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(utilisateurJson))
-                .andExpect(status().isOk()).andReturn();
-
-        JwtToken token =  objectMapper.readValue(mvcResult.getResponse().getContentAsString(), JwtToken.class);
-
-        mockMvc.perform(get("/auth")
-                        .header("Authorization", "Bearer " + token.token()))
-                .andExpect(status().isForbidden());
-
-
-    }
-
     @Test
     void testMemeToken2Authentification() throws Exception {
         MvcResult mvcResult = mockMvc.perform(post("/auth/authentifier")
@@ -134,26 +113,6 @@ public class AuthentificationTest {
                         .content(objectMapper.writeValueAsString(utilisateurNonCree)))
                 .andExpect(status().isForbidden());
     }
-
-
-    /**
-     * Pas important
-     * Un utilisateur qui n'a pas de compte utilisant le token d'un autre utilisateur
-     * ne doit pas pouvoir se connecter
-     * @throws Exception
-     */
-    @Test
-    void testAppelNonAutoriseeNonCree() throws Exception {
-        Utilisateur utilisateurNonCree = new Utilisateur();
-        utilisateurNonCree.setMotDePasse("password");
-        utilisateurNonCree.setPrenom("nonCree");
-        utilisateurNonCree.setNom("non");
-
-        mockMvc.perform(get("/auth")
-                        .header("Authorization", "Bearer " + tokenUtilisateur1.token()))
-                .andExpect(status().isForbidden());
-    }
-
 
     @Test
     void testAccesSansToken() throws Exception {

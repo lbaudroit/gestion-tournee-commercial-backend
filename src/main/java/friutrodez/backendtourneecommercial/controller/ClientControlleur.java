@@ -17,31 +17,32 @@ public class ClientControlleur {
 
     @Autowired
     ClientMongoTemplate clientMongoTemplate;
+
     @PutMapping(path = "creer")
     public ResponseEntity<Client> creerClient(@RequestBody Client client) {
-        client = clientMongoTemplate.sauvegarder(client);
+        clientMongoTemplate.save(client);
 
         return ResponseEntity.ok(client);
     }
 
     @GetMapping
     public  ResponseEntity<List<Client>> getTousClients() {
-       return ResponseEntity.ok(clientMongoTemplate.recupererToutesLesEntitees());
+       return ResponseEntity.ok(clientMongoTemplate.getAllEntities());
     }
 
     @GetMapping(path="recuperer/")
     public ResponseEntity<Client> getUnClient(@RequestParam(name="id") String id) {
-        return ResponseEntity.ok(clientMongoTemplate.trouverUn("_id",id));
+        return ResponseEntity.ok(clientMongoTemplate.findOne("_id",id));
     }
 
     @PostMapping(path = "recuperer/")
     public ResponseEntity<List<Client>> getClientsDepuis(@RequestBody Client client) {
-        return  ResponseEntity.ok(clientMongoTemplate.getEntitesDepuis(client));
+        return  ResponseEntity.ok(clientMongoTemplate.getEntitiesFrom(client));
     }
 
     @DeleteMapping(path = "supprimer/")
     public ResponseEntity<String> supprimerClient(@RequestBody Client client) {
-        DeleteResult deleteResult = clientMongoTemplate.supprimer(client);
+        DeleteResult deleteResult = clientMongoTemplate.remove(client);
         if(!deleteResult.wasAcknowledged()) {
             return ResponseEntity.badRequest().body("Le client n'a pas été supprimé");
         }

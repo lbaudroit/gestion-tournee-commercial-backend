@@ -15,9 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SelectClasses({ClientRepositoryTest.class, AuthentificationControllerTest.class, ConnexionTest.class, UtilisateurRepositoryTest.class})
 class BackendtourneecommercialApplicationTests {
 
-    @Test
-    void contextLoads() {
-    }
+
 	@Test
 	void contextLoads() {
 		// Non utilisée

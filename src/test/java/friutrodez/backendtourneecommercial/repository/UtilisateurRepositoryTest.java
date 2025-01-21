@@ -22,23 +22,24 @@ public class UtilisateurRepositoryTest {
     @Transactional
     @Rollback
     void testCreation() throws SQLException {
-        Optional<Utilisateur> utilisateurTrouve = utilisateurRepository.findById(1L);
-        if (utilisateurTrouve.isPresent()) {
-            utilisateurRepository.deleteById(1L);
-        }
 
-        Utilisateur utilisateur = new Utilisateur();
-        // Attention ne pas utiliser id sinon ça sauvegarde au lieu de créer : Causé peut être par @GeneratedValue
-        //utilisateur.setId(1L);
-        utilisateur.setNom("en");
-        utilisateur.setPrenom("quelquechose");
-        utilisateur.setCodePostal("zef");
+        Utilisateur utilisateur = Utilisateur.builder()
+                .nom("en")
+                .prenom("sdg")
+                .telephone("0643454789")
+                .motDePasse("Lehhh_123")
+                .libelleAdresse("2 Rue d'Arpajon")
+                .codePostal("13450")
+                .ville("Sévéra")
+                .latitude(44.3223815F)
+                .longitude(3.0666963F)
+                .build();
 
         utilisateurRepository.save(utilisateur);
 
-         utilisateurTrouve = Optional.ofNullable(utilisateurRepository.findByNom("en"));
-        Assertions.assertTrue(utilisateurTrouve.isPresent(),"L'utilisateur n'a pas été trouvé");
-
+        Utilisateur utilisateurTrouve = utilisateurRepository.findByNom("en");
+        Assertions.assertNotNull(utilisateurTrouve,"L'utilisateur n'a pas été trouvé");
+        utilisateurRepository.delete(utilisateur);
     }
 
 }

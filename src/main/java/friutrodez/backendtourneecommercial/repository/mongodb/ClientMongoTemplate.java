@@ -47,6 +47,5 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
             client.set_id(sequenceGeneratorService.generateSequence(Client.SEQUENCE_NAME));
         }
         mongoTemplate.save(client);
-
     }
 }

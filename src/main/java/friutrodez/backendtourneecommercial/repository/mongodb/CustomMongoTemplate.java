@@ -58,37 +58,24 @@ public abstract class CustomMongoTemplate<T>  {
     public List<T> find(String cle, String valeur) {
         return mongoTemplate.find(getQuery(cle, valeur), collection);
     }
-  
-    /**
-     * Supprime les documents dans la collection correspondant à la clé et la valeur spécifiées.
-     *
-     * @param cle la clé de la requête
-     * @param valeur la valeur de la requête
-     */
-    public void remove(String cle, String valeur) {
-        mongoTemplate.remove(getQuery(cle, valeur), collection);
-    }
 
     /**
      * Enleve une entité par rapport à la clé et la valeur
      * @param cle la clé
      * @param valeur la valeur
      */
-    public void enleverUn(String cle,String valeur) {
-        mongoTemplate.remove(trouverUn(cle, valeur));
+    public void removeOne(String cle,String valeur) {
+        mongoTemplate.remove(findOne(cle, valeur));
     }
 
-    public T trouverUn(String cle, String valeur) {
+    public T findOne(String cle, String valeur) {
         return mongoTemplate.findOne(getQuery(cle,valeur),collection);
     }
 
-    public List<T> recupererToutesLesEntitees() {
+    public List<T> getAllEntities() {
         return  mongoTemplate.findAll(collection);
     }
 
-    public  boolean existe(String cle,String valeur) {
-        return mongoTemplate.exists(getQuery(cle, valeur), collection);
-    }
     /*
      * Supprime tous les documents de la collection.
      */
@@ -117,19 +104,13 @@ public abstract class CustomMongoTemplate<T>  {
     private Query getQuery(String cle, String valeur) {
         return new Query(where(cle).is(valeur));
     }
-      
-    public T sauvegarder(T object) {
-
-        return mongoTemplate.save(object);
-    }
-
 
     /**
      * Récupérer des entités selon les valeurs du document reçu
      * @param document le document
      * @return les documents correspondants
      */
-    public List<T> getEntitesDepuis(T document) {
+    public List<T> getEntitiesFrom(T document) {
         ObjectMapper mapper = new ObjectMapper();
         // Il est nécessaire de ne pas inclure les null sinon rien n'est trouvé
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -143,7 +124,7 @@ public abstract class CustomMongoTemplate<T>  {
         return mongoTemplate.find(basicQuery,collection);
     }
 
-    public DeleteResult supprimer(T entite) {
+    public DeleteResult remove(T entite) {
         return mongoTemplate.remove(entite);
     }
 
@@ -163,40 +144,8 @@ public abstract class CustomMongoTemplate<T>  {
             throw new DonneesInvalidesException("La conversion en json n'a pas fonctionnée. Veuillez vérifier les données.");
         }
         BasicUpdate basicUpdate = new BasicUpdate(entiteJson);
-        Query query = new ConstructeurQuery().ajouterConditionBasique("_id",id).build();
+        Query query = new Query(Criteria.where("_id").is(id));
         return mongoTemplate.updateFirst(query,basicUpdate,collection);
-    }
-
-    public ConstructeurQuery getBuilder() {
-        return new ConstructeurQuery();
-    }
-
-
-    public static class ConstructeurQuery {
-        private final Query query;
-
-        private Criteria critereEnCours;
-
-        public ConstructeurQuery() {
-            this.query = new Query();
-
-
-        }
-
-
-        public ConstructeurQuery ajouterConditionBasique(String cle, String valeur) {
-            query.addCriteria(Criteria.where(cle).is(valeur));
-            return this;
-        }
-
-        public ConstructeurQuery ajouterCriteria(Criteria criteria) {
-            query.addCriteria(criteria);
-            return this;
-        }
-
-        public Query build() {
-            return query;
-        }
     }
 
     /**

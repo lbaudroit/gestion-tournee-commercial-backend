@@ -38,7 +38,7 @@ public class AuthentificationController {
 
     @PostMapping(path = "/creer")
     public ResponseEntity<Utilisateur> CreerUnCompte(@RequestBody Utilisateur utilisateur) {
-       Utilisateur utilisateurCreer =  authentificationService.CreerUnCompte(utilisateur);
+       Utilisateur utilisateurCreer =  authentificationService.creerUnCompte(utilisateur);
 
        return ResponseEntity.ok(utilisateurCreer);
     }

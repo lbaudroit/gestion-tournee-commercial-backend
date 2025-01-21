@@ -1,7 +1,6 @@
-package friutrodez.backendtourneecommercial.controlleur;
+package friutrodez.backendtourneecommercial.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import friutrodez.backendtourneecommercial.controller.ClientControlleur;
 import friutrodez.backendtourneecommercial.model.Client;
 import friutrodez.backendtourneecommercial.model.Coordonnees;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -21,6 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ActiveProfiles("test")
 public class ClientControlleurTest {
 
     @Autowired
@@ -52,7 +53,7 @@ public class ClientControlleurTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonClient))
                 .andExpect(status().isOk());
-        Client clientTrouve = clientMongoTemplate.trouverUn("nomEntreprise","entrepriseTest");
+        Client clientTrouve = clientMongoTemplate.findOne("nomEntreprise","entrepriseTest");
         Assertions.assertEquals(client,clientTrouve,"Le client n'a pas été modifié");
         client.set_id(clientTrouve.get_id());
     }
@@ -86,7 +87,7 @@ public class ClientControlleurTest {
                 .andExpect(status().isOk());
 
 
-        clientMongoTemplate.enlever("nomEntreprise","entrepriseTest");
+        clientMongoTemplate.removeOne("nomEntreprise","entrepriseTest");
     }
 
     @Order(2)
@@ -105,7 +106,7 @@ public class ClientControlleurTest {
     @Order(3)
     @Test
     void clientModifierTest() throws Exception {
-        clientMongoTemplate.sauvegarder(client);
+        clientMongoTemplate.save(client);
         if(client.get_id() == null || client.get_id().isEmpty()) {
             throw new RuntimeException("Le client n'a pas d'id");
         }
@@ -122,18 +123,18 @@ public class ClientControlleurTest {
                 .andExpect(status().isOk()).andReturn();
 
 
-        Client clientRecupere = clientMongoTemplate.trouverUn("nomEntreprise","Test Modification");
+        Client clientRecupere = clientMongoTemplate.findOne("nomEntreprise","Test Modification");
 
         Assertions.assertEquals(clientModifier,clientRecupere,"Le client n'a pas été modifié");
         Assertions.assertNotEquals(clientRecupere.getNomEntreprise(),client.getNomEntreprise(),"Le client n'a pas été modifié");
-        clientMongoTemplate.enlever("nomEntreprise","Test Modification");
+        clientMongoTemplate.removeOne("nomEntreprise","Test Modification");
     }
 
 
     @Order(5)
     @Test
     void clientSupprimerTest() throws Exception {
-        clientMongoTemplate.sauvegarder(client);
+        clientMongoTemplate.save(client);
         if(client.get_id() == null || client.get_id().isEmpty()) {
             throw new RuntimeException("Le client n'a pas d'id");
         }
@@ -143,11 +144,6 @@ public class ClientControlleurTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(clientSupprimer))
                 .andExpect(status().isOk()).andReturn();
-    }
-
-    @AfterAll
-    void supprimerlesDonnees() {
-        clientMongoTemplate.enlever("nomEntreprise","entrepriseTest");
     }
 
 }

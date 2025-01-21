@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -65,7 +66,7 @@ public class UtilisateurControlleurTest {
         Assertions.assertEquals("modificationTestUser",utilisateurModifie.getNom());
         Assertions.assertEquals("testPrenom",utilisateurModifie.getPrenom());
 
-        mockMvc.perform(post("/utilisateur/supprimer")
+        mockMvc.perform(delete("/utilisateur/supprimer")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("id",""+utilisateurModifie.getId()))
                 .andExpect(status().isOk());
