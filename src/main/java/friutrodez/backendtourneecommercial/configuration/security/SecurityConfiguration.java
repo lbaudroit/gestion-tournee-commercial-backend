@@ -12,10 +12,15 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-
 /**
  * Classe de configuration de sécurité permettant de filtrer
- * les requêtes du web qui communique au framework Spring
+ * les requêtes du web qui communique au framework Spring.
+ *
+ * @author
+ * Benjamin NICOL
+ * Enzo CLUZEL
+ * Leïla BAUDROIT
+ * Ahmed BRIBACH
  */
 @Configuration
 @EnableWebSecurity
