@@ -4,7 +4,9 @@ import friutrodez.backendtourneecommercial.authentification.AuthentificationCont
 import friutrodez.backendtourneecommercial.repository.ClientRepositoryTest;
 import friutrodez.backendtourneecommercial.repository.UtilisateurRepositoryTest;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.suite.api.*;
+import org.junit.platform.suite.api.IncludeTags;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
@@ -13,9 +15,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SelectClasses({ClientRepositoryTest.class, AuthentificationControllerTest.class, ConnexionTest.class, UtilisateurRepositoryTest.class})
 class BackendtourneecommercialApplicationTests {
 
+    @Test
+    void contextLoads() {
+    }
 	@Test
 	void contextLoads() {
 		// Non utilisée
 	}
-
 }

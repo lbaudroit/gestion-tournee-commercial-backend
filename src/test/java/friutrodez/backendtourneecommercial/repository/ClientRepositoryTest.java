@@ -15,7 +15,7 @@ public class ClientRepositoryTest {
     @Autowired
     ClientMongoTemplate clientMongoTemplate;
     @Test
-    void testCreation(){
+    void testCreation() {
         Client client = new Client();
         client.setNomEntreprise("entreprise1");
         client.setDescriptif("Une entreprise");
