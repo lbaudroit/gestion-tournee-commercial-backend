@@ -7,6 +7,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
+/**
+ * Configuration de mongo pour créer les beans d'accés à la base mongo
+ */
 @Configuration
 public class MongoConfiguration {
 
