@@ -36,7 +36,7 @@ public class UtilisateurControlleurTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void modificationUtilisateurTest()  throws Exception{
+    void modificationUtilisateurEtSuppresionTest()  throws Exception{
         Utilisateur testUser = new Utilisateur();
         testUser.setNom("testuser");
         testUser.setPrenom("testPrenom");
@@ -58,8 +58,7 @@ public class UtilisateurControlleurTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(utilisateurJson))
                 .andExpect(status().isOk()).andReturn();
-
-
+        
 
        Utilisateur utilisateurModifie = objectMapper.readValue(mvcResultat.getResponse().getContentAsString(), Utilisateur.class);
 
