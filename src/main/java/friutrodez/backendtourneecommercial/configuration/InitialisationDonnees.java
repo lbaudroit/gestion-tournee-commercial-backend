@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -38,6 +39,9 @@ public class InitialisationDonnees {
     @Autowired
     private ClientMongoTemplate clientMongoTemplate;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     /**
      * Méthode d'initialisation des données.
      * Cette méthode est exécutée au démarrage de l'application pour insérer les données
@@ -53,7 +57,7 @@ public class InitialisationDonnees {
                 .nom("Cluzel")
                 .prenom("Enzo")
                 .telephone("0623456789")
-                .motDePasse("Enzo_123")
+                .motDePasse(passwordEncoder.encode("Enzo_123"))
                 .libelleAdresse("50 Avenue de Bordeaux")
                 .codePostal("12000")
                 .ville("Rodez")
@@ -64,7 +68,7 @@ public class InitialisationDonnees {
                 .nom("Baudroït")
                 .prenom("Leïla")
                 .telephone("0623454789")
-                .motDePasse("Leila_123")
+                .motDePasse(passwordEncoder.encode("Leila_123"))
                 .libelleAdresse("2 Rue du Duc d'Arpajon")
                 .codePostal("12150")
                 .ville("Sévérac-d'Aveyron")
@@ -75,7 +79,7 @@ public class InitialisationDonnees {
                 .nom("Brïbach")
                 .prenom("Ahmed")
                 .telephone("0623456889")
-                .motDePasse("Ahmed_123")
+                .motDePasse(passwordEncoder.encode("Ahmed_123"))
                 .libelleAdresse("1 Av. de Brommat")
                 .codePostal("12600")
                 .ville("Mur-de-Barrez")
@@ -86,7 +90,7 @@ public class InitialisationDonnees {
                 .nom("Nicol")
                 .prenom("Benjamin")
                 .telephone("0623459889")
-                .motDePasse("Benjamin_123")
+                .motDePasse(passwordEncoder.encode("Benjamin_123"))
                 .libelleAdresse("6 Impasse du Suc")
                 .codePostal("81490")
                 .ville("Boissezon")
