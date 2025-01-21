@@ -87,7 +87,8 @@ public abstract class CustomMongoTemplate<T>  {
     }
 
     public  boolean existe(String cle,String valeur) {
-        return mongoTemplate.exists(getQuery(cle, valeur),collection);
+        return mongoTemplate.exists(getQuery(cle, valeur), collection);
+    }
     /*
      * Supprime tous les documents de la collection.
      */
@@ -125,7 +126,7 @@ public abstract class CustomMongoTemplate<T>  {
 
     /**
      * Récupérer des entités selon les valeurs du document reçu
-     * @param document
+     * @param document le document
      * @return les documents correspondants
      */
     public List<T> getEntitesDepuis(T document) {
@@ -171,8 +172,8 @@ public abstract class CustomMongoTemplate<T>  {
     }
 
 
-    class  ConstructeurQuery {
-        private Query query;
+    public static class ConstructeurQuery {
+        private final Query query;
 
         private Criteria critereEnCours;
 
@@ -193,9 +194,10 @@ public abstract class CustomMongoTemplate<T>  {
             return this;
         }
 
-        public Query build(){
+        public Query build() {
             return query;
         }
+    }
 
     /**
      * Sauvegarde un document dans la collection.
