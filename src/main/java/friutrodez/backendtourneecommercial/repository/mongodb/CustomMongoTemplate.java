@@ -12,7 +12,6 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
  * Evite de répéter du code inutile dans la structure et évite de mettre
  * la classe de la collection à chaque appel
  * de méthode qui utilise la classe mongoTemplate.
- *
  * @param <T> le type de la collection
  *
  * @author
@@ -27,6 +26,10 @@ public abstract class CustomMongoTemplate<T>  {
      * mongoTemplate obtenue à partir du bean qui étend cette classe par le constructeur.
      */
     public MongoTemplate mongoTemplate;
+
+    /**
+     * La collection donnée par la classe fille
+     */
     private final Class<T> collection;
 
     /**
@@ -50,7 +53,7 @@ public abstract class CustomMongoTemplate<T>  {
     public List<T> find(String cle, String valeur) {
         return mongoTemplate.find(getQuery(cle, valeur), collection);
     }
-
+  
     /**
      * Supprime les documents dans la collection correspondant à la clé et la valeur spécifiées.
      *
@@ -58,7 +61,6 @@ public abstract class CustomMongoTemplate<T>  {
      * @param valeur la valeur de la requête
      */
     public void remove(String cle, String valeur) {
-        //TODO : gérer le cas ou la collection n'existe pas
         mongoTemplate.remove(getQuery(cle, valeur), collection);
     }
 
