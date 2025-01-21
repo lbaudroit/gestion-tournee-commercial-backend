@@ -3,4 +3,3 @@ db.createUser({
   pwd: "password",
   roles: [{ role: "readWrite", db: "mydatabase" }]
 });
-
