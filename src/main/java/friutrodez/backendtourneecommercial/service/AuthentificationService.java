@@ -45,7 +45,7 @@ public class AuthentificationService {
      * @param utilisateur à enregistrer en base de donnée
      * @return l'utilisateur avec le mot de passe encrypté
      */
-    public Utilisateur CreerUnCompte(Utilisateur utilisateur) {
+    public Utilisateur creerUnCompte(Utilisateur utilisateur) {
         utilisateur.setMotDePasse(encodeurDeMotDePasse.encode(utilisateur.getMotDePasse()));
         return utilisateurRepository.save(utilisateur);
     }
