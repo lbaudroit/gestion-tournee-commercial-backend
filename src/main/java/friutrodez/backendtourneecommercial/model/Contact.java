@@ -31,7 +31,7 @@ public class Contact {
      * Le prénom du contact.
      */
     private String prenom;
-
+  
     /**
      * Le numéro de téléphone du contact.
      */

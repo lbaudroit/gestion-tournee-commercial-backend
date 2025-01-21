@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import friutrodez.backendtourneecommercial.service.SequenceGeneratorService;
 
+
 /**
  * Service pour la gestion des clients dans MongoDB.
  * Cette classe utilise MongoTemplate pour effectuer des opérations CRUD sur les clients.

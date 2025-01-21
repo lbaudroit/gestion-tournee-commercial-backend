@@ -15,6 +15,7 @@ class BackendtourneecommercialApplicationTests {
 
 	@Test
 	void contextLoads() {
+		// Non utilisée
 	}
 
 }

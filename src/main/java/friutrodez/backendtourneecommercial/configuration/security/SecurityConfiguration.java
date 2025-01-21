@@ -40,7 +40,6 @@ public class SecurityConfiguration {
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         return // Le csrf (Cross Site Request Forgery) est désactivé
                 // Elle n'est pas utile
                 http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())

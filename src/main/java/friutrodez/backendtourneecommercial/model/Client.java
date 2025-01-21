@@ -5,6 +5,7 @@ import jakarta.persistence.Transient;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.Objects;
 
 /**
  * Classe représentant un client.
@@ -63,7 +64,7 @@ public class Client {
     /**
      * Coordonnées géographiques du client.
      */
-    private double[] coordonnees;
+    private Coordonnees coordonnees;
 
     /**
      * Contact du client.
@@ -71,8 +72,31 @@ public class Client {
     private Contact contact;
 
     /**
-     * Indique si le client est effectif.
+     * Le mapping en json se fera automatiquement
+     * Null n'est pas possible
      */
     private boolean clientEffectif;
 
+    /**
+     * Vérifie si l'objet en argument est égaux à l'instance actuelle
+     * @param object à vérifier
+     * @return True si l'objet est égaux
+     */
+    @Override
+    public boolean equals(Object object) {
+        if(object instanceof Client client) {
+            // Vérifie en priorité les ids
+            if(client.get_id() != null && this.get_id() != null ) {
+                return Objects.equals(get_id(),client.get_id());
+            }
+            // Vérifie en priorité les coordonnées
+            if(coordonnees != null && client.coordonnees != null) {
+                return  coordonnees.equals(client.coordonnees);
+            }
+            // TODO equals de Adresse et contact
+            return Objects.equals(nomEntreprise,client.nomEntreprise);
+
+        }
+        return false;
+    }
 }
