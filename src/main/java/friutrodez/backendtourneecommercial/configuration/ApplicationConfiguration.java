@@ -22,7 +22,7 @@ public class ApplicationConfiguration {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> utilisateurRepository.findByNom(username);
+        return username -> utilisateurRepository.findByEmail(username);
 
     }
 

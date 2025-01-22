@@ -32,11 +32,11 @@ public class AuthentificationService {
     public Utilisateur authentifier(DonneesAuthentification donneeAuthentification) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        donneeAuthentification.nom(),
+                        donneeAuthentification.email(),
                         donneeAuthentification.motDePasse()
                 )
         );
-        return utilisateurRepository.findByNom(donneeAuthentification.nom());
+        return utilisateurRepository.findByEmail(donneeAuthentification.email());
     }
 
     /**

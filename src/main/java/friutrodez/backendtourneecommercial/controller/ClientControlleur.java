@@ -3,11 +3,14 @@ package friutrodez.backendtourneecommercial.controller;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import friutrodez.backendtourneecommercial.model.Client;
+import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RequestMapping(path="/client/")
@@ -19,14 +22,21 @@ public class ClientControlleur {
     ClientMongoTemplate clientMongoTemplate;
 
     @PutMapping(path = "creer")
-    public ResponseEntity<Client> creerClient(@RequestBody Client client) {
-        clientMongoTemplate.save(client);
+    public ResponseEntity<Client> creerClient(@RequestBody Client client, Principal principal) {
 
+        UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) principal;
+        Utilisateur utilisateur = (Utilisateur)token.getPrincipal();
+
+        client.setIdUtilisateur(""+utilisateur.getId());
+        clientMongoTemplate.save(client);
         return ResponseEntity.ok(client);
     }
 
     @GetMapping
-    public  ResponseEntity<List<Client>> getTousClients() {
+    public  ResponseEntity<List<Client>> getTousClients(Principal principal) {
+        UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) principal;
+        Utilisateur utilisateur = (Utilisateur)token.getPrincipal();
+
        return ResponseEntity.ok(clientMongoTemplate.getAllEntities());
     }
 

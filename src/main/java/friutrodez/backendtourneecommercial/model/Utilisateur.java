@@ -46,6 +46,12 @@ public class Utilisateur implements UserDetails {
     private Long id;
 
     /**
+     * Adresse email de l'utilisateur
+     * Ne peut pas être nul
+     */
+    @Column(nullable = false)
+    private String email;
+    /**
      * Nom de l'utilisateur.
      * Ne peut pas être nul.
      */
@@ -107,6 +113,6 @@ public class Utilisateur implements UserDetails {
 
     @Override
     public String getUsername() {
-        return nom;
+        return email;
     }
 }

@@ -36,7 +36,7 @@ public class JwtService  {
 
     /** durée totale du token **/
     public final int JWT_EXPIRATION = MINUTES * 60 * 1000;
-    public String extraireNomUtilisateur(String token) {
+    public String extraireEmail(String token) {
         return extraireClaim(token, Claims::getSubject);
     }
 
@@ -98,7 +98,7 @@ public class JwtService  {
      * @return true si le token est valide, false sinon
      */
     public boolean tokenEstValide(String token, UserDetails userDetails) {
-        final String username = extraireNomUtilisateur(token);
+        final String username = extraireEmail(token);
         return (username.equals(userDetails.getUsername())) && !tokenEstExpire(token);
     }
 

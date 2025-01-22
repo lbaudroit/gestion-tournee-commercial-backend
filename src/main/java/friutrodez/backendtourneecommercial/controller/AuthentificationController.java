@@ -5,9 +5,14 @@ import friutrodez.backendtourneecommercial.service.AuthentificationService;
 import friutrodez.backendtourneecommercial.dto.DonneesAuthentification;
 import friutrodez.backendtourneecommercial.service.JwtService;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+
+import java.security.Principal;
 
 
 /**
@@ -30,6 +35,7 @@ public class AuthentificationController {
     @PostMapping(path = "/authentifier")
     public ResponseEntity<JwtToken> authentifier(@RequestBody DonneesAuthentification donneesAuthentification) {
         Utilisateur utilisateur = authentificationService.authentifier(donneesAuthentification);
+
         String jwtToken = jwtService.genererToken(utilisateur);
         JwtToken jwtTokenDTO = new JwtToken(jwtToken,jwtService.JWT_EXPIRATION);
         return  ResponseEntity.ok(jwtTokenDTO);
@@ -50,8 +56,10 @@ public class AuthentificationController {
      * @return
      */
     @GetMapping
-    public String testToken() {
-        return "token fonctionnel";
+    public String testToken(Principal principal) {
+        UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) principal;
+        Utilisateur utilisateur = (Utilisateur)token.getPrincipal();
+        return "token fonctionnel"+utilisateur.getUsername();
     }
 
 }

@@ -72,6 +72,7 @@ public abstract class CustomMongoTemplate<T>  {
         return mongoTemplate.findOne(getQuery(cle,valeur),collection);
     }
 
+
     public List<T> getAllEntities() {
         return  mongoTemplate.findAll(collection);
     }
