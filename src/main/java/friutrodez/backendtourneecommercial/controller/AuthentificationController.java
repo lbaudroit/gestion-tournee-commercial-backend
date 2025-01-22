@@ -6,9 +6,11 @@ import friutrodez.backendtourneecommercial.dto.DonneesAuthentification;
 import friutrodez.backendtourneecommercial.service.JwtService;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 
@@ -20,6 +22,7 @@ import java.security.Principal;
  */
 @RequestMapping(path = "/auth")
 @RestController
+@Validated
 public class AuthentificationController {
 
     private final JwtService jwtService;
@@ -42,13 +45,15 @@ public class AuthentificationController {
 
     }
 
+
     @PostMapping(path = "/creer")
-    public ResponseEntity<Utilisateur> CreerUnCompte(@RequestBody Utilisateur utilisateur) {
-       Utilisateur utilisateurCreer =  authentificationService.creerUnCompte(utilisateur);
-
-       return ResponseEntity.ok(utilisateurCreer);
+    public ResponseEntity CreerUnCompte(@RequestBody Utilisateur utilisateur) {
+        Utilisateur utilisateurCreer =  authentificationService.creerUnCompte(utilisateur);
+        if (utilisateurCreer == null) {
+            return ResponseEntity.badRequest().body("Adresse invalide");
+        }
+        return ResponseEntity.ok(utilisateurCreer);
     }
-
 
     /**
      * STUB
