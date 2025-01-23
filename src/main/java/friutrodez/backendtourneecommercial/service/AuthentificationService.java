@@ -1,6 +1,8 @@
 package friutrodez.backendtourneecommercial.service;
 
 import friutrodez.backendtourneecommercial.dto.DonneesAuthentification;
+import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
+import friutrodez.backendtourneecommercial.exception.DonneesManquantesException;
 import friutrodez.backendtourneecommercial.exception.AdresseInvalideException;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mysql.UtilisateurRepository;
@@ -10,6 +12,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * Classe métier qui gére l'authenthication pour les utilisateurs
+ *
+ */
 @Service
 public class AuthentificationService {
 
@@ -47,7 +53,13 @@ public class AuthentificationService {
      * @param utilisateur à enregistrer en base de donnée
      * @return l'utilisateur avec le mot de passe encrypté
      */
-    public Utilisateur creerUnCompte(Utilisateur utilisateur) {
+    public Utilisateur creerUnCompte(Utilisateur utilisateur) throws DonneesInvalidesException,DonneesManquantesException{
+        if(utilisateur.getEmail() == null || utilisateur.getEmail().trim().isEmpty()) {
+            throw new DonneesManquantesException("L'utilisateur n'a pas d'email défini.");
+        }
+        if(!utilisateur.getEmail().matches("^[^@]+@[^@]+\\.[^@]+$")) {
+            throw new DonneesInvalidesException("L'email de l'utilisateur n'a pas le bon format.");
+        }
         utilisateur.setMotDePasse(encodeurDeMotDePasse.encode(utilisateur.getMotDePasse()));
         if (!addressToolsService.validateAdresse(utilisateur.getLibelleAdresse(), utilisateur.getCodePostal(), utilisateur.getVille())) {
             throw new AdresseInvalideException("Adresse invalide");

@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -61,10 +62,9 @@ public class AuthentificationController {
      * @return
      */
     @GetMapping
-    public String testToken(Principal principal) {
-        UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) principal;
-        Utilisateur utilisateur = (Utilisateur)token.getPrincipal();
-        return "token fonctionnel"+utilisateur.getUsername();
+    public String testToken() {
+        Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return "token fonctionnel";
     }
 
 }

@@ -1,35 +1,49 @@
-package friutrodez.backendtourneecommercial.authentification;
+package friutrodez.backendtourneecommercial.service;
 
-
+import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
+import friutrodez.backendtourneecommercial.exception.DonneesManquantesException;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
-import friutrodez.backendtourneecommercial.repository.mysql.UtilisateurRepository;
-import friutrodez.backendtourneecommercial.service.AuthentificationService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
+@Transactional
+@Rollback
 @SpringBootTest
-public class AuthentificationServiceTest {
+public class AuthenticationServiceTest {
 
     @Autowired
     AuthentificationService authentificationService;
 
     @Test
-    @Transactional
-    @Rollback
     void testCreationUtilisateur() {
         Utilisateur utilisateur = new Utilisateur();
         utilisateur.setMotDePasse("zaezgr");
         utilisateur.setNom("nomTest");
         utilisateur.setPrenom("prenomTest");
+        utilisateur.setEmail("Email@email.com");
 
         Utilisateur utilisateurSauvegarde = authentificationService.creerUnCompte(utilisateur);
 
         Assertions.assertNotEquals("zaezgr",utilisateurSauvegarde.getMotDePasse(),"Le mot de passe n'a pas été encrypté");
+    }
+    @Test
+    void testCreationUtilisateurErreur() {
+        Utilisateur utilisateur = new Utilisateur();
+        utilisateur.setMotDePasse("Ae@.21er");
+        utilisateur.setNom("nomTest");
+        utilisateur.setPrenom("prenomTest");
+        Assertions.assertThrows(DonneesManquantesException.class,()-> authentificationService.creerUnCompte(utilisateur));
+
+        utilisateur.setEmail("   ");
+        Assertions.assertThrows(DonneesManquantesException.class,()-> authentificationService.creerUnCompte(utilisateur));
+
+        utilisateur.setEmail("Test@te.");
+        Assertions.assertThrows(DonneesInvalidesException.class,()-> authentificationService.creerUnCompte(utilisateur));
+
     }
 
     @Test

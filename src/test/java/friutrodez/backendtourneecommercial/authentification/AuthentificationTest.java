@@ -1,6 +1,5 @@
 package friutrodez.backendtourneecommercial.authentification;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import friutrodez.backendtourneecommercial.dto.JwtToken;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
@@ -12,14 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -45,16 +42,18 @@ public class AuthentificationTest {
         testUtilisateur.setNom("testuser");
         testUtilisateur.setPrenom("testPrenom");
         testUtilisateur.setMotDePasse("password");
+        testUtilisateur.setEmail("Email1@email.com");
 
         Utilisateur testUtilisateur2 = new Utilisateur();
         testUtilisateur2.setNom("testUser2");
         testUtilisateur2.setPrenom("testPrenom2");
         testUtilisateur2.setMotDePasse("password");
+        testUtilisateur2.setEmail("Email@mail.com");
 
         utilisateurJson = objectMapper.writeValueAsString(testUtilisateur);
         utilisateurJson2 = objectMapper.writeValueAsString(testUtilisateur2);
 
-        mockMvc.perform(post("/auth/creer").with(request -> {request.setRemoteAddr("10.1.1.1"); return request;})
+        mockMvc.perform(post("/auth/creer")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(utilisateurJson))
 
@@ -65,12 +64,12 @@ public class AuthentificationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(utilisateurJson2))
                 .andExpect(status().isOk())
-                .andExpect(content().string(org.hamcrest.Matchers.notNullValue()));
+                .andExpect(content().string(org.hamcrest.Matchers.notNullValue())).andDo(print());
 
         MvcResult mvcResult = mockMvc.perform(post("/auth/authentifier")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(utilisateurJson))
-                .andExpect(status().isOk()).andReturn();
+                .andExpect(status().isOk()).andDo(print()).andReturn();
 
         tokenUtilisateur1 =  objectMapper.readValue(mvcResult.getResponse().getContentAsString(), JwtToken.class);
 

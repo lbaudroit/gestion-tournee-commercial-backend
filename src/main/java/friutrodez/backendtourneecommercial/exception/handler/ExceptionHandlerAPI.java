@@ -2,6 +2,7 @@ package friutrodez.backendtourneecommercial.exception.handler;
 
 import friutrodez.backendtourneecommercial.exception.AdresseInvalideException;
 import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
+import friutrodez.backendtourneecommercial.exception.DonneesManquantesException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -23,6 +24,18 @@ public class ExceptionHandlerAPI{
      */
     @ExceptionHandler(DonneesInvalidesException.class)
     public ResponseEntity<String> gererDonneesInvalidesException(DonneesInvalidesException exception) {
+        exception.printStackTrace();
+        return ResponseEntity.badRequest().body(exception.getMessage());
+    }
+
+    /**
+     * Gère les exceptions (Donnees Manquantes Exception)
+     * @param exception l'exception d'origine
+     * @return une réponse
+     */
+    @ExceptionHandler(DonneesManquantesException.class)
+    public ResponseEntity<String> gererDonneesManquantesException(DonneesManquantesException exception) {
+        exception.printStackTrace();
         return ResponseEntity.badRequest().body(exception.getMessage());
     }
 

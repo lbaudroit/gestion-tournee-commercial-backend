@@ -3,6 +3,7 @@ package friutrodez.backendtourneecommercial.repository.mongodb;
 import friutrodez.backendtourneecommercial.model.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import friutrodez.backendtourneecommercial.service.SequenceGeneratorService;
@@ -37,9 +38,18 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
         super(mongoTemplate, Client.class);
     }
 
-    /*public List<> getAllEntities(T entity) {
-        return  mongoTemplate.find(Query.query().addCriteria(where("id_utilisateur")))
-    }*/
+    public List<Client> getAllClients(String idUser) {
+        Query query = new Query().addCriteria(where("idUtilisateur").is(idUser));
+        return  mongoTemplate.find(query,collection);
+    }
+
+    public Client getOneClient(String idClient,String idUser) {
+        Query query = new Query().addCriteria(where("idUtilisateur").is(idUser))
+                .addCriteria(where("_id").is(idClient));
+        System.out.println(query.toString());
+        return  mongoTemplate.findOne(query,collection);
+    }
+
     @Autowired
     private SequenceGeneratorService sequenceGeneratorService;
 

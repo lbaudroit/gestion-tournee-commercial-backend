@@ -1,6 +1,7 @@
 package friutrodez.backendtourneecommercial.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import friutrodez.backendtourneecommercial.helper.ConfigurationSecurityContextTest;
 import friutrodez.backendtourneecommercial.model.Client;
 import friutrodez.backendtourneecommercial.model.Coordonnees;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
@@ -15,7 +16,6 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -36,6 +36,13 @@ public class ClientControlleurTest {
 
     Client client;
 
+    @Autowired
+    ConfigurationSecurityContextTest configurationSecurityContextTest;
+    @BeforeEach
+    void setupSecurityContext() {
+        configurationSecurityContextTest.setSecurityContext();
+    }
+
     @BeforeAll
     void Setup() throws Exception {
         client = new Client();
@@ -55,7 +62,8 @@ public class ClientControlleurTest {
                 .andExpect(status().isOk());
         Client clientTrouve = clientMongoTemplate.findOne("nomEntreprise","entrepriseTest");
         Assertions.assertEquals(client,clientTrouve,"Le client n'a pas été modifié");
-        client.set_id(clientTrouve.get_id());
+        Assertions.assertEquals(clientTrouve.getIdUtilisateur(),""+configurationSecurityContextTest.getUtilisateur().getId());
+        client = clientTrouve;
     }
 
     @Order(4)
@@ -101,6 +109,7 @@ public class ClientControlleurTest {
         Client clientRecupere = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Client.class);
 
         Assertions.assertEquals(clientRecupere,client);
+
     }
 
     @Order(3)
@@ -130,8 +139,7 @@ public class ClientControlleurTest {
         clientMongoTemplate.removeOne("nomEntreprise","Test Modification");
     }
 
-
-    @Order(5)
+    @Order(6)
     @Test
     void clientSupprimerTest() throws Exception {
         clientMongoTemplate.save(client);
@@ -144,6 +152,15 @@ public class ClientControlleurTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(clientSupprimer))
                 .andExpect(status().isOk()).andReturn();
+    }
+
+    @Order(5)
+    @Test
+    void clientRecupererTousTest() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(get("/client/"))
+                .andExpect(status().isOk()).andReturn();
+
+
     }
 
 }
