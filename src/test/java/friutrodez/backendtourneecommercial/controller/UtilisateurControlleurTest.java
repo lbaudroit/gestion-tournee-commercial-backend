@@ -42,27 +42,6 @@ public class UtilisateurControlleurTest {
 
     Utilisateur testUser;
 
-    @BeforeAll
-    void Setup() throws Exception {
-        /*testUser = Utilisateur.builder().nom("testUser").prenom("testPrenom")
-                .motDePasse("password").email("Email@mail.com").build();
-
-        String utilisateurJson = objectMapper.writeValueAsString(testUser);
-
-        MvcResult mvcResultat =  mockMvc.perform(post("/auth/creer")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(utilisateurJson))
-                .andExpect(status().isOk())
-                .andExpect(content().string(org.hamcrest.Matchers.notNullValue())).andReturn();
-
-        Utilisateur utilisateurCree = objectMapper
-                .readValue(mvcResultat.getResponse().getContentAsString(), Utilisateur.class);
-
-        testUser = utilisateurCree;
-        Assertions.assertNotNull(utilisateurCree.getId());*/
-        //configurationSecurityContextTest.setSecurityContextAvecUtilisateur(testUser);
-
-    }
     @BeforeEach
     void setSecurity() {
         configurationSecurityContextTest.setSecurityContext();
