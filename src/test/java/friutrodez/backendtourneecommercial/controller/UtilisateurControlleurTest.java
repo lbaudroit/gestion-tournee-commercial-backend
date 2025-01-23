@@ -1,21 +1,22 @@
 package friutrodez.backendtourneecommercial.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import friutrodez.backendtourneecommercial.helper.ConfigurationSecurityContextTest;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.RequestBuilder;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -27,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @Rollback
 @ActiveProfiles("test")
-
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class UtilisateurControlleurTest {
 
     @Autowired
@@ -36,35 +37,54 @@ public class UtilisateurControlleurTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Test
-    void modificationUtilisateurEtSuppresionTest()  throws Exception{
-        Utilisateur testUser = new Utilisateur();
-        testUser.setNom("testuser");
-        testUser.setPrenom("testPrenom");
-        testUser.setMotDePasse("password");
+    @Autowired
+    ConfigurationSecurityContextTest configurationSecurityContextTest;
+
+    Utilisateur testUser;
+
+    @BeforeAll
+    void Setup() throws Exception {
+        /*testUser = Utilisateur.builder().nom("testUser").prenom("testPrenom")
+                .motDePasse("password").email("Email@mail.com").build();
 
         String utilisateurJson = objectMapper.writeValueAsString(testUser);
 
-        mockMvc.perform(post("/auth/creer")
+        MvcResult mvcResultat =  mockMvc.perform(post("/auth/creer")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(utilisateurJson))
                 .andExpect(status().isOk())
-                .andExpect(content().string(org.hamcrest.Matchers.notNullValue()));
+                .andExpect(content().string(org.hamcrest.Matchers.notNullValue())).andReturn();
 
+        Utilisateur utilisateurCree = objectMapper
+                .readValue(mvcResultat.getResponse().getContentAsString(), Utilisateur.class);
+
+        testUser = utilisateurCree;
+        Assertions.assertNotNull(utilisateurCree.getId());*/
+        //configurationSecurityContextTest.setSecurityContextAvecUtilisateur(testUser);
+
+    }
+    @BeforeEach
+    void setSecurity() {
+        configurationSecurityContextTest.setSecurityContext();
+        testUser = configurationSecurityContextTest.getUtilisateur();
+        Assertions.assertNotNull(SecurityContextHolder.getContext().getAuthentication());
+        Assertions.assertEquals("Nicol", ((Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getNom());
+    }
+
+    @Test
+    void modificationUtilisateurEtSuppresionTest()  throws Exception{
         testUser.setNom("modificationTestUser");
 
-        utilisateurJson = objectMapper.writeValueAsString(testUser);
+        String utilisateurJson = objectMapper.writeValueAsString(testUser);
 
-        MvcResult mvcResultat = mockMvc.perform(post("/utilisateur/modifier")
+         MvcResult mvcResultat = mockMvc.perform(post("/utilisateur/modifier")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(utilisateurJson))
                 .andExpect(status().isOk()).andReturn();
-        
 
        Utilisateur utilisateurModifie = objectMapper.readValue(mvcResultat.getResponse().getContentAsString(), Utilisateur.class);
 
         Assertions.assertEquals("modificationTestUser",utilisateurModifie.getNom());
-        Assertions.assertEquals("testPrenom",utilisateurModifie.getPrenom());
 
         mockMvc.perform(delete("/utilisateur/supprimer")
                         .contentType(MediaType.APPLICATION_JSON)

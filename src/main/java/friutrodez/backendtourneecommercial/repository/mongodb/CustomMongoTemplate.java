@@ -35,7 +35,7 @@ public abstract class CustomMongoTemplate<T>  {
     /**
      * La collection donnée par la classe fille
      */
-    private final Class<T> collection;
+    protected final Class<T> collection;
 
     /**
      * Constructeur de la classe CustomMongoTemplate.

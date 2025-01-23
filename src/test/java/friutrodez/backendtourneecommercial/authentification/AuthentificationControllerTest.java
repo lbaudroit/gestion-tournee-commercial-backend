@@ -56,7 +56,7 @@ public class AuthentificationControllerTest {
         testUser.setNom("testuser");
         testUser.setPrenom("testPrenom");
         testUser.setMotDePasse("password");
-
+        testUser.setEmail("Email@mail2.com");
         String utilisateurJson = objectMapper.writeValueAsString(testUser);
 
         mockMvc.perform(post("/auth/creer")
@@ -72,6 +72,7 @@ public class AuthentificationControllerTest {
         Utilisateur testUser = new Utilisateur();
         testUser.setNom("testuser");
         testUser.setPrenom("testPrenom");
+        testUser.setEmail("Email@mail2.com");
         testUser.setMotDePasse("password");
 
         String utilisateurJson = objectMapper.writeValueAsString(testUser);
@@ -81,7 +82,7 @@ public class AuthentificationControllerTest {
         JwtToken jwtToken = new JwtToken(expectedToken,1800000);
 
         UserDetails userDetailsMock = mock(UserDetails.class);
-        when(userDetailsMock.getUsername()).thenReturn("testuser");
+        when(userDetailsMock.getUsername()).thenReturn("Email@mail2.com");
         when(userDetailsMock.getPassword()).thenReturn("password");
 
         when(jwtService.genererToken(any(UserDetails.class)))
@@ -93,7 +94,7 @@ public class AuthentificationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.notNullValue()));
 
-        DonneesAuthentification donneesAuthentification = new DonneesAuthentification("testuser","password");
+        DonneesAuthentification donneesAuthentification = new DonneesAuthentification("Email@mail2.com","password");
 
          mockMvc.perform(post("/auth/authentifier")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -102,7 +103,7 @@ public class AuthentificationControllerTest {
                 .andExpect(jsonPath("$.token").value(expectedToken))
                 .andExpect(content().string(org.hamcrest.Matchers.notNullValue())).andReturn();
 
-         when(jwtService.extraireNomUtilisateur(any(String.class))).thenReturn("testuser");
+         when(jwtService.extraireEmail(any(String.class))).thenReturn("Email@mail2.com");
          when(jwtService.tokenEstValide(any(String.class),any(UserDetails.class))).thenReturn(true);
 
          mockMvc.perform(get("/auth")
