@@ -1,9 +1,13 @@
 package friutrodez.backendtourneecommercial.exception.handler;
 
+import friutrodez.backendtourneecommercial.exception.AdresseInvalideException;
 import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.sql.SQLIntegrityConstraintViolationException;
 
 /**
  * Gère les exceptions venant de l'API pour envoyer une réponse personnalisée au client
@@ -19,6 +23,27 @@ public class ExceptionHandlerAPI{
      */
     @ExceptionHandler(DonneesInvalidesException.class)
     public ResponseEntity<String> gererDonneesInvalidesException(DonneesInvalidesException exception) {
+        return ResponseEntity.badRequest().body(exception.getMessage());
+    }
+
+    /**
+     * Gère l'exception d'erreur de Contrainte non respectée dans le modèle.
+     * @param exception l'exception d'origine
+     * @return une réponse
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<String> gererContrainteNonRespect
+    (ConstraintViolationException exception) {
+        return ResponseEntity.badRequest().body(exception.getConstraintViolations().toString());
+    }
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity<String> gererContrainteNonRespect
+    (SQLIntegrityConstraintViolationException exception) {
+        return ResponseEntity.badRequest().body(exception.toString());
+    }
+    @ExceptionHandler(AdresseInvalideException.class)
+    public ResponseEntity<String> gererAdresseInvalideException
+    (AdresseInvalideException exception) {
         return ResponseEntity.badRequest().body(exception.getMessage());
     }
 

@@ -1,6 +1,7 @@
 package friutrodez.backendtourneecommercial.service;
 
 import friutrodez.backendtourneecommercial.dto.DonneesAuthentification;
+import friutrodez.backendtourneecommercial.exception.AdresseInvalideException;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mysql.UtilisateurRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ public class AuthentificationService {
 
     private final PasswordEncoder encodeurDeMotDePasse;
     private final AuthenticationManager authenticationManager;
+    private final AdresseToolsService addressToolsService = new AdresseToolsService();
 
     @Autowired
     public AuthentificationService(UtilisateurRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
@@ -47,6 +49,14 @@ public class AuthentificationService {
      */
     public Utilisateur creerUnCompte(Utilisateur utilisateur) {
         utilisateur.setMotDePasse(encodeurDeMotDePasse.encode(utilisateur.getMotDePasse()));
-        return utilisateurRepository.save(utilisateur);
+        if (!addressToolsService.validateAdresse(utilisateur.getLibelleAdresse(), utilisateur.getCodePostal(), utilisateur.getVille())) {
+            throw new AdresseInvalideException("Adresse invalide");
+        }
+        else {
+            Double[] coordinates = addressToolsService.geolocateAdresse(utilisateur.getLibelleAdresse(), utilisateur.getCodePostal(), utilisateur.getVille());
+            utilisateur.setLatitude(coordinates[1]);
+            utilisateur.setLongitude(coordinates[0]);
+            return utilisateurRepository.save(utilisateur);
+        }
     }
 }
