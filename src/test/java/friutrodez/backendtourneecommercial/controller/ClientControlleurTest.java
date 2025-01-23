@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ActiveProfiles("test")
+@ActiveProfiles("production")
 public class ClientControlleurTest {
 
     @Autowired
@@ -36,6 +36,7 @@ public class ClientControlleurTest {
 
     Client client;
 
+    String headerToken;
     @Autowired
     ConfigurationSecurityContextTest configurationSecurityContextTest;
     @BeforeEach
@@ -49,7 +50,8 @@ public class ClientControlleurTest {
         client.setNomEntreprise("entrepriseTest");
         client.setIdUtilisateur("1");
         client.setCoordonnees(new Coordonnees(20, 20));
-
+        headerToken = configurationSecurityContextTest.getTokenForSecurity(mockMvc);
+        configurationSecurityContextTest.setSecurityContext();
     }
 
     @Order(1)
@@ -58,7 +60,7 @@ public class ClientControlleurTest {
         String jsonClient= objectMapper.writeValueAsString(client);
         mockMvc.perform(put("/client/creer")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonClient))
+                        .content(jsonClient).header("Authorization", "Bearer " + headerToken))
                 .andExpect(status().isOk());
         Client clientTrouve = clientMongoTemplate.findOne("nomEntreprise","entrepriseTest");
         Assertions.assertEquals(client,clientTrouve,"Le client n'a pas été modifié");

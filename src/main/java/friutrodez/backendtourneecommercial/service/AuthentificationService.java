@@ -54,11 +54,19 @@ public class AuthentificationService {
      * @return l'utilisateur avec le mot de passe encrypté
      */
     public Utilisateur creerUnCompte(Utilisateur utilisateur) throws DonneesInvalidesException,DonneesManquantesException{
+        if(utilisateur.getMotDePasse() == null || utilisateur.getMotDePasse().trim().isBlank()) {
+            throw new DonneesManquantesException("Le mot de passe est vide.");
+        }
+
+        if(!utilisateur.getMotDePasse().matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=_]).+$")) {
+            throw new DonneesInvalidesException("Le mot de passe est invalide");
+        }
+
         if(utilisateur.getEmail() == null || utilisateur.getEmail().trim().isEmpty()) {
-            throw new DonneesManquantesException("L'utilisateur n'a pas d'email défini.");
+            throw new DonneesManquantesException("L'email est vide.");
         }
         if(!utilisateur.getEmail().matches("^[^@]+@[^@]+\\.[^@]+$")) {
-            throw new DonneesInvalidesException("L'email de l'utilisateur n'a pas le bon format.");
+            throw new DonneesInvalidesException("L'email n'a pas le bon format.");
         }
         utilisateur.setMotDePasse(encodeurDeMotDePasse.encode(utilisateur.getMotDePasse()));
         if (!addressToolsService.validateAdresse(utilisateur.getLibelleAdresse(), utilisateur.getCodePostal(), utilisateur.getVille())) {

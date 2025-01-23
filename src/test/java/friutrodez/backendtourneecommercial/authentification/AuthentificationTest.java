@@ -41,14 +41,22 @@ public class AuthentificationTest {
         Utilisateur testUtilisateur = new Utilisateur();
         testUtilisateur.setNom("testuser");
         testUtilisateur.setPrenom("testPrenom");
-        testUtilisateur.setMotDePasse("password");
+        testUtilisateur.setMotDePasse("A232Eez@d");
         testUtilisateur.setEmail("Email1@email.com");
+        testUtilisateur.setLibelleAdresse("50 Avenue de Bordeaux");
+
+        testUtilisateur.setCodePostal("12000");
+        testUtilisateur.setVille("Rodez");
 
         Utilisateur testUtilisateur2 = new Utilisateur();
         testUtilisateur2.setNom("testUser2");
         testUtilisateur2.setPrenom("testPrenom2");
-        testUtilisateur2.setMotDePasse("password");
+        testUtilisateur2.setMotDePasse("A232Eez@d ");
         testUtilisateur2.setEmail("Email@mail.com");
+        testUtilisateur2.setLibelleAdresse("50 Avenue de Bordeaux");
+
+        testUtilisateur2.setCodePostal("12000");
+        testUtilisateur2.setVille("Rodez");
 
         utilisateurJson = objectMapper.writeValueAsString(testUtilisateur);
         utilisateurJson2 = objectMapper.writeValueAsString(testUtilisateur2);

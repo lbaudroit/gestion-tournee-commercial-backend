@@ -55,8 +55,13 @@ public class AuthentificationControllerTest {
         Utilisateur testUser = new Utilisateur();
         testUser.setNom("testuser");
         testUser.setPrenom("testPrenom");
-        testUser.setMotDePasse("password");
+        testUser.setMotDePasse("pAss@dz2");
         testUser.setEmail("Email@mail2.com");
+        testUser.setLibelleAdresse("50 Avenue de Bordeaux");
+
+        testUser.setCodePostal("12000");
+        testUser.setVille("Rodez");
+
         String utilisateurJson = objectMapper.writeValueAsString(testUser);
 
         mockMvc.perform(post("/auth/creer")
@@ -73,8 +78,11 @@ public class AuthentificationControllerTest {
         testUser.setNom("testuser");
         testUser.setPrenom("testPrenom");
         testUser.setEmail("Email@mail2.com");
-        testUser.setMotDePasse("password");
+        testUser.setMotDePasse("pA3@.AZet4");
+        testUser.setLibelleAdresse("50 Avenue de Bordeaux");
 
+        testUser.setCodePostal("12000");
+        testUser.setVille("Rodez");
         String utilisateurJson = objectMapper.writeValueAsString(testUser);
 
         String expectedToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
@@ -94,7 +102,7 @@ public class AuthentificationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.notNullValue()));
 
-        DonneesAuthentification donneesAuthentification = new DonneesAuthentification("Email@mail2.com","password");
+        DonneesAuthentification donneesAuthentification = new DonneesAuthentification("Email@mail2.com","pA3@.AZet4");
 
          mockMvc.perform(post("/auth/authentifier")
                 .contentType(MediaType.APPLICATION_JSON)

@@ -90,7 +90,7 @@ public class InitialisationDonnees {
                 .nom("Nicol")
                 .prenom("Benjamin")
                     .email("be@ni.fr")
-                .motDePasse(passwordEncoder.encode("Benjamin_123"))
+                .motDePasse(passwordEncoder.encode("Benjamin.123"))
                 .libelleAdresse("6 Impasse du Suc")
                 .codePostal("81490")
                 .ville("Boissezon")
