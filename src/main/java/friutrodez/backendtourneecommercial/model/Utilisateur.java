@@ -1,9 +1,7 @@
 package friutrodez.backendtourneecommercial.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,6 +27,9 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@Table(
+        uniqueConstraints = @UniqueConstraint(name = "unique_email", columnNames = "email")
+)
 public class Utilisateur implements UserDetails {
 
     public Utilisateur(String testNom, String testPrenom, String password) {
@@ -46,15 +47,10 @@ public class Utilisateur implements UserDetails {
     private Long id;
 
     /**
-     * Adresse email de l'utilisateur
-     * Ne peut pas être nul
-     */
-    @Column(nullable = false)
-    private String email;
-    /**
      * Nom de l'utilisateur.
      * Ne peut pas être nul.
      */
+    @NotBlank(message = "Le nom ne peut pas être vide")
     @Column(nullable = false)
     private String nom;
 
@@ -62,44 +58,57 @@ public class Utilisateur implements UserDetails {
      * Prénom de l'utilisateur.
      * Ne peut pas être nul.
      */
+    @NotBlank(message = "Le prénom ne peut pas être vide")
     @Column(nullable = false)
     private String prenom;
 
     /**
-     * Mot de passe de l'utilisateur.
+     * Adresse email de l'utilisateur
+     * Ne peut pas être nul
      */
-    private String motDePasse;
+    @Email(message = "L'email doit être valide")
+    @NotBlank(message = "L'email ne peut pas être vide")
+    @Column(nullable = false)
+    private String email;
 
     /**
-     * Numéro de téléphone de l'utilisateur.
+     * Mot de passe de l'utilisateur.
      */
-    private String telephone;
+    @NotBlank(message = "Le mot de passe ne peut pas être vide")
+    @Column(nullable = false)
+    private String motDePasse;
 
     /**
      * Libellé de l'adresse de l'utilisateur.
      */
+    @NotBlank(message = "Le libellé de l'adresse ne peut pas être vide")
+    @Column(nullable = false)
     private String libelleAdresse;
 
     /**
      * Code postal de l'utilisateur.
      */
+    @NotBlank(message = "Le code postal ne peut pas être vide")
+    @Pattern(regexp = "^[0-9]{5}$", message = "Le code postal doit être un code postal français valide")
+    @Column(nullable = false)
     private String codePostal;
 
     /**
      * Ville de l'utilisateur.
      */
+    @NotBlank(message = "La ville ne peut pas être vide")
+    @Column(nullable = false)
     private String ville;
 
     /**
      * Longitude des coordonnées de l'utilisateur.
-     * TODO créer un record(Coordonnees) avec les coordonnées
      */
-    private Float longitude;
+    private double longitude;
 
     /**
      * Latitude des coordonnées de l'utilisateur.
      */
-    private Float latitude;
+    private double latitude;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
