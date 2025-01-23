@@ -89,11 +89,3 @@ public class AdresseToolsService {
         return null;
     }
 }
-
-class Main {
-    public static void main(String[] args) {
-        AdresseToolsService adresseToolsService = new AdresseToolsService();
-        System.out.println(adresseToolsService.validateAdresse("1 rue de la paix", "75002", "Paris"));
-        System.out.println(adresseToolsService.geolocateAdresse("1 rue de la paix", "75002", "Paris"));
-    }
-}
