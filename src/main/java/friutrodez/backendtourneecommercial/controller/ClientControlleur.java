@@ -26,7 +26,7 @@ public class ClientControlleur {
     public ResponseEntity<Client> creerClient(@RequestBody Client client) {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        client.setIdUtilisateur(""+utilisateur.getId());
+        client.setIdUtilisateur(String.valueOf(utilisateur.getId()));
         clientMongoTemplate.save(client);
         return ResponseEntity.ok(client);
     }
@@ -42,7 +42,7 @@ public class ClientControlleur {
     public ResponseEntity<Client> getUnClient(@RequestParam(name="id") String id) {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return ResponseEntity.ok(clientMongoTemplate.getOneClient(id,""+utilisateur.getId()));
+        return ResponseEntity.ok(clientMongoTemplate.getOneClient(id, String.valueOf(utilisateur.getId())));
     }
 
 
@@ -52,7 +52,7 @@ public class ClientControlleur {
 
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        client.setIdUtilisateur(""+utilisateur.getId());
+        client.setIdUtilisateur(String.valueOf(utilisateur.getId()));
         DeleteResult deleteResult = clientMongoTemplate.remove(client);
         if(!deleteResult.wasAcknowledged()) {
             return ResponseEntity.badRequest().body("Le client n'a pas été supprimé");
@@ -64,7 +64,7 @@ public class ClientControlleur {
     public ResponseEntity<String> modifierClient(@RequestParam(name="id") String id, @RequestBody Client modifications) {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        modifications.setIdUtilisateur(""+utilisateur.getId());
+        modifications.setIdUtilisateur(String.valueOf(utilisateur.getId()));
 
         modifications.set_id(id);
         UpdateResult updateResult = clientMongoTemplate.modifier(modifications,id);
