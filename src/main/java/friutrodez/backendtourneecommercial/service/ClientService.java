@@ -1,6 +1,7 @@
 package friutrodez.backendtourneecommercial.service;
 
 import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
+import friutrodez.backendtourneecommercial.exception.DonneesManquantesException;
 import friutrodez.backendtourneecommercial.model.Adresse;
 import friutrodez.backendtourneecommercial.model.Client;
 import friutrodez.backendtourneecommercial.model.Coordonnees;
@@ -33,7 +34,14 @@ public class ClientService {
         Utilisateur utilisateur = (Utilisateur)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         clientInformations.setIdUtilisateur(String.valueOf(utilisateur.getId()));
+        if(utilisateur.getNom() == null || utilisateur.getNom().trim().isBlank()) {
+            throw new DonneesManquantesException("Le client n'a pas de nom");
+
+        }
         Adresse adresse = clientInformations.getAdresse();
+        if(adresse == null) {
+            throw new DonneesManquantesException("Le client n'a pas d'email");
+        }
         if(!addressToolsService.validateAdresse(adresse.getLibelle(),adresse.getCodePostal(),adresse.getVille())) {
             throw new DonneesInvalidesException("L'adresse du client est invalide.");
         }

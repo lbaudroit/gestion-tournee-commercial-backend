@@ -2,6 +2,7 @@ package friutrodez.backendtourneecommercial.helper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import friutrodez.backendtourneecommercial.dto.DonneesAuthentification;
 import friutrodez.backendtourneecommercial.dto.JwtToken;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mysql.UtilisateurRepository;
@@ -48,10 +49,27 @@ public class ConfigurationSecurityContextTest {
 
     public String getTokenForSecurity(MockMvc mockMvc) throws Exception {
         if(toMock==null) {
-            toMock = utilisateurRepository.findByNom("Nicol");
+            Utilisateur utilisateur4 = Utilisateur.builder()
+                    .nom("TestNomConfig")
+                    .prenom("TestPrenom")
+                    .email("te@no.fr")
+                    .motDePasse("Benjamin.123@d")
+                    .libelleAdresse("6 Impasse du Suc")
+                    .codePostal("81490")
+                    .ville("Boissezon")
+                    .latitude(43.5775202)
+                    .longitude(2.3694482)
+                    .build();
+            toMock = utilisateur4;
+            String utilisateurJson = objectMapper.writeValueAsString(toMock);
+
+             mockMvc.perform(post("/auth/creer").contentType(MediaType.APPLICATION_JSON).content(utilisateurJson)).andExpect(status().isOk()).andReturn();
+             toMock = utilisateurRepository.findByNom("TestNomConfig");
         }
         if(token == null) {
-            String utilisateurJson = objectMapper.writeValueAsString(toMock);
+            DonneesAuthentification donneesAuthentification = new DonneesAuthentification(toMock.getEmail(),"Benjamin.123@d");
+            String utilisateurJson = objectMapper.writeValueAsString(donneesAuthentification);
+
 
             //FIXME Une erreur est envoyée disant que le mot de passe entre l'utilisateur est celui dans la bd n'est pas le meme
             MvcResult resultat= mockMvc.perform(post("/auth/authentifier").contentType(MediaType.APPLICATION_JSON).content(utilisateurJson)).andExpect(status().isOk()).andReturn();

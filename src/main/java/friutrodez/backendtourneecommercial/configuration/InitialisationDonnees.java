@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
@@ -27,6 +30,8 @@ import java.util.List;
 @Configuration
 public class InitialisationDonnees {
 
+    @Autowired
+    Environment environment;
     @Autowired
     private UtilisateurRepository utilisateurRepository;
 
@@ -52,6 +57,7 @@ public class InitialisationDonnees {
     @Bean
     public CommandLineRunner init() {
         return args -> {
+
             // Initialisation des utilisateurs
             Utilisateur utilisateur1 = Utilisateur.builder()
                 .nom("Cluzel")
@@ -99,6 +105,20 @@ public class InitialisationDonnees {
                 .build();
             utilisateurRepository.saveAll(List.of(utilisateur1, utilisateur2, utilisateur3, utilisateur4));
 
+            String[] activeProfiles = environment.getActiveProfiles();
+            for(String profile : activeProfiles) {
+                if(profile.equals("Test")) {
+
+
+
+                    var user = new UsernamePasswordAuthenticationToken(
+                            utilisateur4.getUsername(), null, utilisateur4.getAuthorities()
+                    );
+
+                    // Ajoute l'utilisateur dans le contexte de sécurité
+                    SecurityContextHolder.getContext().setAuthentication(user);
+                }
+            }
             // Initialisation des itinéraires
             Itineraire itineraire1 = Itineraire.builder()
                 .utilisateur(utilisateur1)
