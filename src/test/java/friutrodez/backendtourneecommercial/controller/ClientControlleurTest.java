@@ -56,6 +56,7 @@ public class ClientControlleurTest {
     @Test
     void creationClientTest() throws Exception {
         String jsonClient= objectMapper.writeValueAsString(client);
+        System.out.println(jsonClient);
         mockMvc.perform(put("/client/creer")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonClient))

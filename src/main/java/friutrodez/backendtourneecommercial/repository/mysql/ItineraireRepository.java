@@ -1,8 +1,13 @@
 package friutrodez.backendtourneecommercial.repository.mysql;
 
 import friutrodez.backendtourneecommercial.model.Itineraire;
+import friutrodez.backendtourneecommercial.model.Utilisateur;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * Interface de repository pour la gestion des entités Itineraire.
@@ -18,4 +23,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ItineraireRepository extends JpaRepository<Itineraire, Long> {
 
+    List<Itineraire> getItinerairesByUtilisateur(Utilisateur utilisateur, Pageable pageable);
+
+    long countItineraireByUtilisateur(Utilisateur utilisateur);
 }
