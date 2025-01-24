@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
+
 /**
  * Classe représentant une adresse.
  * Cette classe contient les informations de base d'une adresse telles que le libellé, le code postal et la ville.
@@ -35,4 +37,15 @@ public class Adresse {
      * La ville de l'adresse.
      */
     private String ville;
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Adresse adresse) {
+            return libelle.equals(adresse.getLibelle())
+                    && codePostal.equals(adresse.getCodePostal())
+                    && ville.equals(adresse.getVille());
+
+        }
+        return false;
+    }
 }

@@ -66,13 +66,8 @@ public class ClientControlleur {
     public ResponseEntity<String> modifierClient(@RequestParam(name="id") String id, @RequestBody Client modifications) {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        modifications.setIdUtilisateur(String.valueOf(utilisateur.getId()));
+        clientService.modifierUnClient(id,modifications,String.valueOf(utilisateur.getId()));
 
-        modifications.set_id(id);
-        UpdateResult updateResult = clientMongoTemplate.modifier(modifications,id);
-        if(!updateResult.wasAcknowledged()) {
-            return ResponseEntity.badRequest().body("Le client avec l'id " + id + " n'a pas été modifié." );
-        }
         return ResponseEntity.ok().body("Le client a été modifié.");
     }
 }

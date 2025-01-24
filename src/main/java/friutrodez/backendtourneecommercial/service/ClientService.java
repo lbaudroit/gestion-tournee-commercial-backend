@@ -1,5 +1,6 @@
 package friutrodez.backendtourneecommercial.service;
 
+import com.mongodb.client.result.UpdateResult;
 import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
 import friutrodez.backendtourneecommercial.exception.DonneesManquantesException;
 import friutrodez.backendtourneecommercial.model.Adresse;
@@ -51,5 +52,35 @@ public class ClientService {
 
         clientMongoTemplate.save(clientInformations);
         return clientInformations;
+    }
+
+    public void modifierUnClient(String idClient,Client modifications,String idUser) {
+        Adresse adresse = modifications.getAdresse();
+        if(adresse == null) {
+            throw new DonneesManquantesException("Le client n'a pas d'email");
+        }
+
+        Client baseClient = clientMongoTemplate.getOneClient(idClient,idUser);
+
+        if(!baseClient.getAdresse().equals(modifications.getAdresse())) {
+            if(!addressToolsService.validateAdresse(adresse.getLibelle(),adresse.getCodePostal(),adresse.getVille())) {
+                throw new DonneesInvalidesException("L'adresse du client est invalide.");
+            }
+        }
+
+        baseClient.setAdresse(modifications.getAdresse());
+        Adresse adresseBase = baseClient.getAdresse();
+        Double[] coordinates = addressToolsService.geolocateAdresse(adresseBase.getLibelle(),
+                adresseBase.getCodePostal(), adresseBase.getVille());
+        Coordonnees coordonnees = new Coordonnees(coordinates[1],coordinates[0]);
+        baseClient.setCoordonnees(coordonnees);
+
+        baseClient.setNomEntreprise(modifications.getNomEntreprise());
+        baseClient.setDescriptif(modifications.getDescriptif());
+        baseClient.setContact(modifications.getContact());
+        baseClient.setClientEffectif(modifications.isClientEffectif());
+
+        clientMongoTemplate.save(baseClient);
+
     }
 }
