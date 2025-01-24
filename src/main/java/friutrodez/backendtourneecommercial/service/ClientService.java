@@ -30,11 +30,10 @@ public class ClientService {
      * Des vérifications sont faits au préalables
      * @return le client créé
      */
-    public Client creerUnClient(Client clientInformations) {
-        Utilisateur utilisateur = (Utilisateur)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public Client creerUnClient(Client clientInformations,String idUser) {
 
-        clientInformations.setIdUtilisateur(String.valueOf(utilisateur.getId()));
-        if(utilisateur.getNom() == null || utilisateur.getNom().trim().isBlank()) {
+        clientInformations.setIdUtilisateur(idUser);
+        if(clientInformations.getNomEntreprise() == null || clientInformations.getNomEntreprise().trim().isBlank()) {
             throw new DonneesManquantesException("Le client n'a pas de nom");
 
         }

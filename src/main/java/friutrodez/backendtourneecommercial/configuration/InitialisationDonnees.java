@@ -105,20 +105,6 @@ public class InitialisationDonnees {
                 .build();
             utilisateurRepository.saveAll(List.of(utilisateur1, utilisateur2, utilisateur3, utilisateur4));
 
-            String[] activeProfiles = environment.getActiveProfiles();
-            for(String profile : activeProfiles) {
-                if(profile.equals("Test")) {
-
-
-
-                    var user = new UsernamePasswordAuthenticationToken(
-                            utilisateur4.getUsername(), null, utilisateur4.getAuthorities()
-                    );
-
-                    // Ajoute l'utilisateur dans le contexte de sécurité
-                    SecurityContextHolder.getContext().setAuthentication(user);
-                }
-            }
             // Initialisation des itinéraires
             Itineraire itineraire1 = Itineraire.builder()
                 .utilisateur(utilisateur1)

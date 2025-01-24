@@ -32,7 +32,9 @@ public class ClientControlleur {
 
     @PutMapping(path = "creer")
     public ResponseEntity<Client> creerClient(@RequestBody Client client) {
-        return ResponseEntity.ok(clientService.creerUnClient(client));
+        Utilisateur utilisateur = (Utilisateur)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return ResponseEntity.ok(clientService.creerUnClient(client,String.valueOf(utilisateur.getId())));
     }
 
     @GetMapping

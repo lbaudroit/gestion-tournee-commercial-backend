@@ -20,6 +20,7 @@ public class TestSecurityConfiguration {
 
     @Bean
     protected SecurityFilterChain testConfiguration(HttpSecurity http) throws Exception {
+        //TODO add default authenticated user
         return http.csrf(customize -> customize.disable())
                 .authorizeHttpRequests(customer -> customer.anyRequest().authenticated()).build();
     }
