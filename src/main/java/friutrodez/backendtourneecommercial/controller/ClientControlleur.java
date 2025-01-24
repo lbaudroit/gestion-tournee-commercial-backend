@@ -5,30 +5,34 @@ import com.mongodb.client.result.UpdateResult;
 import friutrodez.backendtourneecommercial.model.Client;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
+import friutrodez.backendtourneecommercial.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
-import java.security.Security;
 import java.util.List;
 
+/**
+ * Rest controlleur de la ressource client.
+ */
 @RequestMapping(path="/client/")
 @RestController
 public class ClientControlleur {
 
+    private final ClientMongoTemplate clientMongoTemplate;
+
+    private final ClientService clientService;
+
     @Autowired
-    ClientMongoTemplate clientMongoTemplate;
+    public ClientControlleur(ClientMongoTemplate clientMongoTemplate, ClientService clientService) {
+        this.clientMongoTemplate = clientMongoTemplate;
+        this.clientService = clientService;
+    }
 
     @PutMapping(path = "creer")
     public ResponseEntity<Client> creerClient(@RequestBody Client client) {
-        Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        client.setIdUtilisateur(String.valueOf(utilisateur.getId()));
-        clientMongoTemplate.save(client);
-        return ResponseEntity.ok(client);
+        return ResponseEntity.ok(clientService.creerUnClient(client));
     }
 
     @GetMapping
@@ -45,15 +49,11 @@ public class ClientControlleur {
         return ResponseEntity.ok(clientMongoTemplate.getOneClient(id, String.valueOf(utilisateur.getId())));
     }
 
-
-
     @DeleteMapping(path = "supprimer/")
-    public ResponseEntity<String> supprimerClient(@RequestBody Client client) {
-
+    public ResponseEntity<String> supprimerClient(@RequestParam(name = "id") String id) {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        client.setIdUtilisateur(String.valueOf(utilisateur.getId()));
-        DeleteResult deleteResult = clientMongoTemplate.remove(client);
+        DeleteResult deleteResult = clientMongoTemplate.removeClientsWithId(id,String.valueOf(utilisateur.getId()));
         if(!deleteResult.wasAcknowledged()) {
             return ResponseEntity.badRequest().body("Le client n'a pas été supprimé");
         }

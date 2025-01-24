@@ -1,8 +1,15 @@
 package friutrodez.backendtourneecommercial.repository.mongodb;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.client.result.DeleteResult;
+import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
+import friutrodez.backendtourneecommercial.model.Adresse;
 import friutrodez.backendtourneecommercial.model.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -41,6 +48,39 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
     public List<Client> getAllClients(String idUser) {
         Query query = new Query().addCriteria(where("idUtilisateur").is(idUser));
         return  mongoTemplate.find(query,collection);
+    }
+
+    /**
+     * Retire de la BD, le client avec l'id et l'idUtilisateur correspondants
+     * @param idClient
+     * @param idUser
+     * @return le resultat de la suppression
+     */
+    public DeleteResult removeClientsWithId(String idClient,String idUser) {
+        Query query = new Query().addCriteria(where("idUtilisateur").is(idUser))
+                .addCriteria(where("_id").is(idClient));
+        return mongoTemplate.remove(query,collection);
+    }
+
+
+    /**
+     * Vérifie si le client existe dans la BD à partir de l'utilisateur et de son adresse
+     * @param idUser l'id de l'utilisateur
+     * @param informations l'adresse du client à vérifier
+     * @return true si le client existe false sinon
+     */
+    public boolean exists(String idUser, Adresse informations) {
+        ObjectMapper mapper = new ObjectMapper();
+        // Il est nécessaire de ne pas inclure les null sinon rien n'est trouvé
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        String adresseJson = "";
+        try {
+            adresseJson = mapper.writeValueAsString(informations);
+        } catch (JsonProcessingException ex) {
+            throw new DonneesInvalidesException("La conversion en json n'a pas fonctionnée. Veuillez vérifier les données.");
+        }
+        BasicQuery basicQuery = (BasicQuery) new BasicQuery(adresseJson).addCriteria(where("idUtilisateur").is(idUser));
+        return mongoTemplate.exists(basicQuery,collection);
     }
 
     public Client getOneClient(String idClient,String idUser) {
