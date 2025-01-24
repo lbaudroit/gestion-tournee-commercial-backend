@@ -37,13 +37,11 @@ public class ClientService {
         if(!addressToolsService.validateAdresse(adresse.getLibelle(),adresse.getCodePostal(),adresse.getVille())) {
             throw new DonneesInvalidesException("L'adresse du client est invalide.");
         }
-        if(clientMongoTemplate.exists(String.valueOf(utilisateur.getId()),adresse)) {
-            throw new DonneesInvalidesException("Le client est déja existant.");
-        } else {
-            Double[] coordinates = addressToolsService.geolocateAdresse(adresse.getLibelle(), adresse.getCodePostal(), adresse.getVille());
-            Coordonnees coordonnees = new Coordonnees(coordinates[1],coordinates[0]);
-            clientInformations.setCoordonnees(coordonnees);
-        }
+
+        Double[] coordinates = addressToolsService.geolocateAdresse(adresse.getLibelle(), adresse.getCodePostal(), adresse.getVille());
+        Coordonnees coordonnees = new Coordonnees(coordinates[1],coordinates[0]);
+        clientInformations.setCoordonnees(coordonnees);
+
         clientMongoTemplate.save(clientInformations);
         return clientInformations;
     }
