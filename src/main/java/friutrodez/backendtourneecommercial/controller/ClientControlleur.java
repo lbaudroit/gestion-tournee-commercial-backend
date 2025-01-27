@@ -44,7 +44,8 @@ public class ClientControlleur {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         // Récupérer les itinéraires
         Pageable pageable = PageRequest.of(page, 30);
-        return ResponseEntity.ok(clientMongoTemplate.getClientsByPage(utilisateur, pageable));
+       List<Client> clients= clientMongoTemplate.getClientsByPage(String.valueOf(utilisateur.getId()), pageable);
+        return ResponseEntity.ok(clients);
     }
 
     @GetMapping(path="number/")

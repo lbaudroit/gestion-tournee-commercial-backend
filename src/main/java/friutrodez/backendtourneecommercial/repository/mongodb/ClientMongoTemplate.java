@@ -57,7 +57,7 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
 
     }
 
-    public List<Client> getClientsByPage(Utilisateur idUser, Pageable page) {
+    public List<Client> getClientsByPage(String idUser, Pageable page) {
         // Création d'un objet Pageable pour définir la pagination
 
         // Ajout des critères de recherche
@@ -65,7 +65,7 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
         query.with(page); // Appliquer la pagination au Query
 
         // Récupération des clients paginés
-        return mongoTemplate.find(query, Client.class, "clientCollection");
+        return mongoTemplate.find(query, collection);
     }
     /**
      * Retire de la BD, le client avec l'id et l'idUtilisateur correspondants
