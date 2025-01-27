@@ -32,6 +32,7 @@ public class Appartient {
 
     /**
      * Position de l'élément dans l'itinéraire.
+     * Débute à 0
      */
     private int position;
 }
