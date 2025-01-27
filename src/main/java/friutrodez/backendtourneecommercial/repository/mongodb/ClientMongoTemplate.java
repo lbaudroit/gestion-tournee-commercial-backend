@@ -7,13 +7,19 @@ import com.mongodb.client.result.DeleteResult;
 import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
 import friutrodez.backendtourneecommercial.model.Adresse;
 import friutrodez.backendtourneecommercial.model.Client;
+import friutrodez.backendtourneecommercial.model.Utilisateur;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.BasicQuery;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import friutrodez.backendtourneecommercial.service.SequenceGeneratorService;
+import org.springframework.data.domain.Pageable;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 import java.util.List;
 
@@ -48,8 +54,19 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
     public List<Client> getAllClients(String idUser) {
         Query query = new Query().addCriteria(where("idUtilisateur").is(idUser));
         return  mongoTemplate.find(query,collection);
+
     }
 
+    public List<Client> getClientsByPage(Utilisateur idUser, Pageable page) {
+        // Création d'un objet Pageable pour définir la pagination
+
+        // Ajout des critères de recherche
+        Query query = new Query().addCriteria(Criteria.where("idUtilisateur").is(idUser));
+        query.with(page); // Appliquer la pagination au Query
+
+        // Récupération des clients paginés
+        return mongoTemplate.find(query, Client.class, "clientCollection");
+    }
     /**
      * Retire de la BD, le client avec l'id et l'idUtilisateur correspondants
      * @param idClient
@@ -105,5 +122,13 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
             client.set_id(sequenceGeneratorService.generateSequence(Client.SEQUENCE_NAME));
         }
         mongoTemplate.save(client);
+    }
+    public int getNumberClients(Utilisateur idUser){
+        Query query = new Query().addCriteria(where("idUtilisateur").is(idUser));
+        long totalElements = mongoTemplate.count(query, collection);
+
+        // Calcul du nombre total de pages
+        int totalPages = (int) Math.ceil((double) totalElements / 30);
+        return totalPages;
     }
 }

@@ -3,10 +3,13 @@ package friutrodez.backendtourneecommercial.controller;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import friutrodez.backendtourneecommercial.model.Client;
+import friutrodez.backendtourneecommercial.model.Itineraire;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
 import friutrodez.backendtourneecommercial.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +39,19 @@ public class ClientControlleur {
 
         return ResponseEntity.ok(clientService.creerUnClient(client,String.valueOf(utilisateur.getId())));
     }
+    @GetMapping(path = "lazy/")
+    public ResponseEntity<List<Client>> getClientLazy(@RequestParam(name="page") int page) {
+        Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        // Récupérer les itinéraires
+        Pageable pageable = PageRequest.of(page, 30);
+        return ResponseEntity.ok(clientMongoTemplate.getClientsByPage(utilisateur, pageable));
+    }
 
+    @GetMapping(path="number/")
+    public ResponseEntity<Integer> getNumberClient() {
+        Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok(clientMongoTemplate.getNumberClients(utilisateur));
+    }
     @GetMapping
     public  ResponseEntity<List<Client>> getTousClients() {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

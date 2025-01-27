@@ -63,7 +63,7 @@ public class InitialisationDonnees {
                 .nom("Cluzel")
                 .prenom("Enzo")
                     .email("en@cl.fr")
-                .motDePasse(passwordEncoder.encode("Enzo_123"))
+                    .motDePasse(passwordEncoder.encode("Enzo_123"))
                 .libelleAdresse("50 Avenue de Bordeaux")
                 .codePostal("12000")
                 .ville("Rodez")
