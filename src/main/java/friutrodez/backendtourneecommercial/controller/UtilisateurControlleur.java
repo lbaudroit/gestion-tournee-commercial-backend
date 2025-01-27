@@ -1,12 +1,19 @@
 package friutrodez.backendtourneecommercial.controller;
 
+import friutrodez.backendtourneecommercial.dto.Message;
+import friutrodez.backendtourneecommercial.dto.Parametrage;
+import friutrodez.backendtourneecommercial.exception.AdresseInvalideException;
+import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
+import friutrodez.backendtourneecommercial.exception.DonneesManquantesException;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mysql.UtilisateurRepository;
+import friutrodez.backendtourneecommercial.service.AuthentificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.tags.Param;
 
 @RequestMapping(path = "/utilisateur/")
 @RestController
@@ -14,19 +21,26 @@ public class UtilisateurControlleur {
 
     @Autowired
     UtilisateurRepository utilisateurRepository;
+    @Autowired
+    private AuthentificationService authentificationService;
 
-    @PostMapping(path = "modifier")
-    public ResponseEntity<Utilisateur> modifierUtilisateur(@RequestBody Utilisateur utilisateurModif) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    @PostMapping(path = "modifier/")
+    public ResponseEntity<Message> modifierUtilisateur(@RequestBody Parametrage parametrage) {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        utilisateurModif.setId(utilisateur.getId());
-        return ResponseEntity.ok().body(utilisateurRepository.save(utilisateurModif));
+        utilisateur.setNom(parametrage.nom());
+        utilisateur.setPrenom(parametrage.prenom());
+        utilisateur.setEmail(parametrage.email());
+        utilisateur.setLibelleAdresse(parametrage.libelleAdresse());
+        utilisateur.setCodePostal(parametrage.codePostale());
+        utilisateur.setVille(parametrage.ville());
+        authentificationService.creerUnCompte(utilisateur);
+        return ResponseEntity.ok().body(new Message("Utilisateur modifié"));
     }
 
-    @DeleteMapping(path = "supprimer")
-    public  ResponseEntity<String> supprimerUtilisateur() {
+    @GetMapping(path = "")
+    public ResponseEntity<Parametrage> recupererUtilisateur() {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        utilisateurRepository.deleteById(utilisateur.getId());
-        return ResponseEntity.ok().body("L'utilisateur a été supprimé.");
+        Parametrage parametrage = new Parametrage(utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getEmail(), utilisateur.getLibelleAdresse(), utilisateur.getCodePostal(), utilisateur.getVille());
+        return ResponseEntity.ok().body(parametrage);
     }
 }

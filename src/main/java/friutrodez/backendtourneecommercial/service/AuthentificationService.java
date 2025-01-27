@@ -71,4 +71,22 @@ public class AuthentificationService {
             return utilisateurRepository.save(utilisateur);
         }
     }
+
+    public Utilisateur modifierUnCompte(Utilisateur utilisateur) throws DonneesInvalidesException,DonneesManquantesException{
+        if(utilisateur.getEmail() == null || utilisateur.getEmail().trim().isEmpty()) {
+            throw new DonneesManquantesException("L'utilisateur n'a pas d'email défini.");
+        }
+        if(!utilisateur.getEmail().matches("^[^@]+@[^@]+\\.[^@]+$")) {
+            throw new DonneesInvalidesException("L'email de l'utilisateur n'a pas le bon format.");
+        }
+        if (!addressToolsService.validateAdresse(utilisateur.getLibelleAdresse(), utilisateur.getCodePostal(), utilisateur.getVille())) {
+            throw new AdresseInvalideException("Adresse invalide");
+        }
+        else {
+            Double[] coordinates = addressToolsService.geolocateAdresse(utilisateur.getLibelleAdresse(), utilisateur.getCodePostal(), utilisateur.getVille());
+            utilisateur.setLatitude(coordinates[1]);
+            utilisateur.setLongitude(coordinates[0]);
+            return utilisateurRepository.save(utilisateur);
+        }
+    }
 }
