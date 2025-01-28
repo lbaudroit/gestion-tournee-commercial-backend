@@ -30,9 +30,6 @@ public class UtilisateurControlleur {
         utilisateur.setNom(parametrage.nom());
         utilisateur.setPrenom(parametrage.prenom());
         utilisateur.setEmail(parametrage.email());
-        utilisateur.setLibelleAdresse(parametrage.libelleAdresse());
-        utilisateur.setCodePostal(parametrage.codePostale());
-        utilisateur.setVille(parametrage.ville());
         authentificationService.creerUnCompte(utilisateur);
         return ResponseEntity.ok().body(new Message("Utilisateur modifié"));
     }
@@ -40,7 +37,7 @@ public class UtilisateurControlleur {
     @GetMapping(path = "")
     public ResponseEntity<Parametrage> recupererUtilisateur() {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Parametrage parametrage = new Parametrage(utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getEmail(), utilisateur.getLibelleAdresse(), utilisateur.getCodePostal(), utilisateur.getVille());
+        Parametrage parametrage = new Parametrage(utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getEmail());
         return ResponseEntity.ok().body(parametrage);
     }
 }
