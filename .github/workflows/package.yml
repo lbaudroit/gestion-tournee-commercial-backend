@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build JAR and Docker Image
+    name: Build JAR
     runs-on: ubuntu-latest
 
     steps:
@@ -45,3 +45,31 @@ jobs:
         with:
           name: tournee-commercial-jar
           path: /home/runner/work/gestion-tournee-commercial-backend/gestion-tournee-commercial-backend/target/backendtourneecommercial.jar
+
+  dockerize:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Move to Docker build context
+        run: cd deployment
+
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v4.1.8
+        with:
+         name: tournee-commercial-jar
+
+      - name: Build Docker image
+        run: docker build -t tournee-commercial:0.0.1 .
+
+      - name: Save Docker image to a tar file
+        run: docker save -o tournee-commercial-0.0.1.tar tournee-commercial:0.0.1
+
+      - name: Upload Docker artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tournee-commercial-docker
+          path: tournee-commercial-0.0.1.tar
