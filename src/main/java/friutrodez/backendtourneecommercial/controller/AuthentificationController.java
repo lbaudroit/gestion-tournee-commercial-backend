@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import java.security.Principal;
+import java.util.Map;
 
 
 /**
@@ -48,12 +49,12 @@ public class AuthentificationController {
 
 
     @PostMapping(path = "/creer")
-    public ResponseEntity CreerUnCompte(@RequestBody Utilisateur utilisateur) {
+    public ResponseEntity<Map<String,String>> CreerUnCompte(@RequestBody Utilisateur utilisateur) {
         Utilisateur utilisateurCreer =  authentificationService.creerUnCompte(utilisateur);
         if (utilisateurCreer == null) {
-            return ResponseEntity.badRequest().body("Adresse invalide");
+            return ResponseEntity.badRequest().body(Map.of("message","Adresse invalide"));
         }
-        return ResponseEntity.ok(utilisateurCreer);
+        return ResponseEntity.ok(Map.of("message","L'utilisateur a été créé"));
     }
 
     /**

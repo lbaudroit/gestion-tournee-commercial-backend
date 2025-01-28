@@ -8,6 +8,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RequestMapping(path = "/utilisateur/")
 @RestController
 public class UtilisateurControlleur {
@@ -16,17 +18,18 @@ public class UtilisateurControlleur {
     UtilisateurRepository utilisateurRepository;
 
     @PostMapping(path = "modifier")
-    public ResponseEntity<Utilisateur> modifierUtilisateur(@RequestBody Utilisateur utilisateurModif) {
+    public ResponseEntity<Map<String,String>> modifierUtilisateur(@RequestBody Utilisateur utilisateurModif) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         utilisateurModif.setId(utilisateur.getId());
-        return ResponseEntity.ok().body(utilisateurRepository.save(utilisateurModif));
+        utilisateurRepository.save(utilisateurModif);
+        return ResponseEntity.ok().body(Map.of("messaee","L'utilisateur a été modifié"));
     }
 
     @DeleteMapping(path = "supprimer")
-    public  ResponseEntity<String> supprimerUtilisateur() {
+    public  ResponseEntity<Map<String,String>> supprimerUtilisateur() {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         utilisateurRepository.deleteById(utilisateur.getId());
-        return ResponseEntity.ok().body("L'utilisateur a été supprimé.");
+        return ResponseEntity.ok().body(Map.of("message","L'utilisateur a été supprimé."));
     }
 }
