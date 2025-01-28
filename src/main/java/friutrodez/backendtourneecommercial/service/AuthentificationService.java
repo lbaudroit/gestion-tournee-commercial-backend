@@ -78,11 +78,7 @@ public class AuthentificationService {
         }
         if(!utilisateur.getEmail().matches("^[^@]+@[^@]+\\.[^@]+$")) {
             throw new DonneesInvalidesException("L'email de l'utilisateur n'a pas le bon format.");
-        }
-        if (!addressToolsService.validateAdresse(utilisateur.getLibelleAdresse(), utilisateur.getCodePostal(), utilisateur.getVille())) {
-            throw new AdresseInvalideException("Adresse invalide");
-        }
-        else {
+        } else {
             Double[] coordinates = addressToolsService.geolocateAdresse(utilisateur.getLibelleAdresse(), utilisateur.getCodePostal(), utilisateur.getVille());
             utilisateur.setLatitude(coordinates[1]);
             utilisateur.setLongitude(coordinates[0]);

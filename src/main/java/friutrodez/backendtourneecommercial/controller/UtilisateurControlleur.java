@@ -30,7 +30,7 @@ public class UtilisateurControlleur {
         utilisateur.setNom(parametrage.nom());
         utilisateur.setPrenom(parametrage.prenom());
         utilisateur.setEmail(parametrage.email());
-        authentificationService.creerUnCompte(utilisateur);
+        authentificationService.modifierUnCompte(utilisateur);
         return ResponseEntity.ok().body(new Message("Utilisateur modifié"));
     }
 
