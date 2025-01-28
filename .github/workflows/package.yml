@@ -37,15 +37,8 @@ jobs:
       - name: Build with Maven
         run: mvn clean package
 
-      - name: Build and push Docker image
-        run: |
-          docker build -t tournee-commercial:0.0.1 .
-
-      - name: Save Docker image to file
-        run: docker save tournee-commercial:0.0.1 -o tournee-commercial.tar
-
       - name: Upload Docker image artifact
         uses: actions/upload-artifact@v3
         with:
-          name: tournee-commercial-image
-          path: tournee-commercial.tar
+          name: tournee-commercial-jar
+          path: /home/runner/work/gestion-tournee-commercial-backend/gestion-tournee-commercial-backend/target/backendtourneecommercial-0.0.1-SNAPSHOT.jar.original
