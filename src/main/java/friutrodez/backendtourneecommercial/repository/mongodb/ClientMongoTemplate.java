@@ -123,10 +123,9 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
         }
         mongoTemplate.save(client);
     }
-    public int getNumberClients(Utilisateur idUser){
+    public int getNumberClients(String idUser){
         Query query = new Query().addCriteria(where("idUtilisateur").is(idUser));
         long totalElements = mongoTemplate.count(query, collection);
-
         // Calcul du nombre total de pages
         int totalPages = (int) Math.ceil((double) totalElements / 30);
         return totalPages;

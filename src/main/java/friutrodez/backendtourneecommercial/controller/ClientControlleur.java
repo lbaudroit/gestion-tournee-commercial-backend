@@ -14,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Rest controlleur de la ressource client.
@@ -49,9 +51,12 @@ public class ClientControlleur {
     }
 
     @GetMapping(path="number/")
-    public ResponseEntity<Integer> getNumberClient() {
+    public ResponseEntity<Map<String, Object>>  getNumberClient() {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ResponseEntity.ok(clientMongoTemplate.getNumberClients(utilisateur));
+        int pages = clientMongoTemplate.getNumberClients(String.valueOf(utilisateur.getId()));
+        Map<String, Object> response = new HashMap<>();
+        response.put("nombre", pages);
+        return ResponseEntity.ok(response);
     }
     @GetMapping
     public  ResponseEntity<List<Client>> getTousClients() {
