@@ -30,7 +30,7 @@ public class AdresseToolsService {
                     .bodyToMono(String.class)
                     .block();
             System.out.println(response);
-            return parseGeoJsonResponse(response, libelle);
+            return parseGeoJsonResponse(response, libelle,codePostal,ville);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -52,7 +52,7 @@ public class AdresseToolsService {
         }
     }
 
-    private boolean parseGeoJsonResponse(String response, String libelle) {
+    private boolean parseGeoJsonResponse(String response, String libelle,String codePostal,String ville) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(response);
@@ -61,9 +61,13 @@ public class AdresseToolsService {
             for (JsonNode feature : features) {
                 JsonNode properties = feature.path("properties");
                 String label = properties.path("name").asText();
+                String city = properties.path("city").asText();
+                String postCode = properties.path("postcode").asText();
 
-                if (label.equals(libelle)) {
+                if (label.equals(libelle) && city.equals(ville)&& postCode.equals(codePostal)) {
                     return true;
+                } else {
+                    return false;
                 }
             }
         } catch (IOException e) {

@@ -1,23 +1,18 @@
 package friutrodez.backendtourneecommercial.repository.mongodb;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.result.DeleteResult;
-import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
-import friutrodez.backendtourneecommercial.model.Adresse;
 import friutrodez.backendtourneecommercial.model.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.BasicQuery;
-import org.springframework.data.mongodb.core.query.CriteriaDefinition;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import friutrodez.backendtourneecommercial.service.SequenceGeneratorService;
+import org.springframework.data.domain.Pageable;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 import java.util.List;
 
-import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 
 /**
@@ -25,15 +20,16 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
  * Cette classe utilise MongoTemplate pour effectuer des opérations CRUD sur les clients.
  * Utilise un générateur de séquence pour attribuer des identifiants uniques aux nouveaux clients.
  *
- * @author
- * Benjamin NICOL
- * Enzo CLUZEL
- * Leïla BAUDROIT
- * Ahmed BRIBACH
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 @Service
 public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
 
+    private static  int PAGE_SIZE = 30;
     /**
      * Constructeur de la classe ClientMongoTemplate.
      * Initialise la classe avec MongoTemplate et la classe Client.
@@ -45,9 +41,35 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
         super(mongoTemplate, Client.class);
     }
 
+    /**
+     * Récupère tous les clients associés à un utilisateur donné.
+     *
+     * @param idUser Identifiant de l'utilisateur dont on veut récupérer tous les clients.
+     * @return Une liste de clients appartenant à l'utilisateur spécifié.
+     * @throws IllegalArgumentException si l'idUser est null ou vide.
+     */
     public List<Client> getAllClients(String idUser) {
         Query query = new Query().addCriteria(where("idUtilisateur").is(idUser));
         return  mongoTemplate.find(query,collection);
+
+    }
+
+    /**
+     * Récupère une liste paginée de clients associés à un utilisateur donné.
+     * @param idUser
+     * @param page
+     * @return Une liste paginée de clients appartenant à l'utilisateur.
+     * @throws IllegalArgumentException si l'idUser est null ou vide.
+     */
+    public List<Client> getClientsByPage(String idUser, Pageable page) {
+        // Création d'un objet Pageable pour définir la pagination
+
+        // Ajout des critères de recherche
+        Query query = new Query().addCriteria(Criteria.where("idUtilisateur").is(idUser));
+        query.with(page); // Appliquer la pagination au Query
+
+        // Récupération des clients paginés
+        return mongoTemplate.find(query, collection);
     }
 
     /**
@@ -64,25 +86,13 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
 
 
     /**
-     * Vérifie si le client existe dans la BD à partir de l'utilisateur et de son adresse
-     * @param idUser l'id de l'utilisateur
-     * @param informations l'adresse du client à vérifier
-     * @return true si le client existe false sinon
+     * Récupère un client spécifique appartenant à un utilisateur donné.
+     *
+     * @param idClient Identifiant unique du client à récupérer.
+     * @param idUser Identifiant de l'utilisateur propriétaire du client.
+     * @return Le client correspondant aux critères, ou null s'il n'est pas trouvé.
+     * @throws IllegalArgumentException si l'un des identifiants est null ou vide.
      */
-    public boolean exists(String idUser, Adresse informations) {
-        ObjectMapper mapper = new ObjectMapper();
-        // Il est nécessaire de ne pas inclure les null sinon rien n'est trouvé
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        String adresseJson = "";
-        try {
-            adresseJson = mapper.writeValueAsString(informations);
-        } catch (JsonProcessingException ex) {
-            throw new DonneesInvalidesException("La conversion en json n'a pas fonctionnée. Veuillez vérifier les données.");
-        }
-        BasicQuery basicQuery = (BasicQuery) new BasicQuery(adresseJson).addCriteria(where("idUtilisateur").is(idUser));
-        return mongoTemplate.exists(basicQuery,collection);
-    }
-
     public Client getOneClient(String idClient,String idUser) {
         Query query = new Query().addCriteria(where("idUtilisateur").is(idUser))
                 .addCriteria(where("_id").is(idClient));
@@ -105,5 +115,20 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
             client.set_id(sequenceGeneratorService.generateSequence(Client.SEQUENCE_NAME));
         }
         mongoTemplate.save(client);
+    }
+
+    /**
+     * Calcule le nombre total de pages pour les clients d'un utilisateur donné.
+     *
+     * @param idUser Identifiant de l'utilisateur dont on veut compter les clients.
+     * @return Le nombre total de pages en fonction de la taille de page définie.
+     * @throws IllegalArgumentException si l'idUser est null ou vide.
+     */
+    public int getNumberClients(String idUser){
+        Query query = new Query().addCriteria(where("idUtilisateur").is(idUser));
+        long totalElements = mongoTemplate.count(query, collection);
+        // Calcul du nombre total de pages
+        int totalPages = (int) Math.ceil((double) totalElements / PAGE_SIZE);
+        return totalPages;
     }
 }

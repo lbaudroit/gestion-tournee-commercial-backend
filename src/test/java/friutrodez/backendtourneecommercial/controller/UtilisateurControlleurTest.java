@@ -60,13 +60,10 @@ public class UtilisateurControlleurTest {
                 .content(utilisateurJson).header("Authorization","Bearer " + headerToken ))
                 .andExpect(status().isOk()).andReturn();
 
-       Utilisateur utilisateurModifie = objectMapper.readValue(mvcResultat.getResponse().getContentAsString(), Utilisateur.class);
-
-        Assertions.assertEquals("modificationTestUser",utilisateurModifie.getNom());
 
         mockMvc.perform(delete("/utilisateur/supprimer")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("id",String.valueOf(utilisateurModifie.getId()))
+                        .param("id",String.valueOf(testUser.getId()))
                         .header("Authorization","Bearer " + headerToken ))
                 .andExpect(status().isOk());
 

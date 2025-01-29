@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.rmi.ServerException;
+
 /**
  * Classe métier qui gére les clients
  */
@@ -72,6 +74,9 @@ public class ClientService {
         Adresse adresseBase = baseClient.getAdresse();
         Double[] coordinates = addressToolsService.geolocateAdresse(adresseBase.getLibelle(),
                 adresseBase.getCodePostal(), adresseBase.getVille());
+        if(coordinates == null) {
+            throw new DonneesInvalidesException("L'adresse du client sauvegardée est invalide");
+        }
         Coordonnees coordonnees = new Coordonnees(coordinates[1],coordinates[0]);
         baseClient.setCoordonnees(coordonnees);
 

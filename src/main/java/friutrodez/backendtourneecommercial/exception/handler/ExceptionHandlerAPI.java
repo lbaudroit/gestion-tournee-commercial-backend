@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.Map;
 
 /**
  * Gère les exceptions venant de l'API pour envoyer une réponse personnalisée au client
@@ -23,9 +24,9 @@ public class ExceptionHandlerAPI{
      * @return une réponse
      */
     @ExceptionHandler(DonneesInvalidesException.class)
-    public ResponseEntity<String> gererDonneesInvalidesException(DonneesInvalidesException exception) {
+    public ResponseEntity<Map<String,String>> gererDonneesInvalidesException(DonneesInvalidesException exception) {
         //exception.printStackTrace();
-        return ResponseEntity.badRequest().body(exception.getMessage());
+        return ResponseEntity.badRequest().body(Map.of("message",exception.getMessage()));
     }
 
     /**
@@ -34,9 +35,9 @@ public class ExceptionHandlerAPI{
      * @return une réponse
      */
     @ExceptionHandler(DonneesManquantesException.class)
-    public ResponseEntity<String> gererDonneesManquantesException(DonneesManquantesException exception) {
+    public ResponseEntity<Map<String,String>> gererDonneesManquantesException(DonneesManquantesException exception) {
         //exception.printStackTrace();
-        return ResponseEntity.badRequest().body(exception.getMessage());
+        return ResponseEntity.badRequest().body(Map.of("message",exception.getMessage()));
     }
 
     /**
@@ -45,19 +46,19 @@ public class ExceptionHandlerAPI{
      * @return une réponse
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<String> gererContrainteNonRespect
+    public ResponseEntity<Map<String,String>> gererContrainteNonRespect
     (ConstraintViolationException exception) {
-        return ResponseEntity.badRequest().body(exception.getConstraintViolations().toString());
+        return ResponseEntity.badRequest().body(Map.of("message",exception.getConstraintViolations().toString()));
     }
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public ResponseEntity<String> gererContrainteNonRespect
+    public ResponseEntity<Map<String,String>> gererContrainteNonRespect
     (SQLIntegrityConstraintViolationException exception) {
-        return ResponseEntity.badRequest().body(exception.toString());
+        return ResponseEntity.badRequest().body(Map.of("message",exception.toString()));
     }
     @ExceptionHandler(AdresseInvalideException.class)
-    public ResponseEntity<String> gererAdresseInvalideException
+    public ResponseEntity<Map<String,String>> gererAdresseInvalideException
     (AdresseInvalideException exception) {
-        return ResponseEntity.badRequest().body(exception.getMessage());
+        return ResponseEntity.badRequest().body(Map.of("message",exception.toString()));
     }
 
 }
