@@ -24,9 +24,9 @@ public class ExceptionHandlerAPI{
      * @return une réponse
      */
     @ExceptionHandler(DonneesInvalidesException.class)
-    public ResponseEntity<String> gererDonneesInvalidesException(DonneesInvalidesException exception) {
+    public ResponseEntity<Map<String,String>> gererDonneesInvalidesException(DonneesInvalidesException exception) {
         //exception.printStackTrace();
-        return ResponseEntity.badRequest().body(exception.getMessage());
+        return ResponseEntity.badRequest().body(Map.of("message",exception.getMessage()));
     }
 
     /**
@@ -35,9 +35,9 @@ public class ExceptionHandlerAPI{
      * @return une réponse
      */
     @ExceptionHandler(DonneesManquantesException.class)
-    public ResponseEntity<String> gererDonneesManquantesException(DonneesManquantesException exception) {
+    public ResponseEntity<Map<String,String>> gererDonneesManquantesException(DonneesManquantesException exception) {
         //exception.printStackTrace();
-        return ResponseEntity.badRequest().body(exception.getMessage());
+        return ResponseEntity.badRequest().body(Map.of("message",exception.getMessage()));
     }
 
     /**
