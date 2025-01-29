@@ -122,6 +122,7 @@ public class ItineraireController {
         return ResponseEntity.ok(itineraire);
     }
 
+    @Transactional
     @PostMapping(path="modifier/")
     public ResponseEntity<Itineraire> modifierItineraire(@RequestParam("id") long id, @RequestBody ItineraireCreationDTO dto) {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
