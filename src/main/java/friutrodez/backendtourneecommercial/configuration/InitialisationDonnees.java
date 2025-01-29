@@ -202,7 +202,7 @@ public class InitialisationDonnees {
                 Client.builder()
                     .idUtilisateur("1")
                     .nomEntreprise("Hôtel des Tilleuls")
-                    .adresse(new Adresse("9 Rue de l'Église", "12580", "Villecomtal"))
+                    .adresse(new Adresse("2 Rue de Bourran", "12740", "Sébazac-Concourès"))
                     .descriptif("Petit hôtel familial offrant un séjour calme et chaleureux.")
                     .coordonnees(new Coordonnees(44.5392277, 2.5618809))
                     .contact(new Contact("Lacombe", "Paul", "0565731545"))
@@ -321,20 +321,20 @@ public class InitialisationDonnees {
             // In InitialisationDonnees.java, update the fake clients generation part:
             clientMongoTemplate.removeAll();
             // Generate 500 fake clients for Enzo (utilisateur1)
-            List<Client> fakeClients = fakeDataService.generateFakeClients(500);
-            clientMongoTemplate.saveAll(fakeClients);
+            //List<Client> fakeClients = fakeDataService.generateFakeClients(500);
+            //clientMongoTemplate.saveAll(fakeClients);
             // Then save your real clients
             clientMongoTemplate.saveAll(clients);
 
 
             // Initialisation des appartenances
-            Appartient appartient1 = new Appartient(new AppartientKey(itineraire1, clients.get(0).get_id()), 3);
-            Appartient appartient2 = new Appartient(new AppartientKey(itineraire1, clients.get(1).get_id()), 2);
-            Appartient appartient3 = new Appartient(new AppartientKey(itineraire1, clients.get(2).get_id()), 1);
-            Appartient appartient4 = new Appartient(new AppartientKey(itineraire2, clients.get(3).get_id()), 1);
-            Appartient appartient5 = new Appartient(new AppartientKey(itineraire2, clients.get(4).get_id()), 2);
-            Appartient appartient6 = new Appartient(new AppartientKey(itineraire2, clients.get(5).get_id()), 3);
-            Appartient appartient7 = new Appartient(new AppartientKey(itineraire2, clients.get(6).get_id()), 4);
+            Appartient appartient1 = new Appartient(new AppartientKey(itineraire1, clients.get(0).get_id()), 2);
+            Appartient appartient2 = new Appartient(new AppartientKey(itineraire1, clients.get(1).get_id()), 1);
+            Appartient appartient3 = new Appartient(new AppartientKey(itineraire1, clients.get(2).get_id()), 0);
+            Appartient appartient4 = new Appartient(new AppartientKey(itineraire2, clients.get(3).get_id()), 0);
+            Appartient appartient5 = new Appartient(new AppartientKey(itineraire2, clients.get(4).get_id()), 1);
+            Appartient appartient6 = new Appartient(new AppartientKey(itineraire2, clients.get(5).get_id()), 2);
+            Appartient appartient7 = new Appartient(new AppartientKey(itineraire2, clients.get(6).get_id()), 3);
             List<Appartient> appartients = new ArrayList<>();
             List<Client> clientsUtilisateur1 = new ArrayList<>();
             for (Client client : clients) {
@@ -348,7 +348,7 @@ public class InitialisationDonnees {
                 int nbAleatoire = (int) (Math.random() * tmp.size());
                 for (int i = 0; i < nbAleatoire; i++) {
                     int choisi = (int) (Math.random() * tmp.size());
-                    Appartient appartient = new Appartient(new AppartientKey(itineraire, tmp.get(choisi).get_id()), i + 1);
+                    Appartient appartient = new Appartient(new AppartientKey(itineraire, tmp.get(choisi).get_id()), i);
                     tmp.remove(choisi);
                     appartients.add(appartient);
                 }

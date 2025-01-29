@@ -38,14 +38,19 @@ public class ClientService {
         clientInformations.setIdUtilisateur(idUser);
         if(clientInformations.getNomEntreprise() == null || clientInformations.getNomEntreprise().trim().isBlank()) {
             throw new DonneesManquantesException("Le client n'a pas de nom");
-
         }
         Adresse adresse = clientInformations.getAdresse();
         if(adresse == null) {
-            throw new DonneesManquantesException("Le client n'a pas d'email");
+            throw new DonneesManquantesException("Le client n'a pas d'adresse");
         }
         if(!addressToolsService.validateAdresse(adresse.getLibelle(),adresse.getCodePostal(),adresse.getVille())) {
             throw new DonneesInvalidesException("L'adresse du client est invalide.");
+        }
+        if(clientInformations.getContact() == null) {
+            throw new DonneesManquantesException("Le client n'a pas de contact");
+        }
+        if(!clientInformations.getContact().getNumeroTelephone().matches("[0-9]{10}")) {
+            throw new DonneesInvalidesException("Le numéro de téléphone du client est invalide.");
         }
 
         Double[] coordinates = addressToolsService.geolocateAdresse(adresse.getLibelle(), adresse.getCodePostal(), adresse.getVille());

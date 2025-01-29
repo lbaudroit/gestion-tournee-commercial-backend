@@ -60,5 +60,5 @@ public class ExceptionHandlerAPI{
     public ResponseEntity<Message> gererAdresseInvalideException
     (AdresseInvalideException exception) {
         return ResponseEntity.badRequest().body(new Message(exception.getMessage()));
-
+    }
 }
