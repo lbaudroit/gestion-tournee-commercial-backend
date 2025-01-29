@@ -1,5 +1,6 @@
 package friutrodez.backendtourneecommercial.exception.handler;
 
+import friutrodez.backendtourneecommercial.dto.Message;
 import friutrodez.backendtourneecommercial.exception.AdresseInvalideException;
 import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
 import friutrodez.backendtourneecommercial.exception.DonneesManquantesException;
@@ -24,9 +25,9 @@ public class ExceptionHandlerAPI{
      * @return une réponse
      */
     @ExceptionHandler(DonneesInvalidesException.class)
-    public ResponseEntity<Map<String,String>> gererDonneesInvalidesException(DonneesInvalidesException exception) {
-        //exception.printStackTrace();
-        return ResponseEntity.badRequest().body(Map.of("message",exception.getMessage()));
+    public ResponseEntity<Message> gererDonneesInvalidesException(DonneesInvalidesException exception) {
+        exception.printStackTrace();
+        return ResponseEntity.badRequest().body(new Message(exception.getMessage()));
     }
 
     /**
@@ -35,9 +36,9 @@ public class ExceptionHandlerAPI{
      * @return une réponse
      */
     @ExceptionHandler(DonneesManquantesException.class)
-    public ResponseEntity<Map<String,String>> gererDonneesManquantesException(DonneesManquantesException exception) {
-        //exception.printStackTrace();
-        return ResponseEntity.badRequest().body(Map.of("message",exception.getMessage()));
+    public ResponseEntity<Message> gererDonneesManquantesException(DonneesManquantesException exception) {
+        exception.printStackTrace();
+        return ResponseEntity.badRequest().body(new Message(exception.getMessage()));
     }
 
     /**
@@ -46,19 +47,18 @@ public class ExceptionHandlerAPI{
      * @return une réponse
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Map<String,String>> gererContrainteNonRespect
+    public ResponseEntity<Message> gererContrainteNonRespect
     (ConstraintViolationException exception) {
-        return ResponseEntity.badRequest().body(Map.of("message",exception.getConstraintViolations().toString()));
+        return ResponseEntity.badRequest().body(new Message(exception.getConstraintViolations().toString()));
     }
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public ResponseEntity<Map<String,String>> gererContrainteNonRespect
+    public ResponseEntity<Message> gererContrainteNonRespect
     (SQLIntegrityConstraintViolationException exception) {
-        return ResponseEntity.badRequest().body(Map.of("message",exception.toString()));
+        return ResponseEntity.badRequest().body(new Message(exception.toString()));
     }
     @ExceptionHandler(AdresseInvalideException.class)
-    public ResponseEntity<Map<String,String>> gererAdresseInvalideException
+    public ResponseEntity<Message> gererAdresseInvalideException
     (AdresseInvalideException exception) {
-        return ResponseEntity.badRequest().body(Map.of("message",exception.toString()));
-    }
+        return ResponseEntity.badRequest().body(new Message(exception.getMessage()));
 
 }

@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -110,14 +111,28 @@ public class InitialisationDonnees {
 
             // Initialisation des itinéraires
             Itineraire itineraire1 = Itineraire.builder()
-                .utilisateur(utilisateur1)
-                .nom("Les 7 collines de Rodez")
-                .build();
+                    .utilisateur(utilisateur1)
+                    .nom("Les 7 collines de Rodez")
+                    .distance(15)
+                    .build();
             Itineraire itineraire2 = Itineraire.builder()
-                .utilisateur(utilisateur2)
-                .nom("La longue route")
-                .build();
+                    .utilisateur(utilisateur2)
+                    .nom("La longue route")
+                    .distance(30)
+                    .build();
             itineraireRepository.saveAll(List.of(itineraire1, itineraire2));
+            // Itinéraires supplémentaires
+            List<Itineraire> itineraires = new ArrayList<>();
+            String titreTemplate = "Itinéraire n°%d";
+            for (int i = 1; i <= 49; i++) {
+                Itineraire itineraire = Itineraire.builder()
+                    .utilisateur(utilisateur1)
+                    .nom(String.format(titreTemplate, i))
+                    .distance(i * 10)
+                    .build();
+                itineraires.add(itineraire);
+            }
+            itineraireRepository.saveAll(itineraires);
 
             // Initialisation des clients
             List<Client> clients = List.of(
@@ -320,6 +335,27 @@ public class InitialisationDonnees {
             Appartient appartient5 = new Appartient(new AppartientKey(itineraire2, clients.get(4).get_id()), 2);
             Appartient appartient6 = new Appartient(new AppartientKey(itineraire2, clients.get(5).get_id()), 3);
             Appartient appartient7 = new Appartient(new AppartientKey(itineraire2, clients.get(6).get_id()), 4);
+            List<Appartient> appartients = new ArrayList<>();
+            List<Client> clientsUtilisateur1 = new ArrayList<>();
+            for (Client client : clients) {
+                if (client.getIdUtilisateur().equals("1")) {
+                    clientsUtilisateur1.add(client);
+                }
+            }
+            System.out.println(clientsUtilisateur1.size());
+            for (Itineraire itineraire : itineraires) {
+                List<Client> tmp = new ArrayList<>(clientsUtilisateur1);
+                int nbAleatoire = (int) (Math.random() * tmp.size());
+                for (int i = 0; i < nbAleatoire; i++) {
+                    int choisi = (int) (Math.random() * tmp.size());
+                    Appartient appartient = new Appartient(new AppartientKey(itineraire, tmp.get(choisi).get_id()), i + 1);
+                    tmp.remove(choisi);
+                    appartients.add(appartient);
+                }
+            }
+            appartientRepository.saveAll(appartients);
+
+
 
             appartientRepository.saveAll(List.of(appartient1, appartient2, appartient3, appartient4, appartient5, appartient6, appartient7));
         };

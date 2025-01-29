@@ -69,8 +69,6 @@ public class ConfigurationSecurityContextTest {
         if(token == null) {
             DonneesAuthentification donneesAuthentification = new DonneesAuthentification(toMock.getEmail(),"Benjamin.123@d");
             String utilisateurJson = objectMapper.writeValueAsString(donneesAuthentification);
-
-
             //FIXME Une erreur est envoyée disant que le mot de passe entre l'utilisateur est celui dans la bd n'est pas le meme
             MvcResult resultat= mockMvc.perform(post("/auth/authentifier").contentType(MediaType.APPLICATION_JSON).content(utilisateurJson)).andExpect(status().isOk()).andReturn();
             token = objectMapper.readValue(resultat.getResponse().getContentAsString(), JwtToken.class);

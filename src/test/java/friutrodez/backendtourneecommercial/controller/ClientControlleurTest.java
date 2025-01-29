@@ -52,13 +52,13 @@ public class ClientControlleurTest {
         Adresse adresse = new Adresse("6 Impasse du Suc","81490","Boissezon");
         client.setAdresse(adresse);
         headerToken = configurationSecurityContextTest.getTokenForSecurity(mockMvc);
-        //configurationSecurityContextTest.setSecurityContext();
     }
 
     @Order(1)
     @Test
     void creationClientTest() throws Exception {
         String jsonClient= objectMapper.writeValueAsString(client);
+        System.out.println(jsonClient);
         mockMvc.perform(put("/client/creer")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonClient).header("Authorization", "Bearer " + headerToken))
