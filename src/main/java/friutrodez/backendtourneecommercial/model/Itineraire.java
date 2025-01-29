@@ -4,6 +4,8 @@ package friutrodez.backendtourneecommercial.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 /**
  * Classe représentant un itinéraire.
  * Cette classe est utilisée pour mapper la table `Itineraire` dans la base de données.
