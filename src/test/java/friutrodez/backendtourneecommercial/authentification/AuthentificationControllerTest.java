@@ -1,7 +1,7 @@
 package friutrodez.backendtourneecommercial.authentification;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import friutrodez.backendtourneecommercial.controller.AuthentificationController;
+import friutrodez.backendtourneecommercial.controller.AuthentificationControlleur;
 import friutrodez.backendtourneecommercial.dto.DonneesAuthentification;
 import friutrodez.backendtourneecommercial.dto.JwtToken;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
@@ -46,7 +46,7 @@ public class AuthentificationControllerTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private AuthentificationController authentificationController;
+    private AuthentificationControlleur authentificationController;
 
     @Transactional
     @Rollback

@@ -5,33 +5,43 @@ import friutrodez.backendtourneecommercial.service.AuthentificationService;
 import friutrodez.backendtourneecommercial.dto.DonneesAuthentification;
 import friutrodez.backendtourneecommercial.service.JwtService;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import java.security.Principal;
+import java.util.Map;
 
 
 /**
  * Controlleur pour gérer les requêtes gérant l'authentification et la gestion de compte
+ *
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 @RequestMapping(path = "/auth")
 @RestController
 @Validated
-public class AuthentificationController {
+public class AuthentificationControlleur {
 
     private final JwtService jwtService;
 
     private final AuthentificationService authentificationService;
 
+    /**
+     * Constructeur de la classe AuthentificationControlleur
+     *
+     * @param jwtService Service pour la gestion des tokens JWT
+     * @param authentificationService Service d'authentification des utilisateurs
+     */
     @Autowired
-    public AuthentificationController(JwtService jwtService, AuthentificationService authentificationService) {
+    public AuthentificationControlleur(JwtService jwtService, AuthentificationService authentificationService) {
         this.jwtService = jwtService;
         this.authentificationService = authentificationService;
     }
@@ -46,14 +56,19 @@ public class AuthentificationController {
 
     }
 
-
+    /**
+     * Crée un compte utilisateur.
+     *
+     * @param utilisateur Objet contenant les informations du nouvel utilisateur
+     * @return ResponseEntity contenant l'utilisateur créé ou un message d'erreur si la création échoue
+     */
     @PostMapping(path = "/creer")
-    public ResponseEntity CreerUnCompte(@RequestBody Utilisateur utilisateur) {
+    public ResponseEntity<Map<String,String>> CreerUnCompte(@RequestBody Utilisateur utilisateur) {
         Utilisateur utilisateurCreer =  authentificationService.creerUnCompte(utilisateur);
         if (utilisateurCreer == null) {
-            return ResponseEntity.badRequest().body("Adresse invalide");
+            return ResponseEntity.badRequest().body(Map.of("message","Adresse invalide"));
         }
-        return ResponseEntity.ok(utilisateurCreer);
+        return ResponseEntity.ok(Map.of("message","L'utilisateur a été créé"));
     }
 
     /**

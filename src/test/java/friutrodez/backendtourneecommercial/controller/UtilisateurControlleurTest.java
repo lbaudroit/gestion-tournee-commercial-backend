@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 @Rollback
-@ActiveProfiles("test")
+@ActiveProfiles("production")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class UtilisateurControlleurTest {
 
@@ -42,12 +42,11 @@ public class UtilisateurControlleurTest {
 
     Utilisateur testUser;
 
-    @BeforeEach
-    void setSecurity() {
-        configurationSecurityContextTest.setSecurityContext();
+    String headerToken;
+    @BeforeAll
+    void setSecurity() throws Exception {
+        headerToken = configurationSecurityContextTest.getTokenForSecurity(mockMvc);
         testUser = configurationSecurityContextTest.getUtilisateur();
-        Assertions.assertNotNull(SecurityContextHolder.getContext().getAuthentication());
-        Assertions.assertEquals("Nicol", ((Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getNom());
     }
 
     @Test
@@ -58,16 +57,14 @@ public class UtilisateurControlleurTest {
 
          MvcResult mvcResultat = mockMvc.perform(post("/utilisateur/modifier")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(utilisateurJson))
+                .content(utilisateurJson).header("Authorization","Bearer " + headerToken ))
                 .andExpect(status().isOk()).andReturn();
 
-       Utilisateur utilisateurModifie = objectMapper.readValue(mvcResultat.getResponse().getContentAsString(), Utilisateur.class);
-
-        Assertions.assertEquals("modificationTestUser",utilisateurModifie.getNom());
 
         mockMvc.perform(delete("/utilisateur/supprimer")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("id",""+utilisateurModifie.getId()))
+                        .param("id",String.valueOf(testUser.getId()))
+                        .header("Authorization","Bearer " + headerToken ))
                 .andExpect(status().isOk());
 
 

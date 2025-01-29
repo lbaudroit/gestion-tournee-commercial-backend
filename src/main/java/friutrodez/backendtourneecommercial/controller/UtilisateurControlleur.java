@@ -15,6 +15,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.tags.Param;
 
+import java.util.Map;
+
+/**
+ * Rest Controlleur de la ressource Utilisateur
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
+ */
 @RequestMapping(path = "/utilisateur/")
 @RestController
 public class UtilisateurControlleur {
@@ -23,6 +33,7 @@ public class UtilisateurControlleur {
     UtilisateurRepository utilisateurRepository;
     @Autowired
     private AuthentificationService authentificationService;
+
 
     @PostMapping(path = "modifier/")
     public ResponseEntity<Message> modifierUtilisateur(@RequestBody Parametrage parametrage) {
@@ -39,5 +50,6 @@ public class UtilisateurControlleur {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Parametrage parametrage = new Parametrage(utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getEmail());
         return ResponseEntity.ok().body(parametrage);
+
     }
 }

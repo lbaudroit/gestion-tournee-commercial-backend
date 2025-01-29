@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.Map;
 
 /**
  * Gère les exceptions venant de l'API pour envoyer une réponse personnalisée au client
@@ -59,6 +60,5 @@ public class ExceptionHandlerAPI{
     public ResponseEntity<Message> gererAdresseInvalideException
     (AdresseInvalideException exception) {
         return ResponseEntity.badRequest().body(new Message(exception.getMessage()));
-    }
 
 }

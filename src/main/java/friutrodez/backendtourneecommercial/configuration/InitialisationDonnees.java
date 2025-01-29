@@ -2,6 +2,7 @@ package friutrodez.backendtourneecommercial.configuration;
 
 import friutrodez.backendtourneecommercial.model.*;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
+import friutrodez.backendtourneecommercial.repository.mongodb.FakeDataService;
 import friutrodez.backendtourneecommercial.repository.mysql.AppartientRepository;
 import friutrodez.backendtourneecommercial.repository.mysql.ItineraireRepository;
 import friutrodez.backendtourneecommercial.repository.mysql.UtilisateurRepository;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
@@ -29,6 +31,8 @@ import java.util.List;
 public class InitialisationDonnees {
 
     @Autowired
+    Environment environment;
+    @Autowired
     private UtilisateurRepository utilisateurRepository;
 
     @Autowired
@@ -43,6 +47,10 @@ public class InitialisationDonnees {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private FakeDataService fakeDataService;
+
+
     /**
      * Méthode d'initialisation des données.
      * Cette méthode est exécutée au démarrage de l'application pour insérer les données
@@ -53,12 +61,13 @@ public class InitialisationDonnees {
     @Bean
     public CommandLineRunner init() {
         return args -> {
+
             // Initialisation des utilisateurs
             Utilisateur utilisateur1 = Utilisateur.builder()
                 .nom("Cluzel")
                 .prenom("Enzo")
                     .email("en@cl.fr")
-                .motDePasse(passwordEncoder.encode("Enzo_123"))
+                    .motDePasse(passwordEncoder.encode("Enzo_123"))
                 .libelleAdresse("50 Avenue de Bordeaux")
                 .codePostal("12000")
                 .ville("Rodez")
@@ -308,8 +317,15 @@ public class InitialisationDonnees {
                     .clientEffectif(true)
                     .build()
             );
+
+            // In InitialisationDonnees.java, update the fake clients generation part:
             clientMongoTemplate.removeAll();
+            // Generate 500 fake clients for Enzo (utilisateur1)
+            List<Client> fakeClients = fakeDataService.generateFakeClients(500);
+            clientMongoTemplate.saveAll(fakeClients);
+            // Then save your real clients
             clientMongoTemplate.saveAll(clients);
+
 
             // Initialisation des appartenances
             Appartient appartient1 = new Appartient(new AppartientKey(itineraire1, clients.get(0).get_id()), 3);
