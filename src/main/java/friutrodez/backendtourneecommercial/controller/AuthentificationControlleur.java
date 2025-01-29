@@ -10,6 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+
+import java.security.Principal;
+import java.util.Map;
 
 
 /**
@@ -42,11 +46,6 @@ public class AuthentificationControlleur {
         this.authentificationService = authentificationService;
     }
 
-    /**
-     * Authentifie un utilisateur en fonction de ses données d'authentification.
-     * @param donneesAuthentification
-     * @return ResponseEntity contenant un token JWT si l'authentification réussit, sinon une réponse d'erreur
-     */
     @PostMapping(path = "/authentifier")
     public ResponseEntity<JwtToken> authentifier(@RequestBody DonneesAuthentification donneesAuthentification) {
         Utilisateur utilisateur = authentificationService.authentifier(donneesAuthentification);
@@ -64,12 +63,12 @@ public class AuthentificationControlleur {
      * @return ResponseEntity contenant l'utilisateur créé ou un message d'erreur si la création échoue
      */
     @PostMapping(path = "/creer")
-    public ResponseEntity CreerUnCompte(@RequestBody Utilisateur utilisateur) {
+    public ResponseEntity<Map<String,String>> CreerUnCompte(@RequestBody Utilisateur utilisateur) {
         Utilisateur utilisateurCreer =  authentificationService.creerUnCompte(utilisateur);
         if (utilisateurCreer == null) {
-            return ResponseEntity.badRequest().body("Adresse invalide");
+            return ResponseEntity.badRequest().body(Map.of("message","Adresse invalide"));
         }
-        return ResponseEntity.ok(utilisateurCreer);
+        return ResponseEntity.ok(Map.of("message","L'utilisateur a été créé"));
     }
 
     /**

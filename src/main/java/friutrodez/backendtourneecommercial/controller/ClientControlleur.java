@@ -117,14 +117,14 @@ public class ClientControlleur {
      * @return Un ResponseEntity contenant un message de succès ou d'échec.
      */
     @DeleteMapping(path = "supprimer/")
-    public ResponseEntity<String> supprimerClient(@RequestParam(name = "id") String id) {
+    public ResponseEntity<Map<String,String>> supprimerClient(@RequestParam(name = "id") String id) {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         DeleteResult deleteResult = clientMongoTemplate.removeClientsWithId(id,String.valueOf(utilisateur.getId()));
         if(!deleteResult.wasAcknowledged()) {
-            return ResponseEntity.badRequest().body("Le client n'a pas été supprimé");
+            return ResponseEntity.badRequest().body(Map.of("message","Le client n'a pas été supprimé"));
         }
-        return  ResponseEntity.ok("Le client a été supprimé");
+        return  ResponseEntity.ok(Map.of("message","Le client a été supprimé."));
     }
 
     /**
@@ -135,11 +135,11 @@ public class ClientControlleur {
      * @return Un ResponseEntity contenant un message de succès.
      */
     @PostMapping(path="modifier/")
-    public ResponseEntity<String> modifierClient(@RequestParam(name="id") String id, @RequestBody Client modifications) {
+    public ResponseEntity<Map<String,String>> modifierClient(@RequestParam(name="id") String id, @RequestBody Client modifications) {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         clientService.modifierUnClient(id,modifications,String.valueOf(utilisateur.getId()));
 
-        return ResponseEntity.ok().body("Le client a été modifié.");
+        return ResponseEntity.ok().body(Map.of("message","Le client a été modifié."));
     }
 }

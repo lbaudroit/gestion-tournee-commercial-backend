@@ -106,8 +106,7 @@ public class ClientControlleurTest {
         if(client.get_id() == null || client.get_id().isEmpty()) {
             throw new RuntimeException("Le client n'a pas d'id");
         }
-        Client clientModifier = new Client();
-        clientModifier.setCoordonnees(new Coordonnees(0,0));
+        Client clientModifier = client;
         clientModifier.setNomEntreprise("Test Modification");
         String jsonModifier = objectMapper.writeValueAsString(clientModifier);
 
