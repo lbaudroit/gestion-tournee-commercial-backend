@@ -15,6 +15,12 @@ import java.util.List;
  * Cette classe est utilisée pour mapper la table `Utilisateur` dans la base de données.
  * Utilise Lombok pour générer les constructeurs, getters, setters et le builder.
  *
+ * L'utilisateur doit avoir :
+ *      - Un email avec un format correcte
+ *      - Un mot de passe contenant au moins :
+ *              1 majuscule, 1 miniscule, 1 chiffre, 1 caractère spécial, 8 caractères
+ *      - Une adresse valide en france
+ *
  * @author
  * Benjamin NICOL
  * Enzo CLUZEL
@@ -31,6 +37,12 @@ import java.util.List;
         uniqueConstraints = @UniqueConstraint(name = "unique_email", columnNames = "email")
 )
 public class Utilisateur implements UserDetails {
+
+    @Transient
+    public final static String PASSWORD_PATTERN = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=_]).+$";
+
+    @Transient
+    public final static String EMAIL_PATTERN = "^[^@]+@[^@]+\\.[^@]+$";
 
     public Utilisateur(String testNom, String testPrenom, String password) {
         this.prenom = testPrenom;
@@ -66,7 +78,7 @@ public class Utilisateur implements UserDetails {
      * Adresse email de l'utilisateur
      * Ne peut pas être nul
      */
-    @Email(message = "L'email doit être valide")
+    @Email(message = "L'email doit être valide",regexp = EMAIL_PATTERN)
     @NotBlank(message = "L'email ne peut pas être vide")
     @Column(nullable = false)
     private String email;
@@ -75,6 +87,7 @@ public class Utilisateur implements UserDetails {
      * Mot de passe de l'utilisateur.
      */
     @NotBlank(message = "Le mot de passe ne peut pas être vide")
+    @Pattern(regexp = PASSWORD_PATTERN,message = "Le mot de passe est invalide")
     @Column(nullable = false)
     private String motDePasse;
 

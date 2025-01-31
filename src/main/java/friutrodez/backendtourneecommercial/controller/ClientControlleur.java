@@ -5,11 +5,13 @@ import friutrodez.backendtourneecommercial.model.Client;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
 import friutrodez.backendtourneecommercial.service.ClientService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -56,7 +58,7 @@ public class ClientControlleur {
     public ResponseEntity<Client> creerClient(@RequestBody Client client) {
         Utilisateur utilisateur = (Utilisateur)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return ResponseEntity.ok(clientService.creerUnClient(client,String.valueOf(utilisateur.getId())));
+        return ResponseEntity.ok(clientService.CreateOneClient(client,String.valueOf(utilisateur.getId())));
     }
 
     /**
@@ -138,7 +140,7 @@ public class ClientControlleur {
     public ResponseEntity<Map<String,String>> modifierClient(@RequestParam(name="id") String id, @RequestBody Client modifications) {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        clientService.modifierUnClient(id,modifications,String.valueOf(utilisateur.getId()));
+        clientService.editOneClient(id,modifications,String.valueOf(utilisateur.getId()));
 
         return ResponseEntity.ok().body(Map.of("message","Le client a été modifié."));
     }

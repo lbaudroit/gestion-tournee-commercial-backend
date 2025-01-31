@@ -4,7 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import friutrodez.backendtourneecommercial.dto.DonneesAuthentification;
 import friutrodez.backendtourneecommercial.dto.JwtToken;
+import friutrodez.backendtourneecommercial.model.Adresse;
+import friutrodez.backendtourneecommercial.model.Client;
+import friutrodez.backendtourneecommercial.model.Contact;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
+import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
 import friutrodez.backendtourneecommercial.repository.mysql.UtilisateurRepository;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,24 +32,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Component
 public class ConfigurationSecurityContextTest {
 
+    private static final Adresse CORRECT_ADRESSE = new Adresse("11 Pl. du Portail Haut", "12390", "Rignac");
+
+    private static final Contact CORRECT_CONTACT = new Contact("nom","test","0102030405");
+    private static final Client CORRECT_CLIENT = Client.builder().clientEffectif(true).nomEntreprise("TestEntreprise")
+            .contact(CORRECT_CONTACT)
+            .adresse(CORRECT_ADRESSE).build();
+
     @Autowired
     ObjectMapper objectMapper;
     private Utilisateur toMock;
+
+    @Autowired
+    ClientMongoTemplate clientMongoTemplate;
     @Autowired
     UtilisateurRepository utilisateurRepository;
 
     JwtToken token;
-    /**
-     * Configure le securityContext avec un mock et un user récupéré dans la bd.
-     * A utiliser dans le beforeEach d'un test pour fonctionner correctement.
-     */
-    public void setSecurityContext() {
-        if(toMock==null) {
-            toMock = utilisateurRepository.findByNom("Nicol");
 
-        }
-        setUpSecurityContext(toMock);
-    }
+
 
     public String getTokenForSecurity(MockMvc mockMvc) throws Exception {
         if(toMock==null) {
@@ -76,29 +81,36 @@ public class ConfigurationSecurityContextTest {
         }
         return token.token();
     }
-    public void setSecurityContextAvecUtilisateur(Utilisateur utilisateur) {
-        //toMock = utilisateur;
-
-        toMock = utilisateurRepository.findByNom(utilisateur.getNom());
-        if(toMock == null) {
-            System.out.println("Erruers");
-        }
-        setUpSecurityContext(toMock);
+    public Utilisateur getMockUser() {
+        Utilisateur utilisateur = Utilisateur.builder()
+                .nom("TestRandom")
+                .prenom("TestRandom")
+                .email(getRandomEmail())
+                .motDePasse("Benjamin.123@d")
+                .libelleAdresse("6 Impasse du Suc")
+                .codePostal("81490")
+                .ville("Boissezon")
+                .latitude(43.5775202)
+                .longitude(2.3694482)
+                .build();
+        utilisateurRepository.save(utilisateur);
+        return utilisateur;
     }
 
+    public Client getMockClient(Utilisateur user) {
+        Client client = CORRECT_CLIENT;
+        client.set_id(null);
+        client.setNomEntreprise((Math.random() * 10000)+"Test");
+        client.setIdUtilisateur(String.valueOf(user.getId()));
+        clientMongoTemplate.save(client);
+        Client clientFound = clientMongoTemplate.find("_id" ,client.get_id()).getFirst();
 
-    private void setUpSecurityContext(Utilisateur utilisateur) {
-        SecurityContextHolder.clearContext();
-        
-        SecurityContext mockSecurityContext = Mockito.mock(SecurityContext.class);
-        Authentication mockAuthentication = Mockito.mock(Authentication.class);
-
-        when(mockSecurityContext.getAuthentication()).thenReturn(mockAuthentication);
-
-        when(mockAuthentication.getPrincipal()).thenReturn(utilisateur);
-
-        //when(mockHolder.getContext()).thenReturn(mockSecurityContext);
-        SecurityContextHolder.setContext(mockSecurityContext);
+        return clientFound;
+    }
+    private String getRandomEmail() {
+        double firstPart = Math.random() * 10000;
+        double domain = Math.random() * 10000;
+        return firstPart+"@"+domain+".fr";
     }
 
     public Utilisateur getUtilisateur() {

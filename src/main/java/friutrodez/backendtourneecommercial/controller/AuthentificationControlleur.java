@@ -1,18 +1,17 @@
 package friutrodez.backendtourneecommercial.controller;
 
 import friutrodez.backendtourneecommercial.dto.JwtToken;
-import friutrodez.backendtourneecommercial.service.AuthentificationService;
+import friutrodez.backendtourneecommercial.service.AuthenticationService;
 import friutrodez.backendtourneecommercial.dto.DonneesAuthentification;
 import friutrodez.backendtourneecommercial.service.JwtService;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
 
-import java.security.Principal;
 import java.util.Map;
 
 
@@ -32,23 +31,23 @@ public class AuthentificationControlleur {
 
     private final JwtService jwtService;
 
-    private final AuthentificationService authentificationService;
+    private final AuthenticationService authenticationService;
 
     /**
      * Constructeur de la classe AuthentificationControlleur
      *
      * @param jwtService Service pour la gestion des tokens JWT
-     * @param authentificationService Service d'authentification des utilisateurs
+     * @param authenticationService Service d'authentification des utilisateurs
      */
     @Autowired
-    public AuthentificationControlleur(JwtService jwtService, AuthentificationService authentificationService) {
+    public AuthentificationControlleur(JwtService jwtService, AuthenticationService authenticationService) {
         this.jwtService = jwtService;
-        this.authentificationService = authentificationService;
+        this.authenticationService = authenticationService;
     }
 
     @PostMapping(path = "/authentifier")
     public ResponseEntity<JwtToken> authentifier(@RequestBody DonneesAuthentification donneesAuthentification) {
-        Utilisateur utilisateur = authentificationService.authentifier(donneesAuthentification);
+        Utilisateur utilisateur = authenticationService.tryAuthenticate(donneesAuthentification);
 
         String jwtToken = jwtService.genererToken(utilisateur);
         JwtToken jwtTokenDTO = new JwtToken(jwtToken,jwtService.JWT_EXPIRATION);
@@ -64,7 +63,7 @@ public class AuthentificationControlleur {
      */
     @PostMapping(path = "/creer")
     public ResponseEntity<Map<String,String>> CreerUnCompte(@RequestBody Utilisateur utilisateur) {
-        Utilisateur utilisateurCreer =  authentificationService.creerUnCompte(utilisateur);
+        Utilisateur utilisateurCreer =  authenticationService.createAnAccount(utilisateur);
         if (utilisateurCreer == null) {
             return ResponseEntity.badRequest().body(Map.of("message","Adresse invalide"));
         }

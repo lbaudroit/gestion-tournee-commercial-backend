@@ -26,7 +26,7 @@ public class ExceptionHandlerAPI{
      */
     @ExceptionHandler(DonneesInvalidesException.class)
     public ResponseEntity<Message> gererDonneesInvalidesException(DonneesInvalidesException exception) {
-        exception.printStackTrace();
+        System.out.println(exception.getClass().toString());
         return ResponseEntity.badRequest().body(new Message(exception.getMessage()));
     }
 
@@ -37,7 +37,7 @@ public class ExceptionHandlerAPI{
      */
     @ExceptionHandler(DonneesManquantesException.class)
     public ResponseEntity<Message> gererDonneesManquantesException(DonneesManquantesException exception) {
-        exception.printStackTrace();
+        System.out.println(exception.getClass().toString());
         return ResponseEntity.badRequest().body(new Message(exception.getMessage()));
     }
 

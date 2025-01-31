@@ -2,20 +2,18 @@ package friutrodez.backendtourneecommercial.controller;
 
 import friutrodez.backendtourneecommercial.dto.Message;
 import friutrodez.backendtourneecommercial.dto.Parametrage;
-import friutrodez.backendtourneecommercial.exception.AdresseInvalideException;
-import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
-import friutrodez.backendtourneecommercial.exception.DonneesManquantesException;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mysql.UtilisateurRepository;
-import friutrodez.backendtourneecommercial.service.AuthentificationService;
+import friutrodez.backendtourneecommercial.service.AuthenticationService;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.tags.Param;
 
-import java.util.Map;
+import java.util.Set;
 
 /**
  * Rest Controlleur de la ressource Utilisateur
@@ -27,13 +25,13 @@ import java.util.Map;
  */
 @RequestMapping(path = "/utilisateur/")
 @RestController
+@Validated
 public class UtilisateurControlleur {
 
     @Autowired
     UtilisateurRepository utilisateurRepository;
     @Autowired
-    private AuthentificationService authentificationService;
-
+    private AuthenticationService authenticationService;
 
     @PostMapping(path = "modifier/")
     public ResponseEntity<Message> modifierUtilisateur(@RequestBody Parametrage parametrage) {
@@ -41,7 +39,7 @@ public class UtilisateurControlleur {
         utilisateur.setNom(parametrage.nom());
         utilisateur.setPrenom(parametrage.prenom());
         utilisateur.setEmail(parametrage.email());
-        authentificationService.modifierUnCompte(utilisateur);
+        authenticationService.editAnAccount(utilisateur);
         return ResponseEntity.ok().body(new Message("Utilisateur modifié"));
     }
 

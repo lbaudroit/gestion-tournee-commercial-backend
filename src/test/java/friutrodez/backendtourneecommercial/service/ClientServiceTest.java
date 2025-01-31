@@ -4,15 +4,11 @@ import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
 import friutrodez.backendtourneecommercial.exception.DonneesManquantesException;
 import friutrodez.backendtourneecommercial.model.Adresse;
 import friutrodez.backendtourneecommercial.model.Client;
-import friutrodez.backendtourneecommercial.model.Utilisateur;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.stereotype.Service;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class ClientServiceTest {
@@ -28,13 +24,13 @@ class ClientServiceTest {
     void CreerUnCompteVerificationTest() {
         Client client = new Client();
 
-        Assertions.assertThrows(DonneesManquantesException.class,()-> clientService.creerUnClient(client,"1"));
+        Assertions.assertThrows(DonneesManquantesException.class,()-> clientService.CreateOneClient(client,"1"));
         client.setNomEntreprise("UneEntreprise");
-        Assertions.assertThrows(DonneesManquantesException.class,() ->clientService.creerUnClient(client,"1"));
+        Assertions.assertThrows(DonneesManquantesException.class,() ->clientService.CreateOneClient(client,"1"));
         Adresse adresse = new Adresse("6 Impasse du c","81490","Boissezon");
 
         client.setAdresse(adresse);
-        Assertions.assertThrows(DonneesInvalidesException.class,() -> clientService.creerUnClient(client,"1"));
+        Assertions.assertThrows(DonneesInvalidesException.class,() -> clientService.CreateOneClient(client,"1"));
     }
 
     @Test
@@ -44,7 +40,7 @@ class ClientServiceTest {
         Adresse adresse = new Adresse("6 Impasse du Suc","81490","Boissezon");
 
         client.setAdresse(adresse);
-        Client clientRecupere = clientService.creerUnClient(client,"1");
+        Client clientRecupere = clientService.CreateOneClient(client,"1");
 
         Assertions.assertEquals(clientRecupere.getIdUtilisateur(),"1");
 

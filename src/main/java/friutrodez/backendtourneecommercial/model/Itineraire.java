@@ -2,6 +2,8 @@ package friutrodez.backendtourneecommercial.model;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.List;
@@ -11,6 +13,9 @@ import java.util.List;
  * Cette classe est utilisée pour mapper la table `Itineraire` dans la base de données.
  * Utilise Lombok pour générer les constructeurs, getters, setters et le builder.
  *
+ * L'itineraire doit avoir :
+ *      - Un nom non vide
+ *      - Une distance non vide et non négative
  * @author
  * Benjamin NICOL
  * Enzo CLUZEL
@@ -38,9 +43,12 @@ public class Itineraire {
      * Ne peut pas être nul.
      */
     @Column(nullable = false)
+    @NotBlank(message = "Le nom ne peut pas être vide")
+    @NotNull(message = "Le nom ne peut pas être vide")
     private String nom;
 
     @Column(nullable = false)
+    @NotNull(message = "La distance ne peut pas être vide")
     private Integer distance;
 
     /**

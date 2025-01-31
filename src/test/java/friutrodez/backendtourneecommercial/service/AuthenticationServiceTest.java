@@ -16,7 +16,7 @@ import org.springframework.test.annotation.Rollback;
 public class AuthenticationServiceTest {
 
     @Autowired
-    AuthentificationService authentificationService;
+    AuthenticationService authenticationService;
 
     @Test
     void testCreationUtilisateur() {
@@ -30,7 +30,7 @@ public class AuthenticationServiceTest {
         utilisateur.setCodePostal("12000");
         utilisateur.setVille("Rodez");
 
-        Utilisateur utilisateurSauvegarde = authentificationService.creerUnCompte(utilisateur);
+        Utilisateur utilisateurSauvegarde = authenticationService.createAnAccount(utilisateur);
 
         Assertions.assertNotNull(utilisateur.getId(),"L'utilisateur n'a pas été sauvegardé dans la bd");
         Assertions.assertNotEquals("Ab3@.az234",utilisateurSauvegarde.getMotDePasse(),"Le mot de passe n'a pas été encrypté");
@@ -41,13 +41,13 @@ public class AuthenticationServiceTest {
         utilisateur.setMotDePasse("Ae@.21ersqds");
         utilisateur.setNom("nomTest");
         utilisateur.setPrenom("prenomTest");
-        Assertions.assertThrows(DonneesManquantesException.class,()-> authentificationService.creerUnCompte(utilisateur));
+        Assertions.assertThrows(DonneesManquantesException.class,()-> authenticationService.createAnAccount(utilisateur));
 
         utilisateur.setEmail("   ");
-        Assertions.assertThrows(DonneesManquantesException.class,()-> authentificationService.creerUnCompte(utilisateur));
+        Assertions.assertThrows(DonneesManquantesException.class,()-> authenticationService.createAnAccount(utilisateur));
 
         utilisateur.setEmail("Test@te.");
-        Assertions.assertThrows(DonneesInvalidesException.class,()-> authentificationService.creerUnCompte(utilisateur));
+        Assertions.assertThrows(DonneesInvalidesException.class,()-> authenticationService.createAnAccount(utilisateur));
 
     }
 
@@ -65,16 +65,16 @@ public class AuthenticationServiceTest {
         utilisateur.setCodePostal("12000");
         utilisateur.setVille("Rodez");
 
-        Assertions.assertThrows(DonneesInvalidesException.class,()->authentificationService.creerUnCompte(utilisateur),"Le mot de passe est invalide");
+        Assertions.assertThrows(DonneesInvalidesException.class,()-> authenticationService.createAnAccount(utilisateur),"Le mot de passe est invalide");
 
         utilisateur.setMotDePasse("12345678");
-        Assertions.assertThrows(DonneesInvalidesException.class,()->authentificationService.creerUnCompte(utilisateur),"Le mot de passe est invalide");
+        Assertions.assertThrows(DonneesInvalidesException.class,()-> authenticationService.createAnAccount(utilisateur),"Le mot de passe est invalide");
 
         utilisateur.setMotDePasse("123456aA");
-        Assertions.assertThrows(DonneesInvalidesException.class,()->authentificationService.creerUnCompte(utilisateur),"Le mot de passe est invalide");
+        Assertions.assertThrows(DonneesInvalidesException.class,()-> authenticationService.createAnAccount(utilisateur),"Le mot de passe est invalide");
 
         utilisateur.setMotDePasse("1234aA.");
-        Assertions.assertThrows(DonneesInvalidesException.class,()->authentificationService.creerUnCompte(utilisateur),"Le mot de passe est invalide");
+        Assertions.assertThrows(DonneesInvalidesException.class,()-> authenticationService.createAnAccount(utilisateur),"Le mot de passe est invalide");
 
 
     }

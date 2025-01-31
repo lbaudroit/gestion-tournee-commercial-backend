@@ -56,11 +56,9 @@ public class ItineraireController {
     @Transactional
     @DeleteMapping(path = "supprimer/")
     public ResponseEntity<Message> supprimerItineraire(@RequestParam(name="id") int itineraire_id) {
-        Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         try {
-            appartientRepository.deleteAppartientByIdEmbedded_Itineraire_UtilisateurAndIdEmbedded_Itineraire(
-                    utilisateur, itineraireRepository.findById((long) itineraire_id).get());
-            itineraireRepository.deleteById((long) itineraire_id);
+            itineraireService.deleteItineraire(itineraire_id,user);
         } catch (Exception e) {
             return ResponseEntity.status(409).body(new Message("Itinéraire non trouvé"));
         }
@@ -106,57 +104,18 @@ public class ItineraireController {
     @Transactional
     @PostMapping(path = "creer/")
     public ResponseEntity<Itineraire> creerItineraire(@RequestBody ItineraireCreationDTO dto) {
-        Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        // On save l'itinéraire
-        Itineraire aSauvegarder = Itineraire.builder()
-                .nom(dto.nom())
-                .utilisateur(utilisateur)
-                .distance(dto.distance())
-                .build();
-        Itineraire itineraire = itineraireRepository.save(aSauvegarder);
-
-        // Et les liaisons avec les clients
-        saveAppartientsFromListIdClients(itineraire, dto.idClients());
-
-        return ResponseEntity.ok(itineraire);
+        return ResponseEntity.ok(itineraireService.createItineraire(dto,user));
     }
 
     @Transactional
     @PostMapping(path="modifier/")
     public ResponseEntity<Itineraire> modifierItineraire(@RequestParam("id") long id, @RequestBody ItineraireCreationDTO dto) {
-        Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        // On met à jour l'itinéraire
-        Itineraire aSauvegarder = Itineraire.builder()
-                .id(id)
-                .nom(dto.nom())
-                .utilisateur(utilisateur)
-                .distance(dto.distance())
-                .build();
-        Itineraire itineraire = itineraireRepository.save(aSauvegarder);
-
-        // Et les liaisons avec les clients
-        appartientRepository.deleteAllByIdEmbedded_Itineraire_Id(id);
-        saveAppartientsFromListIdClients(itineraire, dto.idClients());
-
-        return ResponseEntity.ok(itineraire);
+        return ResponseEntity.ok(itineraireService.editItineraire(dto,user,id));
     }
 
-    /**
-     * Persiste des liaisons entre itinéraire et cleints
-     * @param itineraire l'itinéraire à lier
-     * @param ids un tableau ordonné des identifiants des clients
-     * @return un tableau des liaisons créées
-     */
-    private List<Appartient> saveAppartientsFromListIdClients(Itineraire itineraire, String[] ids) {
-        List<Appartient> appartients = new ArrayList<>(ids.length);
 
-        for (int position = 0 ; position < ids.length ; position++) {
-            String idClient = ids[position];
-            appartients.add(new Appartient(new AppartientKey(itineraire, idClient), position));
-        }
-
-        return appartientRepository.saveAll(appartients);
-    }
 }
