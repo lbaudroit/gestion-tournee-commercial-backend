@@ -22,7 +22,11 @@ jobs:
           MONGO_INITDB_ROOT_USERNAME: root
         ports:
           - 27018:27017
-        options: --health-cmd="mongosh --eval 'db.runCommand({ ping: 1 })'" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: >-
+          --health-cmd="mongosh --port 27017 --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
       mysql:
         image: mysql:latest
@@ -33,7 +37,11 @@ jobs:
           MYSQL_ROOT_PASSWORD: verysecret
         ports:
           - 3307:3306
-        options: --health-cmd="mysqladmin ping -h localhost -P 3306 -u root -pverysecret" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -P 3306 -u root -pverysecret"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
     steps:
       - uses: actions/checkout@v4
