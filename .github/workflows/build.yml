@@ -11,6 +11,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Les clones superficiels doivent être désactivés pour une meilleure pertinence de l'analyse
+      - name: Build and run Docker container
+        run: |
+          docker build -t my-app .
+          docker run -d --name my-app-container my-app
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -32,4 +36,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Nécessaire pour obtenir les informations sur les PR, le cas échéant
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=lbaudroit_gestion-tournee-commercial-backend
+        run: |
+          docker exec my-app-container mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=lbaudroit_gestion-tournee-commercial-backend
+      - name: Stop and remove Docker container
+        run: |
+          docker stop my-app-container
+          docker rm my-app-container
