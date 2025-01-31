@@ -12,13 +12,13 @@ jobs:
     services:
       mongodb:
         image: mongo:latest
-        options: --health-cmd='curl --fail localhost:27017' --health-timeout=3s --health-retries=10 --health-start-period=10s
+        options: --health-cmd='curl -s localhost:27017 || exit 1' --health-timeout=3s --health-retries=10 --health-start-period=10s
       mysql:
         image: mysql:5.7
         env:
           MYSQL_ROOT_PASSWORD: rootpassword
           MYSQL_DATABASE: mydatabase
-        options: --health-cmd='mysqladmin --user=root --password=rootpassword ping' --health-timeout=3s --health-retries=10 --health-start-period=10s
+        options: --health-cmd='mysqladmin --user=root --password=rootpassword ping || exit 1' --health-timeout=3s --health-retries=10 --health-start-period=10s
     steps:
       - uses: actions/checkout@v4
         with:
