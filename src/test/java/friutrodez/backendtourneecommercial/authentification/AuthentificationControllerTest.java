@@ -1,7 +1,7 @@
 package friutrodez.backendtourneecommercial.authentification;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import friutrodez.backendtourneecommercial.controller.AuthentificationController;
+import friutrodez.backendtourneecommercial.controller.AuthentificationControlleur;
 import friutrodez.backendtourneecommercial.dto.DonneesAuthentification;
 import friutrodez.backendtourneecommercial.dto.JwtToken;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
@@ -46,7 +46,7 @@ public class AuthentificationControllerTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private AuthentificationController authentificationController;
+    private AuthentificationControlleur authentificationController;
 
     @Transactional
     @Rollback
@@ -55,7 +55,12 @@ public class AuthentificationControllerTest {
         Utilisateur testUser = new Utilisateur();
         testUser.setNom("testuser");
         testUser.setPrenom("testPrenom");
-        testUser.setMotDePasse("password");
+        testUser.setMotDePasse("pAss@dz2");
+        testUser.setEmail("Email@mail2.com");
+        testUser.setLibelleAdresse("50 Avenue de Bordeaux");
+
+        testUser.setCodePostal("12000");
+        testUser.setVille("Rodez");
 
         String utilisateurJson = objectMapper.writeValueAsString(testUser);
 
@@ -72,8 +77,12 @@ public class AuthentificationControllerTest {
         Utilisateur testUser = new Utilisateur();
         testUser.setNom("testuser");
         testUser.setPrenom("testPrenom");
-        testUser.setMotDePasse("password");
+        testUser.setEmail("Email@mail2.com");
+        testUser.setMotDePasse("pA3@.AZet4");
+        testUser.setLibelleAdresse("50 Avenue de Bordeaux");
 
+        testUser.setCodePostal("12000");
+        testUser.setVille("Rodez");
         String utilisateurJson = objectMapper.writeValueAsString(testUser);
 
         String expectedToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
@@ -81,7 +90,7 @@ public class AuthentificationControllerTest {
         JwtToken jwtToken = new JwtToken(expectedToken,1800000);
 
         UserDetails userDetailsMock = mock(UserDetails.class);
-        when(userDetailsMock.getUsername()).thenReturn("testuser");
+        when(userDetailsMock.getUsername()).thenReturn("Email@mail2.com");
         when(userDetailsMock.getPassword()).thenReturn("password");
 
         when(jwtService.genererToken(any(UserDetails.class)))
@@ -93,7 +102,7 @@ public class AuthentificationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.notNullValue()));
 
-        DonneesAuthentification donneesAuthentification = new DonneesAuthentification("testuser","password");
+        DonneesAuthentification donneesAuthentification = new DonneesAuthentification("Email@mail2.com","pA3@.AZet4");
 
          mockMvc.perform(post("/auth/authentifier")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -102,7 +111,7 @@ public class AuthentificationControllerTest {
                 .andExpect(jsonPath("$.token").value(expectedToken))
                 .andExpect(content().string(org.hamcrest.Matchers.notNullValue())).andReturn();
 
-         when(jwtService.extraireNomUtilisateur(any(String.class))).thenReturn("testuser");
+         when(jwtService.extraireEmail(any(String.class))).thenReturn("Email@mail2.com");
          when(jwtService.tokenEstValide(any(String.class),any(UserDetails.class))).thenReturn(true);
 
          mockMvc.perform(get("/auth")

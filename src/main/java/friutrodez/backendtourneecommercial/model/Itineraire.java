@@ -4,6 +4,8 @@ package friutrodez.backendtourneecommercial.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 /**
  * Classe représentant un itinéraire.
  * Cette classe est utilisée pour mapper la table `Itineraire` dans la base de données.
@@ -38,12 +40,15 @@ public class Itineraire {
     @Column(nullable = false)
     private String nom;
 
+    @Column(nullable = false)
+    private Integer distance;
+
     /**
      * Utilisateur associé à l'itinéraire.
      * Utilise une relation OneToOne avec une fusion en cascade.
      * La colonne `id_utilisateur` ne peut pas être nulle.
      */
-    @OneToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "id_utilisateur", nullable = false)
     private Utilisateur utilisateur;
 

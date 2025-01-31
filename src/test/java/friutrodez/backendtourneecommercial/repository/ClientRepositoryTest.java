@@ -20,13 +20,13 @@ public class ClientRepositoryTest {
         client.setNomEntreprise("entreprise1");
         client.setDescriptif("Une entreprise");
 
-        clientMongoTemplate.sauvegarder(client);
+        clientMongoTemplate.save(client);
 
-        Assertions.assertTrue(clientMongoTemplate.existe("nomEntreprise",
+        Assertions.assertTrue(clientMongoTemplate.exists("nomEntreprise",
                 "entreprise1"),"Le client n'a pas été créé");
 
         
-        clientMongoTemplate.enlever("nomEntreprise","entreprise1");
+        clientMongoTemplate.removeOne("nomEntreprise","entreprise1");
     }
 
     /**
@@ -34,7 +34,6 @@ public class ClientRepositoryTest {
      */
     @Test
     void recupererClientSpecifiqueTest() throws InterruptedException {
-        clientMongoTemplate.enlever("nomEntreprise","entreprise113244");
 
         Client client = new Client();
         client.setNomEntreprise("entreprise113244");
@@ -47,19 +46,19 @@ public class ClientRepositoryTest {
 
         clientMongoTemplate.mongoTemplate.insert(List.of(client,client2),Client.class);
 
-        List<Client> clients =  clientMongoTemplate.trouverPar("nomEntreprise","entreprise113244");
-        Assertions.assertEquals( clients
-                .size(), 2,"L'insertion n'a pas fonctionné. " + clients.size() + " a été inséré");
+        List<Client> clients =  clientMongoTemplate.find("nomEntreprise","entreprise113244");
+        Assertions.assertEquals(2, clients
+                .size(),"L'insertion n'a pas fonctionné. " + clients.size() + " a été inséré");
         Client donneesRecherche = new Client();
 
         donneesRecherche.setNomEntreprise("entreprise113244");
         donneesRecherche.setClientEffectif(true);
 
 
-        List<Client> clientsTrouves = clientMongoTemplate.getEntitesDepuis(donneesRecherche);
+        List<Client> clientsTrouves = clientMongoTemplate.getEntitiesFrom(donneesRecherche);
 
-        Assertions.assertEquals(clientsTrouves.size(), 2 , "Les deux clients n'ont pas été trouvés. Taille de la liste " + clientsTrouves.size() );
-        clientMongoTemplate.enlever("nomEntreprise","entreprise113244");
+        Assertions.assertEquals(2, clientsTrouves.size(), "Les deux clients n'ont pas été trouvés. Taille de la liste " + clientsTrouves.size() );
+        clientMongoTemplate.removeOne("nomEntreprise","entreprise113244");
 
     }
 
