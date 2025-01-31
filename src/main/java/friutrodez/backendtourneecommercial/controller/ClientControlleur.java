@@ -1,6 +1,8 @@
 package friutrodez.backendtourneecommercial.controller;
 
 import com.mongodb.client.result.DeleteResult;
+import friutrodez.backendtourneecommercial.dto.Message;
+import friutrodez.backendtourneecommercial.dto.Nombre;
 import friutrodez.backendtourneecommercial.model.Client;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
@@ -52,7 +54,7 @@ public class ClientControlleur {
     @GetMapping
     public  ResponseEntity<List<Client>> getTousClients() {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ResponseEntity.ok(clientMongoTemplate.getAllClients(""+utilisateur.getId()));
+        return ResponseEntity.ok(clientMongoTemplate.getAllClients(String.valueOf(utilisateur.getId())));
     }
 
     /**
@@ -60,12 +62,10 @@ public class ClientControlleur {
      * @return Un objet ResponseEntity contenant le nombre de page ou un message d'erreur.
      */
     @GetMapping(path="count")
-    public ResponseEntity<Map<String, Object>>  getNumberClient() {
+    public ResponseEntity<Nombre>  getNumberClient() {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        int pages = clientMongoTemplate.getNumberClients(String.valueOf(utilisateur.getId()));
-        Map<String, Object> response = new HashMap<>();
-        response.put("nombre", pages);
-        return ResponseEntity.ok(response);
+        int pages = clientMongoTemplate.getPageCountForUser(String.valueOf(utilisateur.getId()));
+        return ResponseEntity.ok(new Nombre(pages));
     }
 
     /**
@@ -105,7 +105,7 @@ public class ClientControlleur {
      */
     @PostMapping
     public ResponseEntity<Client> creerClient(@RequestBody Client client) {
-        Utilisateur utilisateur = (Utilisateur)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         return ResponseEntity.ok(clientService.creerUnClient(client,String.valueOf(utilisateur.getId())));
     }
@@ -118,12 +118,12 @@ public class ClientControlleur {
      * @return Un ResponseEntity contenant un message de succès.
      */
     @PutMapping("{id}")
-    public ResponseEntity<Map<String,String>> modifierClient(@PathVariable(name="id") String id, @RequestBody Client modifications) {
+    public ResponseEntity<Message> modifierClient(@PathVariable(name="id") String id, @RequestBody Client modifications) {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         clientService.modifierUnClient(id,modifications,String.valueOf(utilisateur.getId()));
 
-        return ResponseEntity.ok().body(Map.of("message","Le client a été modifié."));
+        return ResponseEntity.ok(new Message("Le client a été modifié."));
     }
 
 
@@ -134,13 +134,13 @@ public class ClientControlleur {
      * @return Un ResponseEntity contenant un message de succès ou d'échec.
      */
     @DeleteMapping("{id}")
-    public ResponseEntity<Map<String,String>> supprimerClient(@PathVariable(name = "id") String id) {
+    public ResponseEntity<Message> supprimerClient(@PathVariable(name = "id") String id) {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         DeleteResult deleteResult = clientMongoTemplate.removeClientsWithId(id,String.valueOf(utilisateur.getId()));
         if(!deleteResult.wasAcknowledged()) {
-            return ResponseEntity.badRequest().body(Map.of("message","Le client n'a pas été supprimé"));
+            return ResponseEntity.badRequest().body(new Message("Le client n'a pas été supprimé"));
         }
-        return  ResponseEntity.ok(Map.of("message","Le client a été supprimé."));
+        return  ResponseEntity.ok(new Message("Le client a été supprimé."));
     }
 }

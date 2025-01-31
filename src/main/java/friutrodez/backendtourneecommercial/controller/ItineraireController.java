@@ -12,8 +12,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -138,7 +138,7 @@ public class ItineraireController {
                     utilisateur, itineraireRepository.findById((long) itineraire_id).get());
             itineraireRepository.deleteById((long) itineraire_id);
         } catch (Exception e) {
-            return ResponseEntity.status(409).body(new Message("Itinéraire non trouvé"));
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new Message("Itinéraire non trouvé"));
         }
         return ResponseEntity.ok(new Message("Itinéraire supprimé"));
     }

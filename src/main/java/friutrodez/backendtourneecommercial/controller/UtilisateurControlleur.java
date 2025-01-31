@@ -38,7 +38,7 @@ public class UtilisateurControlleur {
     public ResponseEntity<Parametrage> recupererUtilisateur() {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Parametrage parametrage = new Parametrage(utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getEmail());
-        return ResponseEntity.ok().body(parametrage);
+        return ResponseEntity.ok(parametrage);
     }
 
     /**
@@ -48,12 +48,12 @@ public class UtilisateurControlleur {
      * @return ResponseEntity contenant l'utilisateur créé ou un message d'erreur si la création échoue
      */
     @PostMapping
-    public ResponseEntity<Map<String,String>> CreerUnCompte(@RequestBody Utilisateur utilisateur) {
+    public ResponseEntity<Message> CreerUnCompte(@RequestBody Utilisateur utilisateur) {
         Utilisateur utilisateurCreer =  authentificationService.creerUnCompte(utilisateur);
         if (utilisateurCreer == null) {
-            return ResponseEntity.badRequest().body(Map.of("message","Adresse invalide"));
+            return ResponseEntity.badRequest().body(new Message("Adresse invalide"));
         }
-        return ResponseEntity.ok(Map.of("message","L'utilisateur a été créé"));
+        return ResponseEntity.ok(new Message("L'utilisateur a été créé"));
     }
 
     @PutMapping
@@ -63,6 +63,6 @@ public class UtilisateurControlleur {
         utilisateur.setPrenom(parametrage.prenom());
         utilisateur.setEmail(parametrage.email());
         authentificationService.modifierUnCompte(utilisateur);
-        return ResponseEntity.ok().body(new Message("Utilisateur modifié"));
+        return ResponseEntity.ok(new Message("Utilisateur modifié"));
     }
 }
