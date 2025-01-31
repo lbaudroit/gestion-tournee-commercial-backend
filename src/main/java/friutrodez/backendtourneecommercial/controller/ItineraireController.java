@@ -35,7 +35,7 @@ public class ItineraireController {
     @Autowired
     private ClientMongoTemplate clientMongoTemplate;
 
-    @GetMapping(path = "nombre/")
+    @GetMapping(path = "count")
     public ResponseEntity<Nombre> getNombreItineraire() {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         // Récupérer le nombre d'itinéraire
@@ -45,7 +45,7 @@ public class ItineraireController {
         return ResponseEntity.ok(nombre);
     }
 
-    @GetMapping(path = "lazy/")
+    @GetMapping(path = "lazy")
     public ResponseEntity<List<Itineraire>> getItineraireLazy(@RequestParam(name="page") int page) {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         // Récupérer les itinéraires
@@ -53,22 +53,8 @@ public class ItineraireController {
         return ResponseEntity.ok(itineraireRepository.getItinerairesByUtilisateur(utilisateur, pageable));
     }
 
-    @Transactional
-    @DeleteMapping(path = "supprimer/")
-    public ResponseEntity<Message> supprimerItineraire(@RequestParam(name="id") int itineraire_id) {
-        Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        try {
-            appartientRepository.deleteAppartientByIdEmbedded_Itineraire_UtilisateurAndIdEmbedded_Itineraire(
-                    utilisateur, itineraireRepository.findById((long) itineraire_id).get());
-            itineraireRepository.deleteById((long) itineraire_id);
-        } catch (Exception e) {
-            return ResponseEntity.status(409).body(new Message("Itinéraire non trouvé"));
-        }
-        return ResponseEntity.ok(new Message("Itinéraire supprimé"));
-    }
-
-    @GetMapping(path = "recuperer/")
-    public ResponseEntity<ItineraireDTO> getUnItineraire(@RequestParam(name = "id") Long id) {
+    @GetMapping("{id}")
+    public ResponseEntity<ItineraireDTO> getUnItineraire(@PathVariable(name = "id") Long id) {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         Optional<Itineraire> itineraire = itineraireRepository.findItineraireByIdAndUtilisateur(id, utilisateur);
@@ -89,7 +75,7 @@ public class ItineraireController {
         return ResponseEntity.ok(dto);
     }
 
-    @GetMapping(path = "generer/")
+    @GetMapping(path = "generate")
     public ResponseEntity<ResultatOptimisation> genererItineraire(@RequestParam("clients") List<Integer> idClients) {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -104,7 +90,7 @@ public class ItineraireController {
     }
 
     @Transactional
-    @PostMapping(path = "creer/")
+    @PostMapping
     public ResponseEntity<Itineraire> creerItineraire(@RequestBody ItineraireCreationDTO dto) {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -123,8 +109,8 @@ public class ItineraireController {
     }
 
     @Transactional
-    @PostMapping(path="modifier/")
-    public ResponseEntity<Itineraire> modifierItineraire(@RequestParam("id") long id, @RequestBody ItineraireCreationDTO dto) {
+    @PutMapping("{id}")
+    public ResponseEntity<Itineraire> modifierItineraire(@PathVariable("id") long id, @RequestBody ItineraireCreationDTO dto) {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         // On met à jour l'itinéraire
@@ -141,6 +127,20 @@ public class ItineraireController {
         saveAppartientsFromListIdClients(itineraire, dto.idClients());
 
         return ResponseEntity.ok(itineraire);
+    }
+
+    @Transactional
+    @DeleteMapping("{id}")
+    public ResponseEntity<Message> supprimerItineraire(@PathVariable(name="id") int itineraire_id) {
+        Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        try {
+            appartientRepository.deleteAppartientByIdEmbedded_Itineraire_UtilisateurAndIdEmbedded_Itineraire(
+                    utilisateur, itineraireRepository.findById((long) itineraire_id).get());
+            itineraireRepository.deleteById((long) itineraire_id);
+        } catch (Exception e) {
+            return ResponseEntity.status(409).body(new Message("Itinéraire non trouvé"));
+        }
+        return ResponseEntity.ok(new Message("Itinéraire supprimé"));
     }
 
     /**

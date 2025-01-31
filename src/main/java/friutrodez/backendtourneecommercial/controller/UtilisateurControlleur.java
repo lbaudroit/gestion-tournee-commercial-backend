@@ -34,8 +34,29 @@ public class UtilisateurControlleur {
     @Autowired
     private AuthentificationService authentificationService;
 
+    @GetMapping
+    public ResponseEntity<Parametrage> recupererUtilisateur() {
+        Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Parametrage parametrage = new Parametrage(utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getEmail());
+        return ResponseEntity.ok().body(parametrage);
+    }
 
-    @PostMapping(path = "modifier/")
+    /**
+     * Crée un compte utilisateur.
+     *
+     * @param utilisateur Objet contenant les informations du nouvel utilisateur
+     * @return ResponseEntity contenant l'utilisateur créé ou un message d'erreur si la création échoue
+     */
+    @PostMapping
+    public ResponseEntity<Map<String,String>> CreerUnCompte(@RequestBody Utilisateur utilisateur) {
+        Utilisateur utilisateurCreer =  authentificationService.creerUnCompte(utilisateur);
+        if (utilisateurCreer == null) {
+            return ResponseEntity.badRequest().body(Map.of("message","Adresse invalide"));
+        }
+        return ResponseEntity.ok(Map.of("message","L'utilisateur a été créé"));
+    }
+
+    @PutMapping
     public ResponseEntity<Message> modifierUtilisateur(@RequestBody Parametrage parametrage) {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         utilisateur.setNom(parametrage.nom());
@@ -43,13 +64,5 @@ public class UtilisateurControlleur {
         utilisateur.setEmail(parametrage.email());
         authentificationService.modifierUnCompte(utilisateur);
         return ResponseEntity.ok().body(new Message("Utilisateur modifié"));
-    }
-
-    @GetMapping(path = "")
-    public ResponseEntity<Parametrage> recupererUtilisateur() {
-        Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Parametrage parametrage = new Parametrage(utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getEmail());
-        return ResponseEntity.ok().body(parametrage);
-
     }
 }

@@ -25,7 +25,7 @@ import java.util.Map;
  * @author Leïla BAUDROIT
  * @author Ahmed BRIBACH
  */
-@RequestMapping(path = "/auth")
+@RequestMapping(path = "/auth/")
 @RestController
 @Validated
 public class AuthentificationControlleur {
@@ -46,7 +46,7 @@ public class AuthentificationControlleur {
         this.authentificationService = authentificationService;
     }
 
-    @PostMapping(path = "/authentifier")
+    @PostMapping
     public ResponseEntity<JwtToken> authentifier(@RequestBody DonneesAuthentification donneesAuthentification) {
         Utilisateur utilisateur = authentificationService.authentifier(donneesAuthentification);
 
@@ -55,31 +55,4 @@ public class AuthentificationControlleur {
         return  ResponseEntity.ok(jwtTokenDTO);
 
     }
-
-    /**
-     * Crée un compte utilisateur.
-     *
-     * @param utilisateur Objet contenant les informations du nouvel utilisateur
-     * @return ResponseEntity contenant l'utilisateur créé ou un message d'erreur si la création échoue
-     */
-    @PostMapping(path = "/creer")
-    public ResponseEntity<Map<String,String>> CreerUnCompte(@RequestBody Utilisateur utilisateur) {
-        Utilisateur utilisateurCreer =  authentificationService.creerUnCompte(utilisateur);
-        if (utilisateurCreer == null) {
-            return ResponseEntity.badRequest().body(Map.of("message","Adresse invalide"));
-        }
-        return ResponseEntity.ok(Map.of("message","L'utilisateur a été créé"));
-    }
-
-    /**
-     * STUB
-     * méthode de test pour tester le token après authentification
-     * @return
-     */
-    @GetMapping
-    public String testToken() {
-        Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return "token fonctionnel";
-    }
-
 }
