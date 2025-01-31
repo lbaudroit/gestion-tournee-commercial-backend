@@ -8,18 +8,17 @@ jobs:
   build:
     name: Build, Analyze, and Test with Databases
     runs-on: ubuntu-latest
-
+    
     services:
       mongodb:
         image: mongo:latest
-        options: --health-cmd='curl --silent --fail localhost:27017' --health-timeout=3s --health-retries=10 --health-start-period=10s
+        options: --health-cmd='curl --fail localhost:27017' --health-timeout=3s --health-retries=10 --health-start-period=10s
       mysql:
         image: mysql:5.7
         env:
           MYSQL_ROOT_PASSWORD: rootpassword
           MYSQL_DATABASE: mydatabase
         options: --health-cmd='mysqladmin --user=root --password=rootpassword ping' --health-timeout=3s --health-retries=10 --health-start-period=10s
-
     steps:
       - uses: actions/checkout@v4
         with:
