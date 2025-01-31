@@ -16,16 +16,24 @@ jobs:
     services:
       mongodb:
         image: mongo:latest
-        ports:
-          - 27017:27017
-      mysql:
-        image: mysql:5.7
         env:
-          MYSQL_ROOT_PASSWORD: rootpassword
-          MYSQL_DATABASE: mydatabase
+          MONGO_INITDB_DATABASE: mydatabase
+          MONGO_INITDB_ROOT_PASSWORD: secret
+          MONGO_INITDB_ROOT_USERNAME: root
         ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+          - 27018:27017
+        options: --health-cmd="mongosh --eval 'db.runCommand({ ping: 1 })'" --health-interval=10s --health-timeout=5s --health-retries=3
+
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_DATABASE: mydatabase
+          MYSQL_USER: myuser
+          MYSQL_PASSWORD: secret
+          MYSQL_ROOT_PASSWORD: verysecret
+        ports:
+          - 3307:3306
+        options: --health-cmd="mysqladmin ping -h localhost -P 3306 -u root -pverysecret" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - uses: actions/checkout@v4
@@ -48,10 +56,10 @@ jobs:
 
       - name: Build with Maven
         env:
-          SPRING_DATA_MONGODB_URI: mongodb://localhost:27017/test
-          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/mydatabase
-          SPRING_DATASOURCE_USERNAME: root
-          SPRING_DATASOURCE_PASSWORD: rootpassword
+          SPRING_DATA_MONGODB_URI: mongodb://root:secret@localhost:27018/mydatabase
+          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3307/mydatabase
+          SPRING_DATASOURCE_USERNAME: myuser
+          SPRING_DATASOURCE_PASSWORD: secret
         run: mvn -B clean verify
 
       - name: SonarQube Analysis
