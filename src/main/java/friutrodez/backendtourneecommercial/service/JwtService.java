@@ -20,7 +20,7 @@ import java.util.function.Function;
  * Un JWT Token est composé de 3 parties.
  * Le header : le type d'algo d'encryption et le type du token
  * Le payload : contient les informations du token
- * La signature : La clé du token (utilisée pour valider le token)
+ * La signature : la clé du token (utilisée pour valider le token)
  *
  * @author
  * Benjamin NICOL

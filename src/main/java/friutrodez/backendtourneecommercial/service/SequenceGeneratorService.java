@@ -31,6 +31,11 @@ public class SequenceGeneratorService {
         this.mongoOperations = mongoOperations;
     }
 
+    /**
+     * Méthode pour générer un nouvel id pour un document mongoDB.
+     * @param seqName Le nom de la séquence.
+     * @return L'id du document.
+     */
     public String generateSequence(String seqName) {
 
         MongoDBMysqlSequence counter = mongoOperations.findAndModify(query(where("_id").is(seqName)),

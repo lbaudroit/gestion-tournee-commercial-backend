@@ -35,10 +35,10 @@ public class AdresseToolsService {
     /**
      * Cette méthode récupére les adresses à partir de l'API du gouvernement.
      * Puis elle renvoie si l'adresse est correcte.
-     * @param label Le libelle de l'adresse
-     * @param postCode
-     * @param city
-     * @return
+     * @param label Le libelle de l'adresse.
+     * @param postCode Le code postal de l'adresse.
+     * @param city La ville de l'adresse
+     * @return true si l'adresse correspond à celle donné en paramètre false sinon
      */
     public boolean validateAdresse(String label, String postCode, String city) {
         // Search with libelle and as filter codePostal
@@ -108,6 +108,11 @@ public class AdresseToolsService {
         return null;
     }
 
+    /**
+     * Extrait les coordonnées de l'adresse.
+     * @param response La réponse de l'api
+     * @return un tableau avec les coordonnées.
+     */
     private Double[] extractCoordinates(String response) {
         try {
             ObjectMapper mapper = new ObjectMapper();

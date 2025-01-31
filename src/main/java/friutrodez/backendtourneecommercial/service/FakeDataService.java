@@ -1,4 +1,4 @@
-package friutrodez.backendtourneecommercial.repository.mongodb;
+package friutrodez.backendtourneecommercial.service;
 
 import com.github.javafaker.Faker;
 import friutrodez.backendtourneecommercial.model.*;
@@ -9,6 +9,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
+/**
+ * Service pour créer des clients rapidement.
+ *
+ * @author
+ * Benjamin NICOL
+ * Enzo CLUZEL
+ * Leïla BAUDROIT
+ * Ahmed BRIBACH
+ */
 @Service
 public class FakeDataService {
 

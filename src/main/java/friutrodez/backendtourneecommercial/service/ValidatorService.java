@@ -1,12 +1,9 @@
 package friutrodez.backendtourneecommercial.service;
 
-import friutrodez.backendtourneecommercial.dto.Message;
 import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
-import friutrodez.backendtourneecommercial.model.Utilisateur;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;

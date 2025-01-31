@@ -2,7 +2,7 @@ package friutrodez.backendtourneecommercial.configuration;
 
 import friutrodez.backendtourneecommercial.model.*;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
-import friutrodez.backendtourneecommercial.repository.mongodb.FakeDataService;
+import friutrodez.backendtourneecommercial.service.FakeDataService;
 import friutrodez.backendtourneecommercial.repository.mysql.AppartientRepository;
 import friutrodez.backendtourneecommercial.repository.mysql.ItineraireRepository;
 import friutrodez.backendtourneecommercial.repository.mysql.UtilisateurRepository;
