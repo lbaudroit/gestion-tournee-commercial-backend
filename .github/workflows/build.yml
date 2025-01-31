@@ -1,6 +1,7 @@
 name: SonarQube Analysis with MongoDB and MySQL
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
