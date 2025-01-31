@@ -2,11 +2,23 @@ package friutrodez.backendtourneecommercial.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import friutrodez.backendtourneecommercial.model.Adresse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 
+/**
+ * Service pour la gestion des adresses.
+ *
+ * Cette classe propose des méthodes pour valider une adresse
+ * et géolocaliser une adresse en donnant ces coordonnées
+ * @author
+ * Benjamin NICOL
+ * Enzo CLUZEL
+ * Leïla BAUDROIT
+ * Ahmed BRIBACH
+ */
 @Service
 public class AdresseToolsService {
 
@@ -20,9 +32,17 @@ public class AdresseToolsService {
 
     private static final String API_URL = "/search/?q=";
 
-    public boolean validateAdresse(String libelle, String codePostal, String ville) {
+    /**
+     * Cette méthode récupére les adresses à partir de l'API du gouvernement.
+     * Puis elle renvoie si l'adresse est correcte.
+     * @param label Le libelle de l'adresse
+     * @param postCode
+     * @param city
+     * @return
+     */
+    public boolean validateAdresse(String label, String postCode, String city) {
         // Search with libelle and as filter codePostal
-        String url = API_URL + libelle + "&postcode=" + codePostal + "&city=" + ville + "&limit=1" + "&type=housenumber" + "&autocomplete=0";
+        String url = API_URL + label + "&postcode=" + postCode + "&city=" + city + "&limit=1" + "&type=housenumber" + "&autocomplete=0";
         try {
             String response = webClient.get()
                     .uri(url)
@@ -30,7 +50,19 @@ public class AdresseToolsService {
                     .bodyToMono(String.class)
                     .block();
             System.out.println(response);
-            return parseGeoJsonResponse(response, libelle,codePostal,ville);
+            Adresse adress = parseGeoJsonResponse(response);
+
+            if(adress != null) {
+                if (adress.getLibelle().equals(label) &&
+                        adress.getVille().equals(city)&&
+                        adress.getCodePostal().equals(postCode)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }else {
+                return false;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -45,6 +77,7 @@ public class AdresseToolsService {
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
+
             return extractCoordinates(response);
         } catch (Exception e) {
             e.printStackTrace();
@@ -52,28 +85,27 @@ public class AdresseToolsService {
         }
     }
 
-    private boolean parseGeoJsonResponse(String response, String libelle,String codePostal,String ville) {
+    /**
+     * Convertie la première réponse en adresse.
+     * @param response La réponse de l'api.
+     * @return Une adresse.
+     */
+    private Adresse parseGeoJsonResponse(String response) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(response);
-            JsonNode features = root.path("features");
+            JsonNode feature = root.path("features").get(0);
 
-            for (JsonNode feature : features) {
-                JsonNode properties = feature.path("properties");
-                String label = properties.path("name").asText();
-                String city = properties.path("city").asText();
-                String postCode = properties.path("postcode").asText();
+            JsonNode properties = feature.path("properties");
+            String label = properties.path("name").asText();
+            String city = properties.path("city").asText();
+            String postCode = properties.path("postcode").asText();
+            return new Adresse(label,postCode,city);
 
-                if (label.equals(libelle) && city.equals(ville)&& postCode.equals(codePostal)) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return false;
+        return null;
     }
 
     private Double[] extractCoordinates(String response) {

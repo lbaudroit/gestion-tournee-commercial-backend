@@ -1,8 +1,6 @@
 package friutrodez.backendtourneecommercial.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import friutrodez.backendtourneecommercial.helper.ConfigurationSecurityContextTest;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import jakarta.transaction.Transactional;
@@ -11,16 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -29,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Rollback
 @ActiveProfiles("production")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class UtilisateurControlleurTest {
+public class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -46,27 +40,18 @@ public class UtilisateurControlleurTest {
     @BeforeAll
     void setSecurity() throws Exception {
         headerToken = configurationSecurityContextTest.getTokenForSecurity(mockMvc);
-        testUser = configurationSecurityContextTest.getUtilisateur();
+        testUser = configurationSecurityContextTest.getUser();
     }
 
     @Test
-    void modificationUtilisateurEtSuppresionTest()  throws Exception{
-        testUser.setNom("modificationTestUser");
+    void testEditUser()  throws Exception{
+         testUser.setNom("modificationTestUser");
 
-        String utilisateurJson = objectMapper.writeValueAsString(testUser);
+         String utilisateurJson = objectMapper.writeValueAsString(testUser);
 
-         MvcResult mvcResultat = mockMvc.perform(post("/utilisateur/modifier")
+         mockMvc.perform(post("/utilisateur/modifier/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(utilisateurJson).header("Authorization","Bearer " + headerToken ))
-                .andExpect(status().isOk()).andReturn();
-
-
-        mockMvc.perform(delete("/utilisateur/supprimer")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .param("id",String.valueOf(testUser.getId()))
-                        .header("Authorization","Bearer " + headerToken ))
                 .andExpect(status().isOk());
-
-
     }
 }

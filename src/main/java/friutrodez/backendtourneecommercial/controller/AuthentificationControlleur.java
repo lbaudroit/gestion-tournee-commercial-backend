@@ -5,7 +5,6 @@ import friutrodez.backendtourneecommercial.service.AuthenticationService;
 import friutrodez.backendtourneecommercial.dto.DonneesAuthentification;
 import friutrodez.backendtourneecommercial.service.JwtService;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -49,7 +48,7 @@ public class AuthentificationControlleur {
     public ResponseEntity<JwtToken> authentifier(@RequestBody DonneesAuthentification donneesAuthentification) {
         Utilisateur utilisateur = authenticationService.tryAuthenticate(donneesAuthentification);
 
-        String jwtToken = jwtService.genererToken(utilisateur);
+        String jwtToken = jwtService.generateToken(utilisateur);
         JwtToken jwtTokenDTO = new JwtToken(jwtToken,jwtService.JWT_EXPIRATION);
         return  ResponseEntity.ok(jwtTokenDTO);
 

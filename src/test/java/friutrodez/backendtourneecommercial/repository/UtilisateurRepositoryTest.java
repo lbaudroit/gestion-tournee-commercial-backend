@@ -1,16 +1,13 @@
 package friutrodez.backendtourneecommercial.repository;
 
-import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mysql.UtilisateurRepository;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
 import java.sql.SQLException;
-import java.util.Optional;
 
 @SpringBootTest
 public class UtilisateurRepositoryTest {
@@ -21,7 +18,7 @@ public class UtilisateurRepositoryTest {
     @Test
     @Transactional
     @Rollback
-    void testCreation() throws SQLException {
+    void testBuild() throws SQLException {
 
         /*Utilisateur utilisateur = Utilisateur.builder()
                 .nom("en")

@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @Rollback
 @ActiveProfiles("production")
-public class AuthentificationControllerTest {
+public class AuthenticationControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -62,11 +62,11 @@ public class AuthentificationControllerTest {
         testUser.setCodePostal("12000");
         testUser.setVille("Rodez");
 
-        String utilisateurJson = objectMapper.writeValueAsString(testUser);
+        String userAsJson = objectMapper.writeValueAsString(testUser);
 
         mockMvc.perform(post("/auth/creer")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(utilisateurJson))
+                        .content(userAsJson))
                 .andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.notNullValue()));
 
@@ -83,7 +83,7 @@ public class AuthentificationControllerTest {
 
         testUser.setCodePostal("12000");
         testUser.setVille("Rodez");
-        String utilisateurJson = objectMapper.writeValueAsString(testUser);
+        String userAsJson = objectMapper.writeValueAsString(testUser);
 
         String expectedToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
 
@@ -93,26 +93,26 @@ public class AuthentificationControllerTest {
         when(userDetailsMock.getUsername()).thenReturn("Email@mail2.com");
         when(userDetailsMock.getPassword()).thenReturn("password");
 
-        when(jwtService.genererToken(any(UserDetails.class)))
+        when(jwtService.generateToken(any(UserDetails.class)))
                 .thenReturn(expectedToken);
 
         mockMvc.perform(post("/auth/creer")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(utilisateurJson))
+                        .content(userAsJson))
                 .andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.notNullValue()));
 
-        DonneesAuthentification donneesAuthentification = new DonneesAuthentification("Email@mail2.com","pA3@.AZet4");
+        DonneesAuthentification authenticationData = new DonneesAuthentification("Email@mail2.com","pA3@.AZet4");
 
          mockMvc.perform(post("/auth/authentifier")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(donneesAuthentification)))
+                .content(objectMapper.writeValueAsString(authenticationData)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").value(expectedToken))
                 .andExpect(content().string(org.hamcrest.Matchers.notNullValue())).andReturn();
 
-         when(jwtService.extraireEmail(any(String.class))).thenReturn("Email@mail2.com");
-         when(jwtService.tokenEstValide(any(String.class),any(UserDetails.class))).thenReturn(true);
+         when(jwtService.extractEmail(any(String.class))).thenReturn("Email@mail2.com");
+         when(jwtService.isTokenValid(any(String.class),any(UserDetails.class))).thenReturn(true);
 
          mockMvc.perform(get("/auth")
                  .header("Authorization", "Bearer " + expectedToken))

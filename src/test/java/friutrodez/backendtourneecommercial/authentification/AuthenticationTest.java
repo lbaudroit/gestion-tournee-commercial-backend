@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("production")
-public class AuthentificationTest {
+public class AuthenticationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -32,97 +32,97 @@ public class AuthentificationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    JwtToken userToken;
+     String userAsJson1;
+     String userAsJson2;
 
-    JwtToken tokenUtilisateur1;
-     String utilisateurJson;
-     String utilisateurJson2;
     @BeforeAll
     void Setup() throws Exception {
-        Utilisateur testUtilisateur = new Utilisateur();
-        testUtilisateur.setNom("testuser");
-        testUtilisateur.setPrenom("testPrenom");
-        testUtilisateur.setMotDePasse("A232Eez@d");
-        testUtilisateur.setEmail("Email1@email.com");
-        testUtilisateur.setLibelleAdresse("50 Avenue de Bordeaux");
+        Utilisateur testUser = new Utilisateur();
+        testUser.setNom("testuser");
+        testUser.setPrenom("testPrenom");
+        testUser.setMotDePasse("A232Eez@d");
+        testUser.setEmail("Email1@email.com");
+        testUser.setLibelleAdresse("50 Avenue de Bordeaux");
 
-        testUtilisateur.setCodePostal("12000");
-        testUtilisateur.setVille("Rodez");
+        testUser.setCodePostal("12000");
+        testUser.setVille("Rodez");
 
-        Utilisateur testUtilisateur2 = new Utilisateur();
-        testUtilisateur2.setNom("testUser2");
-        testUtilisateur2.setPrenom("testPrenom2");
-        testUtilisateur2.setMotDePasse("A232Eez@d ");
-        testUtilisateur2.setEmail("Email@mail.com");
-        testUtilisateur2.setLibelleAdresse("50 Avenue de Bordeaux");
+        Utilisateur testUser2 = new Utilisateur();
+        testUser2.setNom("testUser2");
+        testUser2.setPrenom("testPrenom2");
+        testUser2.setMotDePasse("A232Eez@d ");
+        testUser2.setEmail("Email@mail.com");
+        testUser2.setLibelleAdresse("50 Avenue de Bordeaux");
 
-        testUtilisateur2.setCodePostal("12000");
-        testUtilisateur2.setVille("Rodez");
+        testUser2.setCodePostal("12000");
+        testUser2.setVille("Rodez");
 
-        utilisateurJson = objectMapper.writeValueAsString(testUtilisateur);
-        utilisateurJson2 = objectMapper.writeValueAsString(testUtilisateur2);
+        userAsJson1 = objectMapper.writeValueAsString(testUser);
+        userAsJson2 = objectMapper.writeValueAsString(testUser2);
 
         mockMvc.perform(post("/auth/creer")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(utilisateurJson))
+                        .content(userAsJson1))
 
                 .andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.notNullValue()));
 
         mockMvc.perform(post("/auth/creer")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(utilisateurJson2))
+                        .content(userAsJson2))
                 .andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.notNullValue())).andDo(print());
 
         MvcResult mvcResult = mockMvc.perform(post("/auth/authentifier")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(utilisateurJson))
+                        .content(userAsJson1))
                 .andExpect(status().isOk()).andDo(print()).andReturn();
 
-        tokenUtilisateur1 =  objectMapper.readValue(mvcResult.getResponse().getContentAsString(), JwtToken.class);
+        userToken =  objectMapper.readValue(mvcResult.getResponse().getContentAsString(), JwtToken.class);
 
     }
 
     @Test
-    void testMemeToken2Authentification() throws Exception {
+    void testTokenShouldBeDifferentForTwoAuthentication() throws Exception {
         MvcResult mvcResult = mockMvc.perform(post("/auth/authentifier")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(utilisateurJson))
+                        .content(userAsJson1))
                 .andExpect(status().isOk()).andReturn();
 
         JwtToken token =  objectMapper.readValue(mvcResult.getResponse().getContentAsString(), JwtToken.class);
 
-        Assertions.assertNotEquals(token.token(),tokenUtilisateur1.token(),"Les tokens sont les mêmes pour deux authentifications");
+        Assertions.assertNotEquals(token.token(), userToken.token(),"Les tokens sont les mêmes pour deux authentifications");
     }
 
     @Test
-    void testTokenDifferent2Utilisateurr() throws Exception {
+    void testTokenShouldBeDifferentForTwoDistinctUser() throws Exception {
         MvcResult mvcResult = mockMvc.perform(post("/auth/authentifier")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(utilisateurJson2))
+                        .content(userAsJson2))
                 .andExpect(status().isOk()).andReturn();
 
         JwtToken token =  objectMapper.readValue(mvcResult.getResponse().getContentAsString(), JwtToken.class);
 
 
-        Assertions.assertNotEquals(token.token(),tokenUtilisateur1.token(),"Les tokens sont les mêmes pour deux authentifications");
+        Assertions.assertNotEquals(token.token(), userToken.token(),"Les tokens sont les mêmes pour deux authentifications");
     }
 
     @Test
-    void testAuthentificationNonCree() throws Exception {
-        Utilisateur utilisateurNonCree = new Utilisateur();
-        utilisateurNonCree.setMotDePasse("password");
-        utilisateurNonCree.setPrenom("nonCree");
-        utilisateurNonCree.setNom("non");
+    void testAuthenticationForbidden() throws Exception {
+        Utilisateur userToAuthenticate = new Utilisateur();
+        userToAuthenticate.setMotDePasse("password");
+        userToAuthenticate.setPrenom("nonCree");
+        userToAuthenticate.setNom("non");
 
          mockMvc.perform(post("/auth/authentifier")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(utilisateurNonCree)))
+                        .content(objectMapper.writeValueAsString(userToAuthenticate)))
                 .andExpect(status().isForbidden());
     }
 
     @Test
-    void testAccesSansToken() throws Exception {
+    void testNoTokenAccess() throws Exception {
         mockMvc.perform(get("/auth"))
                 .andExpect(status().isForbidden());
     }

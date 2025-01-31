@@ -1,6 +1,5 @@
 package friutrodez.backendtourneecommercial.helper;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import friutrodez.backendtourneecommercial.dto.DonneesAuthentification;
 import friutrodez.backendtourneecommercial.dto.JwtToken;
@@ -10,51 +9,63 @@ import friutrodez.backendtourneecommercial.model.Contact;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
 import friutrodez.backendtourneecommercial.repository.mysql.UtilisateurRepository;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Classe utilitaire pour aider à la configuration du securityContext pour les tests
+ * Classe utilitaire pour aider à la configuration des tests
+ * notamment ceux liés à la securité et à la vérification.
+ *
+ * @author
+ * Benjamin NICOL
+ * Enzo CLUZEL
+ * Leïla BAUDROIT
+ * Ahmed BRIBACH
  */
 @Component
 public class ConfigurationSecurityContextTest {
 
-    private static final Adresse CORRECT_ADRESSE = new Adresse("11 Pl. du Portail Haut", "12390", "Rignac");
+    private static final Adresse CORRECT_ADRESSE = new Adresse("11 Place du Portail- Haut", "12390", "Rignac");
 
     private static final Contact CORRECT_CONTACT = new Contact("nom","test","0102030405");
     private static final Client CORRECT_CLIENT = Client.builder().clientEffectif(true).nomEntreprise("TestEntreprise")
             .contact(CORRECT_CONTACT)
             .adresse(CORRECT_ADRESSE).build();
 
+
+    private final ObjectMapper objectMapper;
+    private final ClientMongoTemplate clientMongoTemplate;
+    private final UtilisateurRepository utilisateurRepository;
+
+    private Utilisateur userFromToken;
+    private JwtToken token;
+
+    /**
+     * @param objectMapper Un json mapper pour convertir les données en json.
+     * @param clientMongoTemplate Template pour les clients.
+     * @param utilisateurRepository Repository pour les utilisateurs.
+     */
     @Autowired
-    ObjectMapper objectMapper;
-    private Utilisateur toMock;
-
-    @Autowired
-    ClientMongoTemplate clientMongoTemplate;
-    @Autowired
-    UtilisateurRepository utilisateurRepository;
-
-    JwtToken token;
-
-
-
+    public ConfigurationSecurityContextTest(ObjectMapper objectMapper, ClientMongoTemplate clientMongoTemplate, UtilisateurRepository utilisateurRepository) {
+        this.objectMapper = objectMapper;
+        this.clientMongoTemplate = clientMongoTemplate;
+       this.utilisateurRepository = utilisateurRepository;
+    }
+    /**
+     * Méthode pour récupérer un token qui sera utilisé pendant les tests.
+     * @param mockMvc Le mock mvc du test.
+     * @return Le token.
+     * @throws Exception
+     */
     public String getTokenForSecurity(MockMvc mockMvc) throws Exception {
-        if(toMock==null) {
-            Utilisateur utilisateur4 = Utilisateur.builder()
+        if(userFromToken ==null) {
+            Utilisateur user = Utilisateur.builder()
                     .nom("TestNomConfig")
                     .prenom("TestPrenom")
                     .email("te@no.fr")
@@ -65,24 +76,29 @@ public class ConfigurationSecurityContextTest {
                     .latitude(43.5775202)
                     .longitude(2.3694482)
                     .build();
-            toMock = utilisateur4;
-            String utilisateurJson = objectMapper.writeValueAsString(toMock);
+            userFromToken = user;
+            String userJson = objectMapper.writeValueAsString(userFromToken);
 
-             mockMvc.perform(post("/auth/creer").contentType(MediaType.APPLICATION_JSON).content(utilisateurJson)).andExpect(status().isOk()).andReturn();
-             toMock = utilisateurRepository.findByNom("TestNomConfig");
+             mockMvc.perform(post("/auth/creer").contentType(MediaType.APPLICATION_JSON)
+                     .content(userJson)).andExpect(status().isOk()).andReturn();
+             userFromToken = utilisateurRepository.findByNom("TestNomConfig");
         }
         if(token == null) {
-            DonneesAuthentification donneesAuthentification = new DonneesAuthentification(toMock.getEmail(),"Benjamin.123@d");
-            String utilisateurJson = objectMapper.writeValueAsString(donneesAuthentification);
-            //FIXME Une erreur est envoyée disant que le mot de passe entre l'utilisateur est celui dans la bd n'est pas le meme
-            MvcResult resultat= mockMvc.perform(post("/auth/authentifier").contentType(MediaType.APPLICATION_JSON).content(utilisateurJson)).andExpect(status().isOk()).andReturn();
-            token = objectMapper.readValue(resultat.getResponse().getContentAsString(), JwtToken.class);
+            DonneesAuthentification authenticationData = new DonneesAuthentification(userFromToken.getEmail(),"Benjamin.123@d");
+            String userJson = objectMapper.writeValueAsString(authenticationData);
+            MvcResult result = mockMvc.perform(post("/auth/authentifier").contentType(MediaType.APPLICATION_JSON).content(userJson)).andExpect(status().isOk()).andReturn();
+            token = objectMapper.readValue(result.getResponse().getContentAsString(), JwtToken.class);
 
         }
         return token.token();
     }
+
+    /**
+     * Méthode permettant de récupérer un utilisateur avec un email aléatoire afin d'être utilisé pendant les tests.
+     * @return Un utilisateur avec des données correctes.
+     */
     public Utilisateur getMockUser() {
-        Utilisateur utilisateur = Utilisateur.builder()
+        Utilisateur user = Utilisateur.builder()
                 .nom("TestRandom")
                 .prenom("TestRandom")
                 .email(getRandomEmail())
@@ -93,10 +109,15 @@ public class ConfigurationSecurityContextTest {
                 .latitude(43.5775202)
                 .longitude(2.3694482)
                 .build();
-        utilisateurRepository.save(utilisateur);
-        return utilisateur;
+        utilisateurRepository.save(user);
+        return user;
     }
 
+    /**
+     * Méthode permettant de récupérer un client avec un nom d'entreprise aléatoire.
+     * @param user L'utilisateur lié au client qui va être créé.
+     * @return Un client avec des données correctes.
+     */
     public Client getMockClient(Utilisateur user) {
         Client client = CORRECT_CLIENT;
         client.set_id(null);
@@ -107,14 +128,23 @@ public class ConfigurationSecurityContextTest {
 
         return clientFound;
     }
+
+    /**
+     * Méthode pour générer aléatoirement un email avec Math.random.
+     * @return Un email avec des chiffres pseudo aléatoires.
+     */
     private String getRandomEmail() {
         double firstPart = Math.random() * 10000;
         double domain = Math.random() * 10000;
         return firstPart+"@"+domain+".fr";
     }
 
-    public Utilisateur getUtilisateur() {
-        return  toMock;
+    /**
+     * Méthode pour récupérer l'utilisateur actuel du token récupéré.
+     * @return L'utilisateur actuel du token récupéré.
+     */
+    public Utilisateur getUser() {
+        return userFromToken;
     }
 
 }

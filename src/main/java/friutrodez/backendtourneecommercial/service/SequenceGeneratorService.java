@@ -12,6 +12,15 @@ import org.springframework.stereotype.Service;
 
 import friutrodez.backendtourneecommercial.model.MongoDBMysqlSequence;
 
+/**
+ * Service pour gérer les ids en mongoDB.
+ *
+ * @author
+ * Benjamin NICOL
+ * Enzo CLUZEL
+ * Leïla BAUDROIT
+ * Ahmed BRIBACH
+ */
 @Service
 public class SequenceGeneratorService {
 

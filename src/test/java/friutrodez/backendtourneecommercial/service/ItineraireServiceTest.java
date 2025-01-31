@@ -1,15 +1,19 @@
 package friutrodez.backendtourneecommercial.service;
 
 import friutrodez.backendtourneecommercial.dto.ItineraireCreationDTO;
-import friutrodez.backendtourneecommercial.dto.ItineraireDTO;
 import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
 import friutrodez.backendtourneecommercial.helper.ConfigurationSecurityContextTest;
 import friutrodez.backendtourneecommercial.model.*;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
+@Transactional
+@Rollback
 public class ItineraireServiceTest {
 
     @Autowired

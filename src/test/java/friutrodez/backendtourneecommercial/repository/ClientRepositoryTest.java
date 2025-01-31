@@ -15,7 +15,7 @@ public class ClientRepositoryTest {
     @Autowired
     ClientMongoTemplate clientMongoTemplate;
     @Test
-    void testCreation() {
+    void testBuild() {
         Client client = new Client();
         client.setNomEntreprise("entreprise1");
         client.setDescriptif("Une entreprise");
@@ -33,7 +33,7 @@ public class ClientRepositoryTest {
      * Les tests avec clientEffectif true et false ne sont pas possible pour l'instant
      */
     @Test
-    void recupererClientSpecifiqueTest() throws InterruptedException {
+    void testGetSpecificClient() throws InterruptedException {
 
         Client client = new Client();
         client.setNomEntreprise("entreprise113244");
