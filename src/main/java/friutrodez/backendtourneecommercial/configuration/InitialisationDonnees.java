@@ -321,7 +321,7 @@ public class InitialisationDonnees {
             // In InitialisationDonnees.java, update the fake clients generation part:
             clientMongoTemplate.removeAll();
             // Generate 500 fake clients for Enzo (utilisateur1)
-            //List<Client> fakeClients = fakeDataService.generateFakeClients(500);
+            List<Client> fakeClients = fakeDataService.generateFakeClients(500);
             //clientMongoTemplate.saveAll(fakeClients);
             // Then save your real clients
             clientMongoTemplate.saveAll(clients);

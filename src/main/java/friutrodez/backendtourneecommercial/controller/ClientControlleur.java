@@ -104,10 +104,10 @@ public class ClientControlleur {
      * @throws IllegalArgumentException si l'objet client est null ou si l'utilisateur n'est pas authentifié.
      */
     @PostMapping
-    public ResponseEntity<Client> creerClient(@RequestBody Client client) {
+    public ResponseEntity<Message> creerClient(@RequestBody Client client) {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        return ResponseEntity.ok(clientService.creerUnClient(client,String.valueOf(utilisateur.getId())));
+        clientService.creerUnClient(client,String.valueOf(utilisateur.getId()));
+        return ResponseEntity.ok(new Message("Le client a été créé."));
     }
 
     /**
