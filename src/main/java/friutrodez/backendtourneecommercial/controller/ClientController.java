@@ -10,6 +10,7 @@ import friutrodez.backendtourneecommercial.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +41,6 @@ public class ClientController {
      * @param clientMongoTemplate Template utilisé pour les requêtes MongoDB.
      * @param clientService       Service contenant la logique métier des clients.
      */
-    @Autowired
     public ClientController(ClientMongoTemplate clientMongoTemplate, ClientService clientService) {
         this.clientMongoTemplate = clientMongoTemplate;
         this.clientService = clientService;
@@ -123,9 +123,13 @@ public class ClientController {
     public ResponseEntity<Message> modifyClient(@PathVariable(name = "id") String id, @RequestBody Client modifications) {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        clientService.editOneClient(id, modifications, String.valueOf(user.getId()));
-        return ResponseEntity.ok(new Message("Le client a été modifié."));
-    }
+        try {
+            clientService.editOneClient(id, modifications, String.valueOf(user.getId()));
+            return ResponseEntity.ok(new Message("Le client a été modifié."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new Message("Le client n'a pas été trouvé"));
+        }
+}
 
 
     /**

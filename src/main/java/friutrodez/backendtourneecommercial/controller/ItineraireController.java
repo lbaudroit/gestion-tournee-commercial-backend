@@ -10,6 +10,7 @@ import friutrodez.backendtourneecommercial.repository.mysql.AppartientRepository
 import friutrodez.backendtourneecommercial.repository.mysql.ItineraireRepository;
 import friutrodez.backendtourneecommercial.service.ItineraireService;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,15 +23,15 @@ import java.util.*;
 
 @RequestMapping(path = "/itineraire/")
 @RestController
+@AllArgsConstructor
 public class ItineraireController {
 
-    @Autowired
     ItineraireRepository itineraireRepository;
-    @Autowired
+
     private AppartientRepository appartientRepository;
-    @Autowired
+
     private ItineraireService itineraireService;
-    @Autowired
+
     private ClientMongoTemplate clientMongoTemplate;
 
     private final static int PAGE_SIZE = 30;

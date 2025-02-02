@@ -33,7 +33,6 @@ public class ClientService {
      * @param clientMongoTemplate Le template mongoDB pour les clients.
      * @param validatorService Un service pour valider la ressource.
      */
-    @Autowired
     public ClientService(ClientMongoTemplate clientMongoTemplate, ValidatorService validatorService) {
         this.clientMongoTemplate = clientMongoTemplate;
         this.validatorService = validatorService;

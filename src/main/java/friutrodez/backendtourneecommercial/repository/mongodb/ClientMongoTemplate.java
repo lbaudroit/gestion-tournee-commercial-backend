@@ -2,6 +2,7 @@ package friutrodez.backendtourneecommercial.repository.mongodb;
 
 import com.mongodb.client.result.DeleteResult;
 import friutrodez.backendtourneecommercial.model.Client;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -29,7 +30,10 @@ import java.util.List;
 @Service
 public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
 
+    private final SequenceGeneratorService sequenceGeneratorService;
+
     private static final int PAGE_SIZE = 30;
+
     /**
      * Constructeur de la classe ClientMongoTemplate.
      * Initialise la classe avec MongoTemplate et la classe Client.
@@ -37,8 +41,9 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
      * @param mongoTemplate le template MongoDB utilisé pour les opérations
      */
     @Autowired
-    public ClientMongoTemplate(MongoTemplate mongoTemplate) {
+    public ClientMongoTemplate(MongoTemplate mongoTemplate, SequenceGeneratorService sequenceGeneratorService) {
         super(mongoTemplate, Client.class);
+        this.sequenceGeneratorService = sequenceGeneratorService;
     }
 
     /**
@@ -95,11 +100,8 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
         Query query = new Query().addCriteria(where("idUtilisateur").is(idUser))
                 .addCriteria(where("_id").is(idClient));
         System.out.println(query);
-        return  mongoTemplate.findOne(query,collection);
+        return mongoTemplate.findOne(query,collection);
     }
-
-    @Autowired
-    private SequenceGeneratorService sequenceGeneratorService;
 
     /**
      * Sauvegarde un client dans la base de données.

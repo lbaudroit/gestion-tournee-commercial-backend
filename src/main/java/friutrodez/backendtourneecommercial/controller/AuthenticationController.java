@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
  * @author Leïla BAUDROIT
  * @author Ahmed BRIBACH
  */
-@RequestMapping(path = "/auth")
+@RequestMapping(path = "/auth/")
 @RestController
 @Validated
 public class AuthenticationController {
@@ -34,7 +34,6 @@ public class AuthenticationController {
      * @param jwtService Service pour la gestion des tokens JWT
      * @param authenticationService Service d'authentification des utilisateurs
      */
-    @Autowired
     public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService) {
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;

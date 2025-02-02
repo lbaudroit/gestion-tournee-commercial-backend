@@ -6,6 +6,8 @@ import friutrodez.backendtourneecommercial.repository.mysql.AppartientRepository
 import friutrodez.backendtourneecommercial.repository.mysql.ItineraireRepository;
 import friutrodez.backendtourneecommercial.repository.mysql.UtilisateurRepository;
 import friutrodez.backendtourneecommercial.service.FakeDataService;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -27,26 +29,21 @@ import java.util.List;
  * @author Ahmed BRIBACH
  */
 @Configuration
+@AllArgsConstructor
 public class DataInitialization {
 
-    @Autowired
     Environment environment;
-    @Autowired
+
     private UtilisateurRepository utilisateurRepository;
 
-    @Autowired
     private ItineraireRepository itineraireRepository;
 
-    @Autowired
     private AppartientRepository appartientRepository;
 
-    @Autowired
     private ClientMongoTemplate clientMongoTemplate;
 
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
     private FakeDataService fakeDataService;
 
 

@@ -3,6 +3,8 @@ package friutrodez.backendtourneecommercial.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import friutrodez.backendtourneecommercial.model.Adresse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -22,6 +24,7 @@ import java.io.IOException;
 @Service
 public class AdresseToolsService {
 
+    private static final Logger log = LoggerFactory.getLogger(AdresseToolsService.class);
     private final WebClient webClient;
 
     public AdresseToolsService() {
@@ -67,7 +70,7 @@ public class AdresseToolsService {
                 return false;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.toString());
             return false;
         }
     }
@@ -89,7 +92,7 @@ public class AdresseToolsService {
 
             return extractCoordinates(response);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.toString());
             return null;
         }
     }
@@ -113,7 +116,7 @@ public class AdresseToolsService {
             return new Adresse(label, postCode, city);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.toString());
         }
         return null;
     }
@@ -136,7 +139,7 @@ public class AdresseToolsService {
                 return new Double[]{coordinates.get(0).asDouble(), coordinates.get(1).asDouble()};
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.toString());
         }
         return null;
     }

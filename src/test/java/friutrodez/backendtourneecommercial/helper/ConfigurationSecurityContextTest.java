@@ -1,5 +1,6 @@
 package friutrodez.backendtourneecommercial.helper;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import friutrodez.backendtourneecommercial.dto.DonneesAuthentification;
 import friutrodez.backendtourneecommercial.dto.JwtToken;
@@ -51,7 +52,6 @@ public class ConfigurationSecurityContextTest {
      * @param clientMongoTemplate Template pour les clients.
      * @param utilisateurRepository Repository pour les utilisateurs.
      */
-    @Autowired
     public ConfigurationSecurityContextTest(ObjectMapper objectMapper, ClientMongoTemplate clientMongoTemplate, UtilisateurRepository utilisateurRepository) {
         this.objectMapper = objectMapper;
         this.clientMongoTemplate = clientMongoTemplate;
@@ -61,7 +61,7 @@ public class ConfigurationSecurityContextTest {
      * Méthode pour récupérer un token qui sera utilisé pendant les tests.
      * @param mockMvc Le mock mvc du test.
      * @return Le token.
-     * @throws Exception
+     * @throws Exception en cas d'échec du mockMVC ou de la conversion en JSON
      */
     public String getTokenForSecurity(MockMvc mockMvc) throws Exception {
         if(userFromToken ==null) {
@@ -124,9 +124,8 @@ public class ConfigurationSecurityContextTest {
         client.setNomEntreprise((Math.random() * 10000)+"Test");
         client.setIdUtilisateur(String.valueOf(user.getId()));
         clientMongoTemplate.save(client);
-        Client clientFound = clientMongoTemplate.find("_id" ,client.get_id()).getFirst();
 
-        return clientFound;
+        return clientMongoTemplate.find("_id" ,client.get_id()).getFirst();
     }
 
     /**

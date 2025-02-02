@@ -41,8 +41,8 @@ public class JwtFilter extends OncePerRequestFilter {
      * @param request     la requête envoyée au serveur
      * @param response    la réponse à renvoyer
      * @param filterChain La chaine de filtre configurée
-     * @throws ServletException
-     * @throws IOException
+     * @throws ServletException en cas d'échec du doFilter
+     * @throws IOException en cas d'échec du doFilter
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class ParcoursMongoTemplate extends CustomMongoTemplate<Parcours> {
 
+    private final SequenceGeneratorService sequenceGeneratorService;
+
     /**
      * Constructeur de la classe ParcoursMongoTemplate.
      * Initialise la classe avec MongoTemplate et la classe Parcours.
@@ -27,12 +29,11 @@ public class ParcoursMongoTemplate extends CustomMongoTemplate<Parcours> {
      * @param mongoTemplate le template MongoDB utilisé pour les opérations
      */
     @Autowired
-    public ParcoursMongoTemplate(MongoTemplate mongoTemplate) {
+    public ParcoursMongoTemplate(MongoTemplate mongoTemplate, SequenceGeneratorService sequenceGeneratorService) {
         super(mongoTemplate, Parcours.class);
+        this.sequenceGeneratorService = sequenceGeneratorService;
     }
 
-    @Autowired
-    private SequenceGeneratorService sequenceGeneratorService;
 
     /**
      * Sauvegarde un parcours dans la base de données.

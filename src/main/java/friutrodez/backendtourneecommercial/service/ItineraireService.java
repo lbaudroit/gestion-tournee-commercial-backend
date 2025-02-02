@@ -45,7 +45,6 @@ public class ItineraireService {
      * @param appartientRepository Un repository pour manipuler les liaisons entre client et itineraire
      * @param clientMongoTemplate  Template des clients
      */
-    @Autowired
     public ItineraireService(ValidatorService validatorService, ClientMongoTemplate clientMongoTemplate, ItineraireRepository itineraireRepository, AppartientRepository appartientRepository) {
         this.validatorService = validatorService;
         this.clientMongoTemplate = clientMongoTemplate;

@@ -43,7 +43,6 @@ public class AuthenticationService {
      * @param authenticationManager Un manageur pour authentifier l'utilisateur.
      * @param validatorService Un service pour valider la ressource.
      */
-    @Autowired
     public AuthenticationService(UtilisateurRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, ValidatorService validatorService) {
         this.utilisateurRepository = userRepository;
         this.passwordEncoder = passwordEncoder;

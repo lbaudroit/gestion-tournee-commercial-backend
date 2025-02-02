@@ -5,6 +5,7 @@ import friutrodez.backendtourneecommercial.dto.Parametrage;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mysql.UtilisateurRepository;
 import friutrodez.backendtourneecommercial.service.AuthenticationService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,14 +21,12 @@ import org.springframework.web.bind.annotation.*;
  * @author Leïla BAUDROIT
  * @author Ahmed BRIBACH
  */
+@AllArgsConstructor
 @RequestMapping(path = "/utilisateur/")
 @RestController
 @Validated
 public class UtilisateurController {
 
-    @Autowired
-    UtilisateurRepository utilisateurRepository;
-    @Autowired
     private AuthenticationService authenticationService;
 
     @GetMapping
