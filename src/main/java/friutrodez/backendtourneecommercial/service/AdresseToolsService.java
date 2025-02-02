@@ -10,14 +10,14 @@ import java.io.IOException;
 
 /**
  * Service pour la gestion des adresses.
- *
+ * <p>
  * Cette classe propose des méthodes pour valider une adresse
  * et géolocaliser une adresse en donnant ces coordonnées
- * @author
- * Benjamin NICOL
- * Enzo CLUZEL
- * Leïla BAUDROIT
- * Ahmed BRIBACH
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 @Service
 public class AdresseToolsService {
@@ -30,19 +30,26 @@ public class AdresseToolsService {
                 .build();
     }
 
-    private static final String API_URL = "/search/?q=";
+    private static final String API_URL = "/search/";
 
     /**
-     * Cette méthode récupére les adresses à partir de l'API du gouvernement.
+     * Cette méthode récupère les adresses à partir de l'API du gouvernement.
      * Puis elle renvoie si l'adresse est correcte.
-     * @param label Le libelle de l'adresse.
+     *
+     * @param label    Le libelle de l'adresse.
      * @param postCode Le code postal de l'adresse.
-     * @param city La ville de l'adresse
+     * @param city     La ville de l'adresse
      * @return true si l'adresse correspond à celle donné en paramètre false sinon
      */
     public boolean validateAdresse(String label, String postCode, String city) {
         // Search with libelle and as filter codePostal
-        String url = API_URL + label + "&postcode=" + postCode + "&city=" + city + "&limit=1" + "&type=housenumber" + "&autocomplete=0";
+        String url = API_URL
+                + "?q=" + label
+                + "&postcode=" + postCode
+                + "&city=" + city
+                + "&limit=1"
+                + "&type=housenumber"
+                + "&autocomplete=0";
         try {
             String response = webClient.get()
                     .uri(url)
@@ -50,17 +57,13 @@ public class AdresseToolsService {
                     .bodyToMono(String.class)
                     .block();
             System.out.println(response);
-            Adresse adress = parseGeoJsonResponse(response);
+            Adresse address = parseGeoJsonResponse(response);
 
-            if(adress != null) {
-                if (adress.getLibelle().equals(label) &&
-                        adress.getVille().equals(city)&&
-                        adress.getCodePostal().equals(postCode)) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }else {
+            if (address != null) {
+                return address.getLibelle().equals(label) &&
+                        address.getVille().equals(city) &&
+                        address.getCodePostal().equals(postCode);
+            } else {
                 return false;
             }
         } catch (Exception e) {
@@ -70,7 +73,13 @@ public class AdresseToolsService {
     }
 
     public Double[] geolocateAdresse(String libelle, String codePostal, String ville) {
-        String url = API_URL + libelle + "&postcode=" + codePostal + "&city=" + ville + "&limit=1" + "&type=housenumber" + "&autocomplete=0";
+        String url = API_URL
+                + "?q=" + libelle
+                + "&postcode=" + codePostal
+                + "&city=" + ville
+                + "&limit=1"
+                + "&type=housenumber"
+                + "&autocomplete=0";
         try {
             String response = webClient.get()
                     .uri(url)
@@ -87,6 +96,7 @@ public class AdresseToolsService {
 
     /**
      * Convertie la première réponse en adresse.
+     *
      * @param response La réponse de l'api.
      * @return Une adresse.
      */
@@ -100,7 +110,7 @@ public class AdresseToolsService {
             String label = properties.path("name").asText();
             String city = properties.path("city").asText();
             String postCode = properties.path("postcode").asText();
-            return new Adresse(label,postCode,city);
+            return new Adresse(label, postCode, city);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -110,6 +120,7 @@ public class AdresseToolsService {
 
     /**
      * Extrait les coordonnées de l'adresse.
+     *
      * @param response La réponse de l'api
      * @return un tableau avec les coordonnées.
      */

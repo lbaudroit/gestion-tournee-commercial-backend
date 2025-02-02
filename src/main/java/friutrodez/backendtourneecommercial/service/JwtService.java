@@ -22,11 +22,10 @@ import java.util.function.Function;
  * Le payload : contient les informations du token
  * La signature : la clé du token (utilisée pour valider le token)
  *
- * @author
- * Benjamin NICOL
- * Enzo CLUZEL
- * Leïla BAUDROIT
- * Ahmed BRIBACH
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 @Service
 public class JwtService  {
@@ -59,7 +58,7 @@ public class JwtService  {
         return subject.apply(claims);
     }
     public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<String,Object>(), userDetails);
+        return generateToken(new HashMap<>(), userDetails);
     }
 
     public String generateToken(HashMap<String, Object> claimsExtras, UserDetails userDetails) {
@@ -118,8 +117,8 @@ public class JwtService  {
     }
 
     /**
-     *
-     * @param token
+     * Récupère la date d'expiration du token
+     * @param token le token dont on veut la date d'expiration
      * @return la date d'expiration
      */
     public Date extractExpiration(String token) {
@@ -128,7 +127,7 @@ public class JwtService  {
 
     /**
      * Extrait les claims. Vérifie avant si la signature du token est correcte avec la clé d'encryption
-     * @param token
+     * @param token le token dont on veut les claims
      * @return les claims du token
      */
     public Claims extractAllClaims(String token) {

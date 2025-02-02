@@ -6,6 +6,7 @@ import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mysql.UtilisateurRepository;
 import friutrodez.backendtourneecommercial.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
@@ -61,7 +62,11 @@ public class UtilisateurController {
         user.setNom(parametrage.nom());
         user.setPrenom(parametrage.prenom());
         user.setEmail(parametrage.email());
-        authenticationService.editAnAccount(user);
-        return ResponseEntity.ok().body(new Message("Utilisateur modifié"));
+        try {
+            authenticationService.editAnAccount(user);
+            return ResponseEntity.ok().body(new Message("Utilisateur modifié"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
     }
 }

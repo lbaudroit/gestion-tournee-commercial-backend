@@ -23,11 +23,10 @@ import java.util.Optional;
  *
  * Cette classe fournit des méthodes pour authentifier ou créer le compte d'un utilisateur.
  *
- * @author
- * Benjamin NICOL
- * Enzo CLUZEL
- * Leïla BAUDROIT
- * Ahmed BRIBACH
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 @Service
 public class AuthenticationService {
@@ -91,7 +90,7 @@ public class AuthenticationService {
      * Le mot de passe sera encryptée.
      * Des vérifications métiers sont effectuées.
      * @param editData Les modifications apportées à l'utilisateur.
-     * @return L'utilisateur modifiée.
+     * @return L'utilisateur modifié.
      */
     public Utilisateur editAnAccount(Utilisateur editData) {
         validatorService.mustValidate(editData);

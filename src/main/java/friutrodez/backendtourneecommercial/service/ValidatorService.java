@@ -9,15 +9,14 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 
 /**
- * Service s'occupant de la validation des entitées.
+ * Service s'occupant de la validation des entités.
  *
  * La validation se fait avec l'aide de jakarta.validation.
  * Il faut utiliser des annotations de jakarta.validation.constraint pour que le validator puisse les détecter.
- * @author
- * Benjamin NICOL
- * Enzo CLUZEL
- * Leïla BAUDROIT
- * Ahmed BRIBACH
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 @Service
 public class ValidatorService {

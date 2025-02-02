@@ -26,9 +26,9 @@ import java.util.List;
  * Elle contient toutes les vérifications métiers d'un itineraire.
  *
  * @author Benjamin NICOL
- * Enzo CLUZEL
- * Leïla BAUDROIT
- * Ahmed BRIBACH
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 @Service
 public class ItineraireService {

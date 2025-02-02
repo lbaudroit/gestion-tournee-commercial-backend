@@ -16,11 +16,10 @@ import org.springframework.stereotype.Service;
  *
  * Elle contient toutes les vérifications métiers.
  *
- * @author
- * Benjamin NICOL
- * Enzo CLUZEL
- * Leïla BAUDROIT
- * Ahmed BRIBACH
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 @Service
 public class ClientService {
