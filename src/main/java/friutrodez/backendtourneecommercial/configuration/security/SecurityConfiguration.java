@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -45,10 +46,12 @@ public class SecurityConfiguration {
                 http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
                 .authorizeHttpRequests(
                         // Autorise les requêtes de /auth/* et /hello
-                (authorizeHttpRequests)->authorizeHttpRequests.requestMatchers("/auth/*","/hello")
-                        .permitAll()
-                        // Toutes les autres requêtes nécessitent une authentification
-                       .anyRequest().authenticated()
+                (authorizeHttpRequests)-> {
+                    authorizeHttpRequests.requestMatchers("/auth/").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/utilisateur/").permitAll()
+                            // Toutes les autres requêtes nécessitent une authentification
+                            .anyRequest().authenticated();
+                }
 
         ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                         // Spring ne sauvegarde pas les utilisateurs authentifiées

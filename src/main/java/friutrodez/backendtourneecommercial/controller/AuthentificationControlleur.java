@@ -1,17 +1,14 @@
 package friutrodez.backendtourneecommercial.controller;
 
 import friutrodez.backendtourneecommercial.dto.JwtToken;
-import friutrodez.backendtourneecommercial.service.AuthenticationService;
 import friutrodez.backendtourneecommercial.dto.DonneesAuthentification;
+import friutrodez.backendtourneecommercial.service.AuthenticationService;
 import friutrodez.backendtourneecommercial.service.JwtService;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 
 /**
@@ -44,7 +41,7 @@ public class AuthentificationControlleur {
         this.authenticationService = authenticationService;
     }
 
-    @PostMapping(path = "/authentifier")
+    @PostMapping
     public ResponseEntity<JwtToken> authentifier(@RequestBody DonneesAuthentification donneesAuthentification) {
         Utilisateur utilisateur = authenticationService.tryAuthenticate(donneesAuthentification);
 
@@ -53,31 +50,4 @@ public class AuthentificationControlleur {
         return  ResponseEntity.ok(jwtTokenDTO);
 
     }
-
-    /**
-     * Crée un compte utilisateur.
-     *
-     * @param utilisateur Objet contenant les informations du nouvel utilisateur
-     * @return ResponseEntity contenant l'utilisateur créé ou un message d'erreur si la création échoue
-     */
-    @PostMapping(path = "/creer")
-    public ResponseEntity<Map<String,String>> CreerUnCompte(@RequestBody Utilisateur utilisateur) {
-        Utilisateur utilisateurCreer =  authenticationService.createAnAccount(utilisateur);
-        if (utilisateurCreer == null) {
-            return ResponseEntity.badRequest().body(Map.of("message","Adresse invalide"));
-        }
-        return ResponseEntity.ok(Map.of("message","L'utilisateur a été créé"));
-    }
-
-    /**
-     * STUB
-     * méthode de test pour tester le token après authentification
-     * @return
-     */
-    @GetMapping
-    public String testToken() {
-        Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return "token fonctionnel";
-    }
-
 }

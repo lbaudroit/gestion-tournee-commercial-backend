@@ -124,7 +124,7 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
      * @return Le nombre total de pages en fonction de la taille de page définie.
      * @throws IllegalArgumentException si l'idUser est null ou vide.
      */
-    public int getNumberClients(String idUser){
+    public int getPageCountForUser(String idUser){
         Query query = new Query().addCriteria(where("idUtilisateur").is(idUser));
         long totalElements = mongoTemplate.count(query, collection);
         // Calcul du nombre total de pages
