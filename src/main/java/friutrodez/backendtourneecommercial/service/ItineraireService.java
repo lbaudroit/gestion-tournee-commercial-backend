@@ -68,13 +68,16 @@ public class ItineraireService {
         return new ResultatOptimisation(transformToClientId(clients), kilometres);
     }
 
+    /**
+     * Récupère les identifiants de clients
+     * @param clients les clients dont on veut les identifiants
+     * @return une liste des identifiants
+     */
     private List<ClientId> transformToClientId(List<Client> clients) {
-        List<ClientId> clientId = new ArrayList<>();
-        System.out.println(clients);
-        for (Client client : clients) {
-            clientId.add(new ClientId(client.get_id()));
-        }
-        return clientId;
+        return clients.stream()
+                .map(Client::get_id)
+                .map(ClientId::new)
+                .toList();
     }
 
     /**

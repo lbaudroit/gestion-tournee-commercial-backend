@@ -89,7 +89,7 @@ public class ClientControllerTest {
 
     @Order(3)
     @Test
-    void testEditClient() throws Exception {
+    void testModifyClient() throws Exception {
         Client clientModifier = clientMongoTemplate.findOne("_id",client.get_id());
         clientModifier.setNomEntreprise("Test Modification");
         String jsonModifier = objectMapper.writeValueAsString(clientModifier);

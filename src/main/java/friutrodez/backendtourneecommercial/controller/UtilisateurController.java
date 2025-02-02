@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/utilisateur/")
 @RestController
 @Validated
-public class UtilisateurControlleur {
+public class UtilisateurController {
 
     @Autowired
     UtilisateurRepository utilisateurRepository;
@@ -30,9 +30,10 @@ public class UtilisateurControlleur {
     private AuthenticationService authenticationService;
 
     @GetMapping
-    public ResponseEntity<Parametrage> recupererUtilisateur() {
-        Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Parametrage parametrage = new Parametrage(utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getEmail());
+    public ResponseEntity<Parametrage> getUtilisateur() {
+        Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Parametrage parametrage = new Parametrage(user.getNom(), user.getPrenom(), user.getEmail());
         return ResponseEntity.ok().body(parametrage);
 
     }
@@ -44,21 +45,23 @@ public class UtilisateurControlleur {
      * @return ResponseEntity contenant l'utilisateur créé ou un message d'erreur si la création échoue
      */
     @PostMapping
-    public ResponseEntity<Message> CreerUnCompte(@RequestBody Utilisateur utilisateur) {
-        Utilisateur utilisateurCreer = authenticationService.createAnAccount(utilisateur);
-        if (utilisateurCreer == null) {
+    public ResponseEntity<Message> createUtilisateur(@RequestBody Utilisateur utilisateur) {
+        Utilisateur createdUser = authenticationService.createAnAccount(utilisateur);
+
+        if (createdUser == null) {
             return ResponseEntity.badRequest().body(new Message("Adresse invalide"));
         }
         return ResponseEntity.ok(new Message("L'utilisateur a été créé"));
     }
 
     @PutMapping
-    public ResponseEntity<Message> modifierUtilisateur(@RequestBody Parametrage parametrage) {
-        Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        utilisateur.setNom(parametrage.nom());
-        utilisateur.setPrenom(parametrage.prenom());
-        utilisateur.setEmail(parametrage.email());
-        authenticationService.editAnAccount(utilisateur);
+    public ResponseEntity<Message> modifyUtilisateur(@RequestBody Parametrage parametrage) {
+        Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        user.setNom(parametrage.nom());
+        user.setPrenom(parametrage.prenom());
+        user.setEmail(parametrage.email());
+        authenticationService.editAnAccount(user);
         return ResponseEntity.ok().body(new Message("Utilisateur modifié"));
     }
 }

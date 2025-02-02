@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 /**
- * Controlleur pour gérer les requêtes gérant l'authentification et la gestion de compte
- *
+ * Contrôleur pour gérer les requêtes d'authentification et de gestion de compte
  *
  * @author Benjamin NICOL
  * @author Enzo CLUZEL
@@ -23,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/auth")
 @RestController
 @Validated
-public class AuthentificationControlleur {
+public class AuthenticationController {
 
     private final JwtService jwtService;
 
@@ -36,18 +35,17 @@ public class AuthentificationControlleur {
      * @param authenticationService Service d'authentification des utilisateurs
      */
     @Autowired
-    public AuthentificationControlleur(JwtService jwtService, AuthenticationService authenticationService) {
+    public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService) {
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;
     }
 
     @PostMapping
-    public ResponseEntity<JwtToken> authentifier(@RequestBody DonneesAuthentification donneesAuthentification) {
-        Utilisateur utilisateur = authenticationService.tryAuthenticate(donneesAuthentification);
+    public ResponseEntity<JwtToken> authenticate(@RequestBody DonneesAuthentification authData) {
+        Utilisateur utilisateur = authenticationService.tryAuthenticate(authData);
 
         String jwtToken = jwtService.generateToken(utilisateur);
         JwtToken jwtTokenDTO = new JwtToken(jwtToken,jwtService.JWT_EXPIRATION);
         return  ResponseEntity.ok(jwtTokenDTO);
-
     }
 }
