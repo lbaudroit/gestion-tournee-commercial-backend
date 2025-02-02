@@ -24,9 +24,9 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
  *
  * @param <T> le type de la collection
  * @author Benjamin NICOL
- * Enzo CLUZEL
- * Leïla BAUDROIT
- * Ahmed BRIBACH
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 public abstract class CustomMongoTemplate<T> {
 

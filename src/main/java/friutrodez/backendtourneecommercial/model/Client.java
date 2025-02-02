@@ -22,9 +22,9 @@ import java.util.Objects;
  * - Un nom d'entreprise non vide
  *
  * @author Benjamin NICOL
- * Enzo CLUZEL
- * Leïla BAUDROIT
- * Ahmed BRIBACH
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 @Getter
 @Setter

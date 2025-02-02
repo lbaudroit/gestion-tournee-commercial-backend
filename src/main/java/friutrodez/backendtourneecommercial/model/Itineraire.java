@@ -16,9 +16,9 @@ import lombok.*;
  * - Une distance non vide et non négative
  *
  * @author Benjamin NICOL
- * Enzo CLUZEL
- * Leïla BAUDROIT
- * Ahmed BRIBACH
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 @Entity
 @AllArgsConstructor

@@ -24,9 +24,9 @@ import java.util.List;
  * - Une adresse valide en france
  *
  * @author Benjamin NICOL
- * Enzo CLUZEL
- * Leïla BAUDROIT
- * Ahmed BRIBACH
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 @Entity
 @AllArgsConstructor

@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
  * Utilise un générateur de séquence pour attribuer des identifiants uniques aux nouveaux parcours.
  *
  * @author Benjamin NICOL
- * Enzo CLUZEL
- * Leïla BAUDROIT
- * Ahmed BRIBACH
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 @Service
 public class ParcoursMongoTemplate extends CustomMongoTemplate<Parcours> {

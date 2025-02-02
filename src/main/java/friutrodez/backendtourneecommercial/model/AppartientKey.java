@@ -17,9 +17,9 @@ import java.io.Serializable;
  * Utilise Lombok pour générer les constructeurs, getters et setters.
  *
  * @author Benjamin NICOL
- * Enzo CLUZEL
- * Leïla BAUDROIT
- * Ahmed BRIBACH
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 @AllArgsConstructor
 @NoArgsConstructor

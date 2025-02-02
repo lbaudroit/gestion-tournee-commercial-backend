@@ -15,9 +15,9 @@ import java.util.Optional;
  * Annotée avec @Repository pour indiquer qu'il s'agit d'un composant Spring.
  *
  * @author Benjamin NICOL
- * Enzo CLUZEL
- * Leïla BAUDROIT
- * Ahmed BRIBACH
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 @Repository
 public interface ItineraireRepository extends JpaRepository<Itineraire, Long> {
