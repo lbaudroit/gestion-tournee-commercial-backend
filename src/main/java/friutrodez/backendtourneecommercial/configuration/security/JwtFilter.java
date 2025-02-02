@@ -17,7 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 /**
- * doc : org.springframework.web.filter.OncePerRequestFilter
+ * @see OncePerRequestFilter
  * Filtre d'authentification pour les tokens
  */
 @Component
@@ -36,10 +36,11 @@ public class JwtFilter extends OncePerRequestFilter {
 
     /**
      * Authentifie par rapport au token reçu dans la requête
-     * Si le token n'est pas correcte l'utilisateur n'est pas connecté
-     * @param request
-     * @param response
-     * @param filterChain La chaine de filtre
+     * Si le token n'est pas correct, l'utilisateur n'est pas connecté
+     *
+     * @param request     la requête envoyée au serveur
+     * @param response    la réponse à renvoyer
+     * @param filterChain La chaine de filtre configurée
      * @throws ServletException
      * @throws IOException
      */
@@ -49,30 +50,33 @@ public class JwtFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
 
         // Vérifie si le header possède le bearer token
-        if(authHeader ==null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request,response);
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
             return;
         }
+
+        // Enlève le "bearer"
         final String jwt = authHeader.substring(7);
-        final  String username = jwtService.extractEmail(jwt);
-        if(username!= null && null ==SecurityContextHolder.getContext().getAuthentication() ) {
+        final String username = jwtService.extractEmail(jwt);
+
+        if (username != null && null == SecurityContextHolder.getContext().getAuthentication()) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-            if(jwtService.isTokenValid(jwt,userDetails)) {
-                setAuthentification(creerAuthToken(userDetails,request));
+            if (jwtService.isTokenValid(jwt, userDetails)) {
+                setAuthentication(createAuthToken(userDetails, request));
             }
         }
-        filterChain.doFilter(request,response);
-
+        filterChain.doFilter(request, response);
     }
 
 
     /**
      * Crée un token d'authentification pour l'ajout d'une connexion dans SecurityContext
-     * @param userDetails
-     * @param request
+     *
+     * @param userDetails les informations de l'utilisateur
+     * @param request     la requête envoyée au serveur
      * @return un toke d'authentification
      */
-    private UsernamePasswordAuthenticationToken creerAuthToken(UserDetails userDetails,HttpServletRequest request) {
+    private UsernamePasswordAuthenticationToken createAuthToken(UserDetails userDetails, HttpServletRequest request) {
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                 userDetails,
                 null,
@@ -84,10 +88,11 @@ public class JwtFilter extends OncePerRequestFilter {
 
     /**
      * Connecte l'utilisateur à Spring en l'ajoutant au SecurityContext.<br>
-     * La requête peut être effectuée après cette connexion
-     * @param authToken
+     * La requête peut être effectuée après cette connexion.
+     *
+     * @param authToken le token d'authentification
      */
-    private void setAuthentification(UsernamePasswordAuthenticationToken authToken) {
+    private void setAuthentication(UsernamePasswordAuthenticationToken authToken) {
         SecurityContextHolder.getContext().setAuthentication(authToken);
     }
 }

@@ -18,9 +18,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * les requêtes du web qui communique au framework Spring.
  *
  * @author Benjamin NICOL
- * Enzo CLUZEL
- * Leïla BAUDROIT
- * Ahmed BRIBACH
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 @Configuration
 @EnableWebSecurity
@@ -35,14 +35,14 @@ public class SecurityConfiguration {
     /**
      * Filtre de l'api pour la sécurisée
      *
-     * @param http La requête
-     * @return Une chaine de sécurité qui va déterminer la façon dont les requêtes vont être filtrées
-     * @throws Exception
+     * @param http la configuration de sécurité HTTP
+     * @return Une chaine de sécurité qui va filtrer les requêtes non-authentifiées, sauf pour
+     * la création de compte et l'authentification.
+     * @throws Exception si une erreur survient lors de la désactivation de la protection CSRF
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return // Le csrf (Cross Site Request Forgery) est désactivé
-                // Elle n'est pas utile
+        return // La protection CSRF (Cross Site Request Forgery) est désactivée
                 http.csrf(AbstractHttpConfigurer::disable)
                         .authorizeHttpRequests(
                                 // Autorise les requêtes de création d'utilisateur et d'authentification
