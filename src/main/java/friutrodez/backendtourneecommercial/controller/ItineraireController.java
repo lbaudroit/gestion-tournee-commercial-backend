@@ -110,7 +110,7 @@ public class ItineraireController {
 
     @Transactional
     @PutMapping("{id}")
-    public ResponseEntity<Itineraire> modifierItineraire(@PathVariable("id") long id, @RequestBody ItineraireCreationDTO dto) {
+    public ResponseEntity<Message> modifierItineraire(@PathVariable("id") long id, @RequestBody ItineraireCreationDTO dto) {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         // On met à jour l'itinéraire
@@ -126,7 +126,7 @@ public class ItineraireController {
         appartientRepository.deleteAllByIdEmbedded_Itineraire_Id(id);
         saveAppartientsFromListIdClients(itineraire, dto.idClients());
 
-        return ResponseEntity.ok(itineraire);
+        return ResponseEntity.ok(new Message("Itinéraire modifié"));
     }
 
     @Transactional
