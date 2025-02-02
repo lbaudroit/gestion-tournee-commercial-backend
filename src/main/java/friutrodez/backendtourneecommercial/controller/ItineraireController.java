@@ -59,7 +59,7 @@ public class ItineraireController {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         Optional<Itineraire> itineraire = itineraireRepository.findItineraireByIdAndUtilisateur(id, utilisateur);
-        if (!itineraire.isPresent()) {
+        if (itineraire.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         String idUtilisateur = String.valueOf(utilisateur.getId());
@@ -87,7 +87,7 @@ public class ItineraireController {
 
         List<Client> clientsCopy = new ArrayList<>(clients);
 
-        return ResponseEntity.ok(itineraireService.optimiserPlusCourt(clientsCopy));
+        return ResponseEntity.ok(itineraireService.optimizeShortest(clientsCopy, utilisateur));
     }
 
     @Transactional

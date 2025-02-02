@@ -54,10 +54,14 @@ public class ItineraireService {
     }
 
     /**
-     * @param clients
-     * @return
+     * Optimise le trajet le plus court partant du domicile de l'utilisateur, visitant
+     * l'adresse de chacun des clients et revenant au domicile.
+     * @param clients la liste de clients à visiter
+     * @param user l'utilisateur qui souhaite effectuer un itinéraire
+     * @return une liste ordonnée de clients de manière à réduire le nombre de kilomètres
+     *         entre eux et le nombre de kilomètres associés à cet itinéraire
      */
-    public ResultatOptimisation optimiserPlusCourt(List<Client> clients) {
+    public ResultatOptimisation optimizeShortest(List<Client> clients, Utilisateur user) {
         // STUB
         Collections.shuffle(clients);
         int kilometres = (int) (Math.random() * 1000);

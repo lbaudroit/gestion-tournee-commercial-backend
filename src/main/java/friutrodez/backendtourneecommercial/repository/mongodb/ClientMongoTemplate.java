@@ -29,7 +29,7 @@ import java.util.List;
 @Service
 public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
 
-    private static  int PAGE_SIZE = 30;
+    private static final int PAGE_SIZE = 30;
     /**
      * Constructeur de la classe ClientMongoTemplate.
      * Initialise la classe avec MongoTemplate et la classe Client.
@@ -56,14 +56,12 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
 
     /**
      * Récupère une liste paginée de clients associés à un utilisateur donné.
-     * @param idUser
-     * @param page
+     * @param idUser l'identifiant de l'utilisateur dont on souhaite récupérer les clients
+     * @param page la pagination désirée pour cette recherche
      * @return Une liste paginée de clients appartenant à l'utilisateur.
      * @throws IllegalArgumentException si l'idUser est null ou vide.
      */
     public List<Client> getClientsByPage(String idUser, Pageable page) {
-        // Création d'un objet Pageable pour définir la pagination
-
         // Ajout des critères de recherche
         Query query = new Query().addCriteria(Criteria.where("idUtilisateur").is(idUser));
         query.with(page); // Appliquer la pagination au Query
@@ -74,8 +72,8 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
 
     /**
      * Retire de la BD, le client avec l'id et l'idUtilisateur correspondants
-     * @param idClient
-     * @param idUser
+     * @param idClient l'identifiant du client à supprimer
+     * @param idUser l'identifiant de l'utilisateur possédant ce client
      * @return le resultat de la suppression
      */
     public DeleteResult removeClientsWithId(String idClient,String idUser) {
@@ -96,7 +94,7 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
     public Client getOneClient(String idClient,String idUser) {
         Query query = new Query().addCriteria(where("idUtilisateur").is(idUser))
                 .addCriteria(where("_id").is(idClient));
-        System.out.println(query.toString());
+        System.out.println(query);
         return  mongoTemplate.findOne(query,collection);
     }
 
@@ -128,7 +126,6 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
         Query query = new Query().addCriteria(where("idUtilisateur").is(idUser));
         long totalElements = mongoTemplate.count(query, collection);
         // Calcul du nombre total de pages
-        int totalPages = (int) Math.ceil((double) totalElements / PAGE_SIZE);
-        return totalPages;
+        return (int) Math.ceil((double) totalElements / PAGE_SIZE);
     }
 }
