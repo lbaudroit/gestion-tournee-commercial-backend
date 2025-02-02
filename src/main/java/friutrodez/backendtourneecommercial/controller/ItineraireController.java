@@ -105,7 +105,7 @@ public class ItineraireController {
         // Et les liaisons avec les clients
         saveAppartientsFromListIdClients(itineraire, dto.idClients());
 
-        return ResponseEntity.ok("Itinéraire créé");
+        return ResponseEntity.ok(new Message("Itinéraire créé"));
     }
 
     @Transactional
