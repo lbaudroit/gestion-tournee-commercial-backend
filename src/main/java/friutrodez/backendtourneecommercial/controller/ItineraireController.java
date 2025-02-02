@@ -91,7 +91,7 @@ public class ItineraireController {
 
     @Transactional
     @PostMapping
-    public ResponseEntity<Itineraire> creerItineraire(@RequestBody ItineraireCreationDTO dto) {
+    public ResponseEntity<Message> creerItineraire(@RequestBody ItineraireCreationDTO dto) {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         // On save l'itinéraire
@@ -105,7 +105,7 @@ public class ItineraireController {
         // Et les liaisons avec les clients
         saveAppartientsFromListIdClients(itineraire, dto.idClients());
 
-        return ResponseEntity.ok(itineraire);
+        return ResponseEntity.ok("Itinéraire créé");
     }
 
     @Transactional
