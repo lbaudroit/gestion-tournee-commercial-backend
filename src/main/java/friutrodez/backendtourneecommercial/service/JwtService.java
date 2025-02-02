@@ -28,7 +28,7 @@ import java.util.function.Function;
  * @author Ahmed BRIBACH
  */
 @Service
-public class JwtService  {
+public class JwtService {
 
     /**
      * Clé d'encryption encrypté en HMAC-SHA256.
@@ -37,26 +37,33 @@ public class JwtService  {
      **/
     private final String ENCRYPTION_KEY = "gd5kn1HM/aj36IU7VsRRwrPuYiFvOYQdB8yIdA4UIaU=";
 
-    /** durée en minutes du token **/
+    /**
+     * durée en minutes du token
+     **/
     private final int MINUTES = 30;
 
-    /** durée totale du token **/
+    /**
+     * durée totale du token
+     **/
     public final int JWT_EXPIRATION = MINUTES * 60 * 1000;
+
     public String extractEmail(String token) {
         return extractClaims(token, Claims::getSubject);
     }
 
     /**
      * Extrait les claims du token
-     * @param token dont extraire les claims
+     *
+     * @param token   dont extraire les claims
      * @param subject du token
+     * @param <T>     le sujet
      * @return les claims
-     * @param <T> le sujet
      */
-    private <T> T extractClaims(String token, Function<Claims,T> subject) {
+    private <T> T extractClaims(String token, Function<Claims, T> subject) {
         final Claims claims = extractAllClaims(token);
         return subject.apply(claims);
     }
+
     public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
     }
@@ -71,9 +78,10 @@ public class JwtService  {
      * - clé encryption
      * - claims donnés
      * - date d'expiration
+     *
      * @param claimsExtras les claims à mettre dans le token
-     * @param userDetails l'username de l'utilisateur
-     * @param expiration la date d'expiration
+     * @param userDetails  l'username de l'utilisateur
+     * @param expiration   la date d'expiration
      * @return un token signé avec son payload
      */
     private String buildToken(
@@ -98,7 +106,8 @@ public class JwtService  {
 
     /**
      * Vérifie si le token est valide par rapport à son temps d'expiration et le username dans le token.
-     * @param token reçu
+     *
+     * @param token       reçu
      * @param userDetails reçu
      * @return true si le token est valide, false sinon
      */
@@ -109,6 +118,7 @@ public class JwtService  {
 
     /**
      * Vérifie si la date d'expiration est passée
+     *
      * @param token le token reçu
      * @return true si la date d'expiration est passée sinon false
      */
@@ -118,6 +128,7 @@ public class JwtService  {
 
     /**
      * Récupère la date d'expiration du token
+     *
      * @param token le token dont on veut la date d'expiration
      * @return la date d'expiration
      */
@@ -127,6 +138,7 @@ public class JwtService  {
 
     /**
      * Extrait les claims. Vérifie avant si la signature du token est correcte avec la clé d'encryption
+     *
      * @param token le token dont on veut les claims
      * @return les claims du token
      */
@@ -141,6 +153,7 @@ public class JwtService  {
     /**
      * Génération de sel pour varier les tokens par utilisateur. <br>
      * A utiliser pour éviter des tokens similaires lors d'une nouvelle connexion par un même utilisateur
+     *
      * @return une string encodé en base64
      */
     private String generateSalt() {

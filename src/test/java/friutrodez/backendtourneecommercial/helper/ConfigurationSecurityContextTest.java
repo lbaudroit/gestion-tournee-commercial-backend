@@ -1,6 +1,5 @@
 package friutrodez.backendtourneecommercial.helper;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import friutrodez.backendtourneecommercial.dto.DonneesAuthentification;
 import friutrodez.backendtourneecommercial.dto.JwtToken;
@@ -10,7 +9,6 @@ import friutrodez.backendtourneecommercial.model.Contact;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
 import friutrodez.backendtourneecommercial.repository.mysql.UtilisateurRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,8 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Classe utilitaire pour aider à la configuration des tests
  * notamment ceux liés à la securité et à la vérification.
  *
- * @author
- * Benjamin NICOL
+ * @author Benjamin NICOL
  * Enzo CLUZEL
  * Leïla BAUDROIT
  * Ahmed BRIBACH
@@ -34,7 +31,7 @@ public class ConfigurationSecurityContextTest {
 
     private static final Adresse CORRECT_ADRESSE = new Adresse("11 Place du Portail- Haut", "12390", "Rignac");
 
-    private static final Contact CORRECT_CONTACT = new Contact("nom","test","0102030405");
+    private static final Contact CORRECT_CONTACT = new Contact("nom", "test", "0102030405");
     private static final Client CORRECT_CLIENT = Client.builder().clientEffectif(true).nomEntreprise("TestEntreprise")
             .contact(CORRECT_CONTACT)
             .adresse(CORRECT_ADRESSE).build();
@@ -48,23 +45,25 @@ public class ConfigurationSecurityContextTest {
     private JwtToken token;
 
     /**
-     * @param objectMapper Un json mapper pour convertir les données en json.
-     * @param clientMongoTemplate Template pour les clients.
+     * @param objectMapper          Un json mapper pour convertir les données en json.
+     * @param clientMongoTemplate   Template pour les clients.
      * @param utilisateurRepository Repository pour les utilisateurs.
      */
     public ConfigurationSecurityContextTest(ObjectMapper objectMapper, ClientMongoTemplate clientMongoTemplate, UtilisateurRepository utilisateurRepository) {
         this.objectMapper = objectMapper;
         this.clientMongoTemplate = clientMongoTemplate;
-       this.utilisateurRepository = utilisateurRepository;
+        this.utilisateurRepository = utilisateurRepository;
     }
+
     /**
      * Méthode pour récupérer un token qui sera utilisé pendant les tests.
+     *
      * @param mockMvc Le mock mvc du test.
      * @return Le token.
      * @throws Exception en cas d'échec du mockMVC ou de la conversion en JSON
      */
     public String getTokenForSecurity(MockMvc mockMvc) throws Exception {
-        if(userFromToken ==null) {
+        if (userFromToken == null) {
             Utilisateur user = Utilisateur.builder()
                     .nom("TestNomConfig")
                     .prenom("TestPrenom")
@@ -79,12 +78,12 @@ public class ConfigurationSecurityContextTest {
             userFromToken = user;
             String userJson = objectMapper.writeValueAsString(userFromToken);
 
-             mockMvc.perform(post("/auth/creer").contentType(MediaType.APPLICATION_JSON)
-                     .content(userJson)).andExpect(status().isOk()).andReturn();
-             userFromToken = utilisateurRepository.findByNom("TestNomConfig");
+            mockMvc.perform(post("/auth/creer").contentType(MediaType.APPLICATION_JSON)
+                    .content(userJson)).andExpect(status().isOk()).andReturn();
+            userFromToken = utilisateurRepository.findByNom("TestNomConfig");
         }
-        if(token == null) {
-            DonneesAuthentification authenticationData = new DonneesAuthentification(userFromToken.getEmail(),"Benjamin.123@d");
+        if (token == null) {
+            DonneesAuthentification authenticationData = new DonneesAuthentification(userFromToken.getEmail(), "Benjamin.123@d");
             String userJson = objectMapper.writeValueAsString(authenticationData);
             MvcResult result = mockMvc.perform(post("/auth/authentifier").contentType(MediaType.APPLICATION_JSON).content(userJson)).andExpect(status().isOk()).andReturn();
             token = objectMapper.readValue(result.getResponse().getContentAsString(), JwtToken.class);
@@ -95,6 +94,7 @@ public class ConfigurationSecurityContextTest {
 
     /**
      * Méthode permettant de récupérer un utilisateur avec un email aléatoire afin d'être utilisé pendant les tests.
+     *
      * @return Un utilisateur avec des données correctes.
      */
     public Utilisateur getMockUser() {
@@ -115,31 +115,34 @@ public class ConfigurationSecurityContextTest {
 
     /**
      * Méthode permettant de récupérer un client avec un nom d'entreprise aléatoire.
+     *
      * @param user L'utilisateur lié au client qui va être créé.
      * @return Un client avec des données correctes.
      */
     public Client getMockClient(Utilisateur user) {
         Client client = CORRECT_CLIENT;
         client.set_id(null);
-        client.setNomEntreprise((Math.random() * 10000)+"Test");
+        client.setNomEntreprise((Math.random() * 10000) + "Test");
         client.setIdUtilisateur(String.valueOf(user.getId()));
         clientMongoTemplate.save(client);
 
-        return clientMongoTemplate.find("_id" ,client.get_id()).getFirst();
+        return clientMongoTemplate.find("_id", client.get_id()).getFirst();
     }
 
     /**
      * Méthode pour générer aléatoirement un email avec Math.random.
+     *
      * @return Un email avec des chiffres pseudo aléatoires.
      */
     private String getRandomEmail() {
         double firstPart = Math.random() * 10000;
         double domain = Math.random() * 10000;
-        return firstPart+"@"+domain+".fr";
+        return firstPart + "@" + domain + ".fr";
     }
 
     /**
      * Méthode pour récupérer l'utilisateur actuel du token récupéré.
+     *
      * @return L'utilisateur actuel du token récupéré.
      */
     public Utilisateur getUser() {

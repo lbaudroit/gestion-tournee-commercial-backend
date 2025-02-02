@@ -14,6 +14,7 @@ public class ClientRepositoryTest {
 
     @Autowired
     ClientMongoTemplate clientMongoTemplate;
+
     @Test
     void testBuild() {
         Client client = new Client();
@@ -23,10 +24,10 @@ public class ClientRepositoryTest {
         clientMongoTemplate.save(client);
 
         Assertions.assertTrue(clientMongoTemplate.exists("nomEntreprise",
-                "entreprise1"),"Le client n'a pas été créé");
+                "entreprise1"), "Le client n'a pas été créé");
 
-        
-        clientMongoTemplate.removeOne("nomEntreprise","entreprise1");
+
+        clientMongoTemplate.removeOne("nomEntreprise", "entreprise1");
     }
 
     /**
@@ -44,11 +45,11 @@ public class ClientRepositoryTest {
         client2.setNomEntreprise("entreprise113244");
         client2.setClientEffectif(true);
 
-        clientMongoTemplate.mongoTemplate.insert(List.of(client,client2),Client.class);
+        clientMongoTemplate.mongoTemplate.insert(List.of(client, client2), Client.class);
 
-        List<Client> clients =  clientMongoTemplate.find("nomEntreprise","entreprise113244");
+        List<Client> clients = clientMongoTemplate.find("nomEntreprise", "entreprise113244");
         Assertions.assertEquals(2, clients
-                .size(),"L'insertion n'a pas fonctionné. " + clients.size() + " a été inséré");
+                .size(), "L'insertion n'a pas fonctionné. " + clients.size() + " a été inséré");
         Client donneesRecherche = new Client();
 
         donneesRecherche.setNomEntreprise("entreprise113244");
@@ -57,8 +58,8 @@ public class ClientRepositoryTest {
 
         List<Client> clientsTrouves = clientMongoTemplate.getEntitiesFrom(donneesRecherche);
 
-        Assertions.assertEquals(2, clientsTrouves.size(), "Les deux clients n'ont pas été trouvés. Taille de la liste " + clientsTrouves.size() );
-        clientMongoTemplate.removeOne("nomEntreprise","entreprise113244");
+        Assertions.assertEquals(2, clientsTrouves.size(), "Les deux clients n'ont pas été trouvés. Taille de la liste " + clientsTrouves.size());
+        clientMongoTemplate.removeOne("nomEntreprise", "entreprise113244");
 
     }
 

@@ -11,8 +11,7 @@ import org.springframework.stereotype.Service;
  * Cette classe utilise MongoTemplate pour effectuer des opérations CRUD sur les parcours.
  * Utilise un générateur de séquence pour attribuer des identifiants uniques aux nouveaux parcours.
  *
- * @author
- * Benjamin NICOL
+ * @author Benjamin NICOL
  * Enzo CLUZEL
  * Leïla BAUDROIT
  * Ahmed BRIBACH

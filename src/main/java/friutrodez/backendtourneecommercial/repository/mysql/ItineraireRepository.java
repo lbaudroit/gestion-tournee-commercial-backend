@@ -14,8 +14,7 @@ import java.util.Optional;
  * Hérite de JpaRepository pour fournir des opérations CRUD sur les entités Itineraire.
  * Annotée avec @Repository pour indiquer qu'il s'agit d'un composant Spring.
  *
- * @author
- * Benjamin NICOL
+ * @author Benjamin NICOL
  * Enzo CLUZEL
  * Leïla BAUDROIT
  * Ahmed BRIBACH
@@ -24,7 +23,10 @@ import java.util.Optional;
 public interface ItineraireRepository extends JpaRepository<Itineraire, Long> {
 
     List<Itineraire> getItinerairesByUtilisateur(Utilisateur utilisateur);
+
     List<Itineraire> getItinerairesByUtilisateur(Utilisateur utilisateur, Pageable pageable);
+
     Optional<Itineraire> findItineraireByIdAndUtilisateur(long id, Utilisateur utilisateur);
+
     long countItineraireByUtilisateur(Utilisateur utilisateur);
 }

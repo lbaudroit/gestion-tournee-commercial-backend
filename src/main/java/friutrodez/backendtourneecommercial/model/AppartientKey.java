@@ -1,6 +1,9 @@
 package friutrodez.backendtourneecommercial.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,8 +16,7 @@ import java.io.Serializable;
  * Cette classe est utilisée pour représenter la clé composite de l'entité Appartient.
  * Utilise Lombok pour générer les constructeurs, getters et setters.
  *
- * @author
- * Benjamin NICOL
+ * @author Benjamin NICOL
  * Enzo CLUZEL
  * Leïla BAUDROIT
  * Ahmed BRIBACH

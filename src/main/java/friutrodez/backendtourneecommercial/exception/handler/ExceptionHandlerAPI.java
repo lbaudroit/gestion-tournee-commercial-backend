@@ -10,17 +10,17 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.util.Map;
 
 /**
  * Gère les exceptions venant de l'API pour envoyer une réponse personnalisée au client
  * Les exceptions doivent être personnalisées pour être efficace
  */
 @ControllerAdvice(basePackages = "friutrodez.backendtourneecommercial.controller")
-public class ExceptionHandlerAPI{
+public class ExceptionHandlerAPI {
 
     /**
      * Gère les exceptions (Donnees Invalides Exception)
+     *
      * @param exception l'exception d'origine
      * @return une réponse
      */
@@ -32,6 +32,7 @@ public class ExceptionHandlerAPI{
 
     /**
      * Gère les exceptions (Donnees Manquantes Exception)
+     *
      * @param exception l'exception d'origine
      * @return une réponse
      */
@@ -43,6 +44,7 @@ public class ExceptionHandlerAPI{
 
     /**
      * Gère l'exception d'erreur de Contrainte non respectée dans le modèle.
+     *
      * @param exception l'exception d'origine
      * @return une réponse
      */
@@ -51,14 +53,16 @@ public class ExceptionHandlerAPI{
     (ConstraintViolationException exception) {
         return ResponseEntity.badRequest().body(new Message(exception.getConstraintViolations().toString()));
     }
+
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ResponseEntity<Message> gererContrainteNonRespect
-    (SQLIntegrityConstraintViolationException exception) {
+            (SQLIntegrityConstraintViolationException exception) {
         return ResponseEntity.badRequest().body(new Message(exception.toString()));
     }
+
     @ExceptionHandler(AdresseInvalideException.class)
     public ResponseEntity<Message> gererAdresseInvalideException
-    (AdresseInvalideException exception) {
+            (AdresseInvalideException exception) {
         return ResponseEntity.badRequest().body(new Message(exception.getMessage()));
     }
 }

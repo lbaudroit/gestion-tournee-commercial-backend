@@ -1,19 +1,17 @@
 package friutrodez.backendtourneecommercial.service;
 
 import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
-import friutrodez.backendtourneecommercial.exception.DonneesManquantesException;
 import friutrodez.backendtourneecommercial.model.Adresse;
 import friutrodez.backendtourneecommercial.model.Client;
 import friutrodez.backendtourneecommercial.model.Coordonnees;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
  * Service de gestion des clients.
- *
+ * <p>
  * Cette classe fournit des méthodes pour ajouter ou modifier un client.
- *
+ * <p>
  * Elle contient toutes les vérifications métiers.
  *
  * @author Benjamin NICOL
@@ -31,7 +29,7 @@ public class ClientService {
 
     /**
      * @param clientMongoTemplate Le template mongoDB pour les clients.
-     * @param validatorService Un service pour valider la ressource.
+     * @param validatorService    Un service pour valider la ressource.
      */
     public ClientService(ClientMongoTemplate clientMongoTemplate, ValidatorService validatorService) {
         this.clientMongoTemplate = clientMongoTemplate;
@@ -41,8 +39,9 @@ public class ClientService {
     /**
      * Méthode pour ajouter un client dans la BD.
      * Des vérifications sont faites au préalable.
+     *
      * @param clientData Les données du client a créé.
-     * @param idUser L'id de l'utilisateur qui veut créé le client.
+     * @param idUser     L'id de l'utilisateur qui veut créé le client.
      * @return le client créé.
      */
     public Client CreateOneClient(Client clientData, String idUser) {
@@ -51,12 +50,12 @@ public class ClientService {
 
         Adresse address = clientData.getAdresse();
 
-        if(!addressToolsService.validateAdresse(address.getLibelle(),address.getCodePostal(),address.getVille())) {
+        if (!addressToolsService.validateAdresse(address.getLibelle(), address.getCodePostal(), address.getVille())) {
             throw new DonneesInvalidesException("L'adresse du client est invalide.");
         }
 
         Double[] coordinates = addressToolsService.geolocateAdresse(address.getLibelle(), address.getCodePostal(), address.getVille());
-        Coordonnees coordinatesObject = new Coordonnees(coordinates[1],coordinates[0]);
+        Coordonnees coordinatesObject = new Coordonnees(coordinates[1], coordinates[0]);
         clientData.setCoordonnees(coordinatesObject);
 
         clientMongoTemplate.save(clientData);
@@ -65,18 +64,19 @@ public class ClientService {
 
     /**
      * Méthode pour modifier un client de la BD.
+     *
      * @param idClient L'id du client a modifié.
      * @param editData Les modifications apportées au client.
-     * @param idUser L'id de l'utilisateur qui veut modifier le client.
+     * @param idUser   L'id de l'utilisateur qui veut modifier le client.
      */
     public void editOneClient(String idClient, Client editData, String idUser) {
         validatorService.mustValidate(editData);
         Adresse address = editData.getAdresse();
 
-        Client savedClient = clientMongoTemplate.getOneClient(idClient,idUser);
+        Client savedClient = clientMongoTemplate.getOneClient(idClient, idUser);
 
-        if(!savedClient.getAdresse().equals(editData.getAdresse())) {
-            if(!addressToolsService.validateAdresse(address.getLibelle(),address.getCodePostal(),address.getVille())) {
+        if (!savedClient.getAdresse().equals(editData.getAdresse())) {
+            if (!addressToolsService.validateAdresse(address.getLibelle(), address.getCodePostal(), address.getVille())) {
                 throw new DonneesInvalidesException("L'adresse du client est invalide.");
             }
         }
@@ -85,10 +85,10 @@ public class ClientService {
         Adresse savedAddress = savedClient.getAdresse();
         Double[] coordinates = addressToolsService.geolocateAdresse(savedAddress.getLibelle(),
                 savedAddress.getCodePostal(), savedAddress.getVille());
-        if(coordinates == null) {
+        if (coordinates == null) {
             throw new DonneesInvalidesException("L'adresse du client sauvegardée est invalide");
         }
-        Coordonnees coordinatesObject = new Coordonnees(coordinates[1],coordinates[0]);
+        Coordonnees coordinatesObject = new Coordonnees(coordinates[1], coordinates[0]);
         savedClient.setCoordonnees(coordinatesObject);
 
         savedClient.setNomEntreprise(editData.getNomEntreprise());

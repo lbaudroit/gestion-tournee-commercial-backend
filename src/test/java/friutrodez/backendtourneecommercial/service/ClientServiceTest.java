@@ -16,6 +16,7 @@ class ClientServiceTest {
 
     @Autowired
     ClientService clientService;
+
     @BeforeEach
     void setUp() {
     }
@@ -24,28 +25,30 @@ class ClientServiceTest {
     void testCreateValidationClient() {
         Client client = new Client();
 
-        Assertions.assertThrows(DonneesInvalidesException.class,()-> clientService.CreateOneClient(client,"1"));
+        Assertions.assertThrows(DonneesInvalidesException.class, () -> clientService.CreateOneClient(client, "1"));
         client.setNomEntreprise("UneEntreprise");
-        Assertions.assertThrows(DonneesInvalidesException.class,() ->clientService.CreateOneClient(client,"1"));
-        Adresse adresse = new Adresse("6 Impasse du c","81490","Boissezon");
+        Assertions.assertThrows(DonneesInvalidesException.class, () -> clientService.CreateOneClient(client, "1"));
+        Adresse adresse = new Adresse("6 Impasse du c", "81490", "Boissezon");
 
         client.setAdresse(adresse);
-        Assertions.assertThrows(DonneesInvalidesException.class,() -> clientService.CreateOneClient(client,"1"));
+        Assertions.assertThrows(DonneesInvalidesException.class, () -> clientService.CreateOneClient(client, "1"));
     }
 
     @Test
     void testCreateClient() {
         Client client = new Client();
         client.setNomEntreprise("UneEntreprise");
-        client.setContact(new Contact("test","test","0102030405"));
+        client.setContact(new Contact("test", "test", "0102030405"));
 
-        Adresse adresse = new Adresse("6 Impasse du Suc","81490","Boissezon");
+        Adresse adresse = new Adresse("6 Impasse du Suc", "81490", "Boissezon");
 
         client.setAdresse(adresse);
-        Client clientRecupere = clientService.CreateOneClient(client,"1");
+        Client clientRecupere = clientService.CreateOneClient(client, "1");
 
-        Assertions.assertEquals(clientRecupere.getIdUtilisateur(),"1");
+        Assertions.assertEquals(clientRecupere.getIdUtilisateur(), "1");
 
         Assertions.assertNotNull(clientRecupere.getCoordonnees());
-    };
+    }
+
+    ;
 }

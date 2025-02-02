@@ -15,8 +15,7 @@ import java.util.List;
  * Utilise AppartientKey comme clé primaire composite.
  * Annotée avec @Repository pour indiquer qu'il s'agit d'un composant Spring.
  *
- * @author
- * Benjamin NICOL
+ * @author Benjamin NICOL
  * Enzo CLUZEL
  * Leïla BAUDROIT
  * Ahmed BRIBACH

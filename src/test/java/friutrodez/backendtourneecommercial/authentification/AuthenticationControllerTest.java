@@ -21,7 +21,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -87,7 +88,7 @@ public class AuthenticationControllerTest {
 
         String expectedToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
 
-        JwtToken jwtToken = new JwtToken(expectedToken,1800000);
+        JwtToken jwtToken = new JwtToken(expectedToken, 1800000);
 
         UserDetails userDetailsMock = mock(UserDetails.class);
         when(userDetailsMock.getUsername()).thenReturn("Email@mail2.com");
@@ -102,21 +103,21 @@ public class AuthenticationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.notNullValue()));
 
-        DonneesAuthentification authenticationData = new DonneesAuthentification("Email@mail2.com","pA3@.AZet4");
+        DonneesAuthentification authenticationData = new DonneesAuthentification("Email@mail2.com", "pA3@.AZet4");
 
-         mockMvc.perform(post("/auth/authentifier")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(authenticationData)))
+        mockMvc.perform(post("/auth/authentifier")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(authenticationData)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").value(expectedToken))
                 .andExpect(content().string(org.hamcrest.Matchers.notNullValue())).andReturn();
 
-         when(jwtService.extractEmail(any(String.class))).thenReturn("Email@mail2.com");
-         when(jwtService.isTokenValid(any(String.class),any(UserDetails.class))).thenReturn(true);
+        when(jwtService.extractEmail(any(String.class))).thenReturn("Email@mail2.com");
+        when(jwtService.isTokenValid(any(String.class), any(UserDetails.class))).thenReturn(true);
 
-         mockMvc.perform(get("/auth")
-                 .header("Authorization", "Bearer " + expectedToken))
-                 .andExpect(status().isOk()).andExpect(content().string("token fonctionnel"));
+        mockMvc.perform(get("/auth")
+                        .header("Authorization", "Bearer " + expectedToken))
+                .andExpect(status().isOk()).andExpect(content().string("token fonctionnel"));
 
     }
 

@@ -6,18 +6,16 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.util.List;
-
 /**
  * Classe représentant un itinéraire.
  * Cette classe est utilisée pour mapper la table `Itineraire` dans la base de données.
  * Utilise Lombok pour générer les constructeurs, getters, setters et le builder.
- *
+ * <p>
  * L'itineraire doit avoir :
- *      - Un nom non vide
- *      - Une distance non vide et non négative
- * @author
- * Benjamin NICOL
+ * - Un nom non vide
+ * - Une distance non vide et non négative
+ *
+ * @author Benjamin NICOL
  * Enzo CLUZEL
  * Leïla BAUDROIT
  * Ahmed BRIBACH

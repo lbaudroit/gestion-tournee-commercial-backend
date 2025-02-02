@@ -15,7 +15,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,8 +34,8 @@ public class AuthenticationTest {
     private ObjectMapper objectMapper;
 
     JwtToken userToken;
-     String userAsJson1;
-     String userAsJson2;
+    String userAsJson1;
+    String userAsJson2;
 
     @BeforeAll
     void Setup() throws Exception {
@@ -79,7 +80,7 @@ public class AuthenticationTest {
                         .content(userAsJson1))
                 .andExpect(status().isOk()).andDo(print()).andReturn();
 
-        userToken =  objectMapper.readValue(mvcResult.getResponse().getContentAsString(), JwtToken.class);
+        userToken = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), JwtToken.class);
 
     }
 
@@ -90,9 +91,9 @@ public class AuthenticationTest {
                         .content(userAsJson1))
                 .andExpect(status().isOk()).andReturn();
 
-        JwtToken token =  objectMapper.readValue(mvcResult.getResponse().getContentAsString(), JwtToken.class);
+        JwtToken token = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), JwtToken.class);
 
-        Assertions.assertNotEquals(token.token(), userToken.token(),"Les tokens sont les mêmes pour deux authentifications");
+        Assertions.assertNotEquals(token.token(), userToken.token(), "Les tokens sont les mêmes pour deux authentifications");
     }
 
     @Test
@@ -102,10 +103,10 @@ public class AuthenticationTest {
                         .content(userAsJson2))
                 .andExpect(status().isOk()).andReturn();
 
-        JwtToken token =  objectMapper.readValue(mvcResult.getResponse().getContentAsString(), JwtToken.class);
+        JwtToken token = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), JwtToken.class);
 
 
-        Assertions.assertNotEquals(token.token(), userToken.token(),"Les tokens sont les mêmes pour deux authentifications");
+        Assertions.assertNotEquals(token.token(), userToken.token(), "Les tokens sont les mêmes pour deux authentifications");
     }
 
     @Test
@@ -115,7 +116,7 @@ public class AuthenticationTest {
         userToAuthenticate.setPrenom("nonCree");
         userToAuthenticate.setNom("non");
 
-         mockMvc.perform(post("/auth/authentifier")
+        mockMvc.perform(post("/auth/authentifier")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userToAuthenticate)))
                 .andExpect(status().isForbidden());

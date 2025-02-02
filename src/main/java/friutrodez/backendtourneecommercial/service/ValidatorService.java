@@ -10,9 +10,10 @@ import java.util.Set;
 
 /**
  * Service s'occupant de la validation des entités.
- *
+ * <p>
  * La validation se fait avec l'aide de jakarta.validation.
  * Il faut utiliser des annotations de jakarta.validation.constraint pour que le validator puisse les détecter.
+ *
  * @author Benjamin NICOL
  * @author Enzo CLUZEL
  * @author Leïla BAUDROIT
@@ -26,8 +27,9 @@ public class ValidatorService {
     /**
      * Cette méthode vérifie l'objet en paramètre.
      * Cette objet doit être valide sinon une exception sera envoyée.
+     *
      * @param object L'objet à valider.
-     * @param <T> Le type de l'objet en paramètre.
+     * @param <T>    Le type de l'objet en paramètre.
      */
     public <T> void mustValidate(T object) {
         Set<ConstraintViolation<T>> violations = validator.validate(object);

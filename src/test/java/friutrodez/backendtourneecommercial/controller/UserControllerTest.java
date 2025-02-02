@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import friutrodez.backendtourneecommercial.helper.ConfigurationSecurityContextTest;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,7 +15,6 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -37,6 +38,7 @@ public class UserControllerTest {
     Utilisateur testUser;
 
     String headerToken;
+
     @BeforeAll
     void setSecurity() throws Exception {
         headerToken = configurationSecurityContextTest.getTokenForSecurity(mockMvc);
@@ -44,14 +46,14 @@ public class UserControllerTest {
     }
 
     @Test
-    void testEditUser()  throws Exception{
-         testUser.setNom("modificationTestUser");
+    void testEditUser() throws Exception {
+        testUser.setNom("modificationTestUser");
 
-         String utilisateurJson = objectMapper.writeValueAsString(testUser);
+        String utilisateurJson = objectMapper.writeValueAsString(testUser);
 
-         mockMvc.perform(post("/utilisateur/modifier/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(utilisateurJson).header("Authorization","Bearer " + headerToken ))
+        mockMvc.perform(post("/utilisateur/modifier/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(utilisateurJson).header("Authorization", "Bearer " + headerToken))
                 .andExpect(status().isOk());
     }
 }

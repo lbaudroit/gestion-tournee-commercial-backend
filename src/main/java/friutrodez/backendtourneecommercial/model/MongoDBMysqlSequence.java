@@ -12,8 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * Cette classe est utilisée pour gérer les séquences auto-incrémentées dans MongoDB.
  * Utilise Lombok pour générer les constructeurs, getters et setters.
  *
- * @author
- * Benjamin NICOL
+ * @author Benjamin NICOL
  * Enzo CLUZEL
  * Leïla BAUDROIT
  * Ahmed BRIBACH

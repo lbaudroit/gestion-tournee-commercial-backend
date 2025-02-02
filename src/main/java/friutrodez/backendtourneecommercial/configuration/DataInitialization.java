@@ -7,8 +7,6 @@ import friutrodez.backendtourneecommercial.repository.mysql.ItineraireRepository
 import friutrodez.backendtourneecommercial.repository.mysql.UtilisateurRepository;
 import friutrodez.backendtourneecommercial.service.FakeDataService;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

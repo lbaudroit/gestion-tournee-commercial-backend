@@ -10,8 +10,7 @@ import lombok.Setter;
  * Cette classe contient les informations de base d'une étape de parcours telles que le nom, l'état de visite et les coordonnées.
  * Utilise Lombok pour générer les constructeurs, getters et setters.
  *
- * @author
- * Benjamin NICOL
+ * @author Benjamin NICOL
  * Enzo CLUZEL
  * Leïla BAUDROIT
  * Ahmed BRIBACH

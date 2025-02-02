@@ -31,22 +31,23 @@ public class AuthenticationServiceTest {
 
         Utilisateur utilisateurSauvegarde = authenticationService.createAnAccount(user);
 
-        Assertions.assertNotNull(user.getId(),"L'utilisateur n'a pas été sauvegardé dans la bd");
-        Assertions.assertNotEquals("Ab3@.az234",utilisateurSauvegarde.getMotDePasse(),"Le mot de passe n'a pas été encrypté");
+        Assertions.assertNotNull(user.getId(), "L'utilisateur n'a pas été sauvegardé dans la bd");
+        Assertions.assertNotEquals("Ab3@.az234", utilisateurSauvegarde.getMotDePasse(), "Le mot de passe n'a pas été encrypté");
     }
+
     @Test
     void testCreationUserFail() {
         Utilisateur user = new Utilisateur();
         user.setMotDePasse("Ae@.21ersqds");
         user.setNom("nomTest");
         user.setPrenom("prenomTest");
-        Assertions.assertThrows(DonneesInvalidesException.class,()-> authenticationService.createAnAccount(user));
+        Assertions.assertThrows(DonneesInvalidesException.class, () -> authenticationService.createAnAccount(user));
 
         user.setEmail("   ");
-        Assertions.assertThrows(DonneesInvalidesException.class,()-> authenticationService.createAnAccount(user));
+        Assertions.assertThrows(DonneesInvalidesException.class, () -> authenticationService.createAnAccount(user));
 
         user.setEmail("Test@te.");
-        Assertions.assertThrows(DonneesInvalidesException.class,()-> authenticationService.createAnAccount(user));
+        Assertions.assertThrows(DonneesInvalidesException.class, () -> authenticationService.createAnAccount(user));
 
     }
 
@@ -64,16 +65,16 @@ public class AuthenticationServiceTest {
         user.setCodePostal("12000");
         user.setVille("Rodez");
 
-        Assertions.assertThrows(DonneesInvalidesException.class,()-> authenticationService.createAnAccount(user),"Le mot de passe est invalide");
+        Assertions.assertThrows(DonneesInvalidesException.class, () -> authenticationService.createAnAccount(user), "Le mot de passe est invalide");
 
         user.setMotDePasse("12345678");
-        Assertions.assertThrows(DonneesInvalidesException.class,()-> authenticationService.createAnAccount(user),"Le mot de passe est invalide");
+        Assertions.assertThrows(DonneesInvalidesException.class, () -> authenticationService.createAnAccount(user), "Le mot de passe est invalide");
 
         user.setMotDePasse("123456aA");
-        Assertions.assertThrows(DonneesInvalidesException.class,()-> authenticationService.createAnAccount(user),"Le mot de passe est invalide");
+        Assertions.assertThrows(DonneesInvalidesException.class, () -> authenticationService.createAnAccount(user), "Le mot de passe est invalide");
 
         user.setMotDePasse("1234aA.");
-        Assertions.assertThrows(DonneesInvalidesException.class,()-> authenticationService.createAnAccount(user),"Le mot de passe est invalide");
+        Assertions.assertThrows(DonneesInvalidesException.class, () -> authenticationService.createAnAccount(user), "Le mot de passe est invalide");
 
 
     }

@@ -1,7 +1,9 @@
 package friutrodez.backendtourneecommercial.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,15 +16,14 @@ import java.util.List;
  * Classe représentant un utilisateur.
  * Cette classe est utilisée pour mapper la table `Utilisateur` dans la base de données.
  * Utilise Lombok pour générer les constructeurs, getters, setters et le builder.
- *
+ * <p>
  * L'utilisateur doit avoir :
- *      - Un email avec un format correcte
- *      - Un mot de passe contenant au moins :
- *              1 majuscule, 1 miniscule, 1 chiffre, 1 caractère spécial, 8 caractères
- *      - Une adresse valide en france
+ * - Un email avec un format correcte
+ * - Un mot de passe contenant au moins :
+ * 1 majuscule, 1 miniscule, 1 chiffre, 1 caractère spécial, 8 caractères
+ * - Une adresse valide en france
  *
- * @author
- * Benjamin NICOL
+ * @author Benjamin NICOL
  * Enzo CLUZEL
  * Leïla BAUDROIT
  * Ahmed BRIBACH
@@ -49,7 +50,7 @@ public class Utilisateur implements UserDetails {
         nom = testNom;
         motDePasse = password;
     }
-  
+
     /**
      * Identifiant unique de l'utilisateur.
      * Généré automatiquement par la base de données.
@@ -78,7 +79,7 @@ public class Utilisateur implements UserDetails {
      * Adresse email de l'utilisateur
      * Ne peut pas être nul
      */
-    @Email(message = "L'email doit être valide",regexp = EMAIL_PATTERN)
+    @Email(message = "L'email doit être valide", regexp = EMAIL_PATTERN)
     @NotBlank(message = "L'email ne peut pas être vide")
     @Column(nullable = false)
     private String email;
@@ -87,7 +88,7 @@ public class Utilisateur implements UserDetails {
      * Mot de passe de l'utilisateur.
      */
     @NotBlank(message = "Le mot de passe ne peut pas être vide")
-    @Pattern(regexp = PASSWORD_PATTERN,message = "Le mot de passe est invalide")
+    @Pattern(regexp = PASSWORD_PATTERN, message = "Le mot de passe est invalide")
     @Column(nullable = false)
     private String motDePasse;
 

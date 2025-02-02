@@ -8,7 +8,6 @@ import friutrodez.backendtourneecommercial.model.*;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
 import friutrodez.backendtourneecommercial.repository.mysql.AppartientRepository;
 import friutrodez.backendtourneecommercial.repository.mysql.ItineraireRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -55,10 +54,11 @@ public class ItineraireService {
     /**
      * Optimise le trajet le plus court partant du domicile de l'utilisateur, visitant
      * l'adresse de chacun des clients et revenant au domicile.
+     *
      * @param clients la liste de clients à visiter
-     * @param user l'utilisateur qui souhaite effectuer un itinéraire
+     * @param user    l'utilisateur qui souhaite effectuer un itinéraire
      * @return une liste ordonnée de clients de manière à réduire le nombre de kilomètres
-     *         entre eux et le nombre de kilomètres associés à cet itinéraire
+     * entre eux et le nombre de kilomètres associés à cet itinéraire
      */
     public ResultatOptimisation optimizeShortest(List<Client> clients, Utilisateur user) {
         // STUB
@@ -69,6 +69,7 @@ public class ItineraireService {
 
     /**
      * Récupère les identifiants de clients
+     *
      * @param clients les clients dont on veut les identifiants
      * @return une liste des identifiants
      */

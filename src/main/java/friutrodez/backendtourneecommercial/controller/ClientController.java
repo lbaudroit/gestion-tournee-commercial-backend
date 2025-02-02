@@ -7,7 +7,6 @@ import friutrodez.backendtourneecommercial.model.Client;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
 import friutrodez.backendtourneecommercial.service.ClientService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -129,7 +128,7 @@ public class ClientController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new Message("Le client n'a pas été trouvé"));
         }
-}
+    }
 
 
     /**

@@ -1,17 +1,16 @@
 package friutrodez.backendtourneecommercial.service;
 
-import static org.springframework.data.mongodb.core.FindAndModifyOptions.options;
-import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static org.springframework.data.mongodb.core.query.Query.query;
-
-import java.util.Objects;
-import org.springframework.beans.factory.annotation.Autowired;
+import friutrodez.backendtourneecommercial.model.MongoDBMysqlSequence;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
-import friutrodez.backendtourneecommercial.model.MongoDBMysqlSequence;
+import java.util.Objects;
+
+import static org.springframework.data.mongodb.core.FindAndModifyOptions.options;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
 
 /**
  * Service pour gérer les ids en mongoDB.
@@ -32,6 +31,7 @@ public class SequenceGeneratorService {
 
     /**
      * Méthode pour générer un nouvel id pour un document mongoDB.
+     *
      * @param seqName Le nom de la séquence.
      * @return L'id du document.
      */

@@ -16,8 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 class BackendtourneecommercialApplicationTests {
 
 
-	@Test
-	void contextLoads() {
-		// Non utilisée
-	}
+    @Test
+    void contextLoads() {
+        // Non utilisée
+    }
 }

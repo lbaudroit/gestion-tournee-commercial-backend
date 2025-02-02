@@ -1,7 +1,10 @@
 package friutrodez.backendtourneecommercial.service;
 
 import com.github.javafaker.Faker;
-import friutrodez.backendtourneecommercial.model.*;
+import friutrodez.backendtourneecommercial.model.Adresse;
+import friutrodez.backendtourneecommercial.model.Client;
+import friutrodez.backendtourneecommercial.model.Contact;
+import friutrodez.backendtourneecommercial.model.Coordonnees;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
