@@ -9,7 +9,7 @@ public class ItineraryGenerator implements ItineraryGeneratorService {
     public void run(List<Point> points, double startEndLongitude, double startEndLatitude) {
         ApiRequest apiRequest = new ApiRequest();
         points.add(createPointStartEnd(startEndLongitude, startEndLatitude));
-        generateDistances(points, apiRequest);
+        generateDistances(points);
     }
 
     private static Point createPointStartEnd(double startEndLongitude, double startEndLatitude) {
@@ -17,13 +17,15 @@ public class ItineraryGenerator implements ItineraryGeneratorService {
         return startEnd;
     }
 
-    private static void generateDistances(List<Point> points, ApiRequest apiRequest) {
+    private static void generateDistances(List<Point> points) {
         for (Point point : points) {
             for (Point otherPoint : points) {
                 if (!point.equals(otherPoint)) {
-                    point.addPoint(otherPoint, apiRequest);
+                    point.addPoint(otherPoint);
                 }
             }
         }
     }
+
+
 }

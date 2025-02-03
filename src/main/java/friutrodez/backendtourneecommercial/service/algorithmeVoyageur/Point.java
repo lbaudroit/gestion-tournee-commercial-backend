@@ -33,9 +33,36 @@ public class Point {
      * et le point actuel.
      * @param point le point à ajouter
      */
-    public void addPoint(Point point, ApiRequest apiRequest) {
-        double distance = apiRequest.getDistance(this, point);
+    public void addPoint(Point point) {
+        double distance = computeHarvesineFormula(point,this);
         this.distances.put(point, distance);
+    }
+
+    /**
+     * Calcule la distance entre deux points géographiques en utilisant la formule de Haversine.
+     *
+     * La formule de Haversine permet de calculer la distance en ligne droite entre deux
+     * points sur une sphère à partir de leurs coordonnées GPS (latitude et longitude).
+     * Voir : <a href="https://www.baeldung.com/java-find-distance-between-points">baeldung.com</a>
+     * @param destination   Le point de destination.
+     * @param start Le point de départ.
+     * @return La distance entre les deux points en mètres.
+     */
+    private static double computeHarvesineFormula(Point destination, Point start) {
+        double earthRadiusInKm = 6371.0;
+
+        double deltaLat = Math.toRadians(destination.latitude - start.latitude);
+        double deltaLon = Math.toRadians(destination.longitude - start.longitude);
+
+        double startLat = Math.toRadians(start.latitude);
+        double endLat = Math.toRadians(destination.latitude);
+
+        double a = Math.pow(Math.sin(deltaLat / 2), 2)
+                + Math.cos(startLat) * Math.cos(endLat)
+                * Math.pow(Math.sin(deltaLon / 2), 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return earthRadiusInKm * c * 1000;
     }
 
     /**
