@@ -11,11 +11,10 @@ import org.springframework.data.mongodb.core.MongoTemplate;
  * Classe de configuration pour MongoDB.
  * Cette classe configure la connexion à la base de données MongoDB et crée un bean MongoTemplate.
  *
- * @author
- * Benjamin NICOL
- * Enzo CLUZEL
- * Leïla BAUDROIT
- * Ahmed BRIBACH
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 @Configuration
 public class MongoConfiguration {

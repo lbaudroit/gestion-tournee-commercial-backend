@@ -15,11 +15,10 @@ import java.util.List;
  * Utilise AppartientKey comme clé primaire composite.
  * Annotée avec @Repository pour indiquer qu'il s'agit d'un composant Spring.
  *
- * @author
- * Benjamin NICOL
- * Enzo CLUZEL
- * Leïla BAUDROIT
- * Ahmed BRIBACH
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 @Repository
 public interface AppartientRepository extends JpaRepository<Appartient, AppartientKey> {

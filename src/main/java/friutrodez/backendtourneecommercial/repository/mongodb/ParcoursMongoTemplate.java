@@ -11,14 +11,15 @@ import org.springframework.stereotype.Service;
  * Cette classe utilise MongoTemplate pour effectuer des opérations CRUD sur les parcours.
  * Utilise un générateur de séquence pour attribuer des identifiants uniques aux nouveaux parcours.
  *
- * @author
- * Benjamin NICOL
- * Enzo CLUZEL
- * Leïla BAUDROIT
- * Ahmed BRIBACH
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 @Service
 public class ParcoursMongoTemplate extends CustomMongoTemplate<Parcours> {
+
+    private final SequenceGeneratorService sequenceGeneratorService;
 
     /**
      * Constructeur de la classe ParcoursMongoTemplate.
@@ -27,12 +28,11 @@ public class ParcoursMongoTemplate extends CustomMongoTemplate<Parcours> {
      * @param mongoTemplate le template MongoDB utilisé pour les opérations
      */
     @Autowired
-    public ParcoursMongoTemplate(MongoTemplate mongoTemplate) {
+    public ParcoursMongoTemplate(MongoTemplate mongoTemplate, SequenceGeneratorService sequenceGeneratorService) {
         super(mongoTemplate, Parcours.class);
+        this.sequenceGeneratorService = sequenceGeneratorService;
     }
 
-    @Autowired
-    private SequenceGeneratorService sequenceGeneratorService;
 
     /**
      * Sauvegarde un parcours dans la base de données.

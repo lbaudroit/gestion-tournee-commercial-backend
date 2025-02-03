@@ -6,7 +6,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -14,49 +13,63 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 
 /**
- * Service pour gérer les tokens
- * Un token est formé de cette
+ * Service pour gérer les tokens.
+ * Un JWT Token est composé de 3 parties.
+ * Le header : le type d'algo d'encryption et le type du token
+ * Le payload : contient les informations du token
+ * La signature : la clé du token (utilisée pour valider le token)
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 @Service
-public class JwtService  {
+public class JwtService {
 
     /**
-     * clé d'encryption encrypté en HMAC-SHA256
+     * Clé d'encryption encrypté en HMAC-SHA256.
      * On peut utiliser ce site <a href="https://www.devglan.com/online-tools/hmac-sha256-online?ref=blog.tericcabrel.com">...</a>
      * pour créer la clé
      **/
-    private final String CLE_ENCRYPTION = "gd5kn1HM/aj36IU7VsRRwrPuYiFvOYQdB8yIdA4UIaU=";
+    private final String ENCRYPTION_KEY = "gd5kn1HM/aj36IU7VsRRwrPuYiFvOYQdB8yIdA4UIaU=";
 
-    /** durée en minutes du token **/
+    /**
+     * durée en minutes du token
+     **/
     private final int MINUTES = 30;
 
-    /** durée totale du token **/
+    /**
+     * durée totale du token
+     **/
     public final int JWT_EXPIRATION = MINUTES * 60 * 1000;
-    public String extraireEmail(String token) {
-        return extraireClaim(token, Claims::getSubject);
+
+    public String extractEmail(String token) {
+        return extractClaims(token, Claims::getSubject);
     }
 
     /**
      * Extrait les claims du token
-     * @param token dont extraire les claims
-     * @param sujet du token
+     *
+     * @param token   dont extraire les claims
+     * @param subject du token
+     * @param <T>     le sujet
      * @return les claims
-     * @param <T> le sujet
      */
-    private <T> T extraireClaim(String token, Function<Claims,T> sujet) {
-        final Claims claims = extraireTousClaims(token);
-        return sujet.apply(claims);
-    }
-    public String genererToken(UserDetails userDetails) {
-        return genererToken(new HashMap<String,Object>(), userDetails);
+    private <T> T extractClaims(String token, Function<Claims, T> subject) {
+        final Claims claims = extractAllClaims(token);
+        return subject.apply(claims);
     }
 
-    public String genererToken(HashMap<String, Object> claimsExtras, UserDetails userDetails) {
-        return construireToken(claimsExtras, userDetails, JWT_EXPIRATION);
+    public String generateToken(UserDetails userDetails) {
+        return generateToken(new HashMap<>(), userDetails);
+    }
+
+    public String generateToken(HashMap<String, Object> claimsExtras, UserDetails userDetails) {
+        return buildToken(claimsExtras, userDetails, JWT_EXPIRATION);
     }
 
 
@@ -65,18 +78,18 @@ public class JwtService  {
      * - clé encryption
      * - claims donnés
      * - date d'expiration
+     *
      * @param claimsExtras les claims à mettre dans le token
-     * @param userDetails l'username de l'utilisateur
-     * @param expiration la date d'expiration
+     * @param userDetails  l'username de l'utilisateur
+     * @param expiration   la date d'expiration
      * @return un token signé avec son payload
      */
-    private String construireToken(
+    private String buildToken(
             HashMap<String, Object> claimsExtras,
             UserDetails userDetails,
             long expiration
     ) {
-        String sel = genererSel();
-
+        String salt = generateSalt();
 
         return Jwts
                 .builder()
@@ -85,49 +98,53 @@ public class JwtService  {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .setId(sel)
+                .setId(salt)
 
-                .signWith(obtenirCleSignature(CLE_ENCRYPTION), SignatureAlgorithm.HS256)
+                .signWith(getSignedKey(ENCRYPTION_KEY), SignatureAlgorithm.HS256)
                 .compact();
     }
 
     /**
-     * Vérifie si le token valide par rapport à son temps d'expiration et le username dans le token
-     * @param token reçu
+     * Vérifie si le token est valide par rapport à son temps d'expiration et le username dans le token.
+     *
+     * @param token       reçu
      * @param userDetails reçu
      * @return true si le token est valide, false sinon
      */
-    public boolean tokenEstValide(String token, UserDetails userDetails) {
-        final String username = extraireEmail(token);
-        return (username.equals(userDetails.getUsername())) && !tokenEstExpire(token);
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        final String username = extractEmail(token);
+        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
     /**
      * Vérifie si la date d'expiration est passée
+     *
      * @param token le token reçu
      * @return true si la date d'expiration est passée sinon false
      */
-    public boolean tokenEstExpire(String token) {
-        return extraireExpiration(token).before(new Date());
+    public boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
     }
 
     /**
+     * Récupère la date d'expiration du token
      *
-     * @param token
+     * @param token le token dont on veut la date d'expiration
      * @return la date d'expiration
      */
-    public Date extraireExpiration(String token) {
-        return extraireClaim(token, Claims::getExpiration);
+    public Date extractExpiration(String token) {
+        return extractClaims(token, Claims::getExpiration);
     }
 
     /**
      * Extrait les claims. Vérifie avant si la signature du token est correcte avec la clé d'encryption
-     * @param token
+     *
+     * @param token le token dont on veut les claims
      * @return les claims du token
      */
-    public Claims extraireTousClaims(String token) {
+    public Claims extractAllClaims(String token) {
         return Jwts.parserBuilder().
-                setSigningKey(obtenirCleSignature(CLE_ENCRYPTION)).
+                setSigningKey(getSignedKey(ENCRYPTION_KEY)).
                 build()
                 .parseClaimsJws(token)
                 .getBody();
@@ -136,9 +153,10 @@ public class JwtService  {
     /**
      * Génération de sel pour varier les tokens par utilisateur. <br>
      * A utiliser pour éviter des tokens similaires lors d'une nouvelle connexion par un même utilisateur
+     *
      * @return une string encodé en base64
      */
-    private String genererSel() {
+    private String generateSalt() {
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[64];
         random.nextBytes(salt);
@@ -149,7 +167,7 @@ public class JwtService  {
      * @param cleEncryption la clé utilisée pour cryptée
      * @return une clé hashé en hmac256
      */
-    private SecretKey obtenirCleSignature(String cleEncryption) {
+    private SecretKey getSignedKey(String cleEncryption) {
         byte[] keyBytes = Decoders.BASE64.decode(cleEncryption);
         return Keys.hmacShaKeyFor(keyBytes);
     }

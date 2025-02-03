@@ -1,6 +1,7 @@
 package friutrodez.backendtourneecommercial.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,11 +12,10 @@ import lombok.Setter;
  * Cette classe est utilisée pour mapper la table `Appartient` dans la base de données.
  * Utilise Lombok pour générer les constructeurs, getters et setters.
  *
- * @author
- * Benjamin NICOL
- * Enzo CLUZEL
- * Leïla BAUDROIT
- * Ahmed BRIBACH
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 @AllArgsConstructor
 @NoArgsConstructor

@@ -1,7 +1,10 @@
-package friutrodez.backendtourneecommercial.repository.mongodb;
+package friutrodez.backendtourneecommercial.service;
 
 import com.github.javafaker.Faker;
-import friutrodez.backendtourneecommercial.model.*;
+import friutrodez.backendtourneecommercial.model.Adresse;
+import friutrodez.backendtourneecommercial.model.Client;
+import friutrodez.backendtourneecommercial.model.Contact;
+import friutrodez.backendtourneecommercial.model.Coordonnees;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -9,6 +12,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
+/**
+ * Service pour créer des clients rapidement.
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
+ */
 @Service
 public class FakeDataService {
 
