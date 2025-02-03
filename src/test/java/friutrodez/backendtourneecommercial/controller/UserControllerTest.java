@@ -15,7 +15,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -51,9 +51,10 @@ public class UserControllerTest {
 
         String utilisateurJson = objectMapper.writeValueAsString(testUser);
 
-        mockMvc.perform(post("/utilisateur/modifier/")
+        mockMvc.perform(put("/utilisateur/")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(utilisateurJson).header("Authorization", "Bearer " + headerToken))
+                        .content(utilisateurJson)
+                        .header("Authorization", "Bearer " + headerToken))
                 .andExpect(status().isOk());
     }
 }

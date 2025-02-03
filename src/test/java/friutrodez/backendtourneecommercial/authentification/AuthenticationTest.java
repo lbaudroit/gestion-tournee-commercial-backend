@@ -62,20 +62,20 @@ public class AuthenticationTest {
         userAsJson1 = objectMapper.writeValueAsString(testUser);
         userAsJson2 = objectMapper.writeValueAsString(testUser2);
 
-        mockMvc.perform(post("/auth/creer")
+        mockMvc.perform(post("/utilisateur/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userAsJson1))
 
                 .andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.notNullValue()));
 
-        mockMvc.perform(post("/auth/creer")
+        mockMvc.perform(post("/utilisateur/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userAsJson2))
                 .andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.notNullValue())).andDo(print());
 
-        MvcResult mvcResult = mockMvc.perform(post("/auth/authentifier")
+        MvcResult mvcResult = mockMvc.perform(post("/auth/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userAsJson1))
                 .andExpect(status().isOk()).andDo(print()).andReturn();
@@ -86,7 +86,7 @@ public class AuthenticationTest {
 
     @Test
     void testTokenShouldBeDifferentForTwoAuthentication() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(post("/auth/authentifier")
+        MvcResult mvcResult = mockMvc.perform(post("/auth/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userAsJson1))
                 .andExpect(status().isOk()).andReturn();
@@ -98,7 +98,7 @@ public class AuthenticationTest {
 
     @Test
     void testTokenShouldBeDifferentForTwoDistinctUser() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(post("/auth/authentifier")
+        MvcResult mvcResult = mockMvc.perform(post("/auth/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userAsJson2))
                 .andExpect(status().isOk()).andReturn();
@@ -116,7 +116,7 @@ public class AuthenticationTest {
         userToAuthenticate.setPrenom("nonCree");
         userToAuthenticate.setNom("non");
 
-        mockMvc.perform(post("/auth/authentifier")
+        mockMvc.perform(post("/auth/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userToAuthenticate)))
                 .andExpect(status().isForbidden());
@@ -124,7 +124,7 @@ public class AuthenticationTest {
 
     @Test
     void testNoTokenAccess() throws Exception {
-        mockMvc.perform(get("/auth"))
+        mockMvc.perform(get("/utilisateur/"))
                 .andExpect(status().isForbidden());
     }
 

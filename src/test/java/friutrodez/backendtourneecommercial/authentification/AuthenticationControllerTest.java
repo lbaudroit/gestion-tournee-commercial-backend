@@ -65,7 +65,7 @@ public class AuthenticationControllerTest {
 
         String userAsJson = objectMapper.writeValueAsString(testUser);
 
-        mockMvc.perform(post("/auth/creer")
+        mockMvc.perform(post("/utilisateur/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userAsJson))
                 .andExpect(status().isOk())
@@ -97,7 +97,7 @@ public class AuthenticationControllerTest {
         when(jwtService.generateToken(any(UserDetails.class)))
                 .thenReturn(expectedToken);
 
-        mockMvc.perform(post("/auth/creer")
+        mockMvc.perform(post("/utilisateur/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userAsJson))
                 .andExpect(status().isOk())
@@ -105,7 +105,7 @@ public class AuthenticationControllerTest {
 
         DonneesAuthentification authenticationData = new DonneesAuthentification("Email@mail2.com", "pA3@.AZet4");
 
-        mockMvc.perform(post("/auth/authentifier")
+        mockMvc.perform(post("/auth/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(authenticationData)))
                 .andExpect(status().isOk())
@@ -115,9 +115,10 @@ public class AuthenticationControllerTest {
         when(jwtService.extractEmail(any(String.class))).thenReturn("Email@mail2.com");
         when(jwtService.isTokenValid(any(String.class), any(UserDetails.class))).thenReturn(true);
 
-        mockMvc.perform(get("/auth")
+        // appel à une méthode nécessitant authentification
+        mockMvc.perform(get("/utilisateur/")
                         .header("Authorization", "Bearer " + expectedToken))
-                .andExpect(status().isOk()).andExpect(content().string("token fonctionnel"));
+                .andExpect(status().isOk());
 
     }
 

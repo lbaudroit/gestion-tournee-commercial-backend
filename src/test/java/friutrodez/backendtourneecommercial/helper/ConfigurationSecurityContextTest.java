@@ -78,14 +78,14 @@ public class ConfigurationSecurityContextTest {
             userFromToken = user;
             String userJson = objectMapper.writeValueAsString(userFromToken);
 
-            mockMvc.perform(post("/auth/creer").contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/utilisateur/").contentType(MediaType.APPLICATION_JSON)
                     .content(userJson)).andExpect(status().isOk()).andReturn();
             userFromToken = utilisateurRepository.findByNom("TestNomConfig");
         }
         if (token == null) {
             DonneesAuthentification authenticationData = new DonneesAuthentification(userFromToken.getEmail(), "Benjamin.123@d");
             String userJson = objectMapper.writeValueAsString(authenticationData);
-            MvcResult result = mockMvc.perform(post("/auth/authentifier").contentType(MediaType.APPLICATION_JSON).content(userJson)).andExpect(status().isOk()).andReturn();
+            MvcResult result = mockMvc.perform(post("/auth/").contentType(MediaType.APPLICATION_JSON).content(userJson)).andExpect(status().isOk()).andReturn();
             token = objectMapper.readValue(result.getResponse().getContentAsString(), JwtToken.class);
 
         }

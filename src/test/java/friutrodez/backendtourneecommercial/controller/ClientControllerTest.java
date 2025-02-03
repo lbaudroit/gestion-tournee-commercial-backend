@@ -49,7 +49,7 @@ public class ClientControllerTest {
     void testCreationClient() throws Exception {
         String clientAsJson = objectMapper.writeValueAsString(client);
         System.out.println(clientAsJson);
-        mockMvc.perform(put("/client/creer")
+        mockMvc.perform(post("/client/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(clientAsJson).header("Authorization", "Bearer " + headerToken))
                 .andExpect(status().isOk());
@@ -66,7 +66,7 @@ public class ClientControllerTest {
 
         String clientAsJson = objectMapper.writeValueAsString(client);
 
-        mockMvc.perform(put("/client/creer")
+        mockMvc.perform(post("/client/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(clientAsJson).header("Authorization", "Bearer " + headerToken))
                 .andExpect(status().isBadRequest());
@@ -76,8 +76,8 @@ public class ClientControllerTest {
     @Order(2)
     @Test
     void testGetClient() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/client/recuperer/")
-                        .param("id", client.get_id()).header("Authorization", "Bearer " + headerToken))
+        MvcResult mvcResult = mockMvc.perform(get("/client/" + client.get_id())
+                        .header("Authorization", "Bearer " + headerToken))
                 .andExpect(status().isOk()).andReturn();
 
         Assertions.assertDoesNotThrow(() -> objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Client.class), "Aucune donnée a été récupéré");
@@ -94,8 +94,7 @@ public class ClientControllerTest {
         clientModifier.setNomEntreprise("Test Modification");
         String jsonModifier = objectMapper.writeValueAsString(clientModifier);
 
-        mockMvc.perform(post("/client/modifier/")
-                        .param("id", client.get_id())
+        mockMvc.perform(put("/client/" + client.get_id())
 
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonModifier).header("Authorization", "Bearer " + headerToken))
@@ -111,9 +110,9 @@ public class ClientControllerTest {
     @Order(6)
     @Test
     void testDeleteClient() throws Exception {
-        mockMvc.perform(delete("/client/supprimer/")
+        mockMvc.perform(delete("/client/" + client.get_id())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("id", client.get_id()).header("Authorization", "Bearer " + headerToken))
+                        .header("Authorization", "Bearer " + headerToken))
                 .andExpect(status().isOk());
         Assertions.assertNull(clientMongoTemplate.getOneClient(client.get_id(), String.valueOf(configurationSecurityContextTest.getUser().getId())));
     }
@@ -124,7 +123,9 @@ public class ClientControllerTest {
         client = configurationSecurityContextTest.getMockClient(configurationSecurityContextTest.getUser());
         client = configurationSecurityContextTest.getMockClient(configurationSecurityContextTest.getUser());
 
-        MvcResult mvcResult = mockMvc.perform(get("/client/").header("Authorization", "Bearer " + headerToken))
+        MvcResult mvcResult = mockMvc.perform(
+                get("/client/")
+                        .header("Authorization", "Bearer " + headerToken))
                 .andExpect(status().isOk()).andReturn();
         Assertions.assertEquals(3, mvcResult.getResponse().getContentAsString().split("},\\{").length);
     }

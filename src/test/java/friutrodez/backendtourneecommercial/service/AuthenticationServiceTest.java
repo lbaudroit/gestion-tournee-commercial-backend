@@ -24,8 +24,8 @@ public class AuthenticationServiceTest {
         user.setNom("nomTest");
         user.setPrenom("prenomTest");
         user.setEmail("Email@email.com");
-        user.setLibelleAdresse("50 Avenue de Bordeaux");
 
+        user.setLibelleAdresse("50 Avenue de Bordeaux");
         user.setCodePostal("12000");
         user.setVille("Rodez");
 
