@@ -29,4 +29,6 @@ public interface ItineraireRepository extends JpaRepository<Itineraire, Long> {
     Optional<Itineraire> findItineraireByIdAndUtilisateur(long id, Utilisateur utilisateur);
 
     long countItineraireByUtilisateur(Utilisateur utilisateur);
+
+    void deleteByIdAndUtilisateur(long id, Utilisateur utilisateur);
 }
