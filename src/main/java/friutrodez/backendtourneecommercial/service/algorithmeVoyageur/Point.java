@@ -12,7 +12,7 @@ public class Point {
     private final String id;
     private final double longitude;
     private final double latitude;
-    private final HashMap<Point, Double> distances;
+    private final HashMap<Point, Integer> distances;
 
     /**
      * Constructeur pour initialiser un point avec un identifiant, une longitude et une latitude.
@@ -34,7 +34,7 @@ public class Point {
      * @param point le point à ajouter
      */
     public void addPoint(Point point) {
-        double distance = computeHarvesineFormula(point,this);
+        int distance = computeHarvesineFormula(point,this);
         this.distances.put(point, distance);
     }
 
@@ -48,7 +48,7 @@ public class Point {
      * @param start Le point de départ.
      * @return La distance entre les deux points en mètres.
      */
-    private static double computeHarvesineFormula(Point destination, Point start) {
+    private static int computeHarvesineFormula(Point destination, Point start) {
         double earthRadiusInKm = 6371.0;
 
         double deltaLat = Math.toRadians(destination.latitude - start.latitude);
@@ -62,7 +62,7 @@ public class Point {
                 * Math.pow(Math.sin(deltaLon / 2), 2);
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return earthRadiusInKm * c * 1000;
+        return (int) Math.round(earthRadiusInKm * c * 1000);
     }
 
     /**
@@ -71,7 +71,28 @@ public class Point {
      * @param point le point pour lequel récupérer la distance
      * @return la distance entre le point actuel et le point spécifié
      */
-    public double getDistance(Point point) {
+    public int getDistance(Point point) {
         return this.distances.get(point);
+    }
+
+    @Override
+    public String toString() {
+        return "Point{" +
+                "id='" + id + '\'' +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Point point = (Point) obj;
+        return id.equals(point.id);
     }
 }
