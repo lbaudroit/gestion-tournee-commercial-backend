@@ -22,15 +22,15 @@ public class ConnexionTest {
     private String userMySQL;
     @Value("${spring.datasource.password}")
     private String passwordMySQL;
+
     @Test
-    void ConnexionMySQLTest() throws SQLException {
+    void testConnectionMySQL() throws SQLException {
         Connection conn = DriverManager.getConnection(mySQLURL, userMySQL, passwordMySQL);
         Assertions.assertNotNull(conn);
     }
 
     @Test
-
-    void ConnexionMongoDBTest() {
+    void testConnectionMongoDB() {
         MongoClient mongoClient = MongoClients.create(mongoUri);
         Assertions.assertNotNull(mongoClient);
     }
