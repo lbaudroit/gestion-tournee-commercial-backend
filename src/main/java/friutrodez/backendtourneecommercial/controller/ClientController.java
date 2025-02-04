@@ -1,6 +1,5 @@
 package friutrodez.backendtourneecommercial.controller;
 
-import com.mongodb.client.result.DeleteResult;
 import friutrodez.backendtourneecommercial.dto.Message;
 import friutrodez.backendtourneecommercial.dto.Nombre;
 import friutrodez.backendtourneecommercial.model.Client;
