@@ -1,11 +1,16 @@
 package friutrodez.backendtourneecommercial.service;
 
+import com.mongodb.client.result.DeleteResult;
 import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
-import friutrodez.backendtourneecommercial.model.Adresse;
-import friutrodez.backendtourneecommercial.model.Client;
-import friutrodez.backendtourneecommercial.model.Coordonnees;
+import friutrodez.backendtourneecommercial.model.*;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
+import friutrodez.backendtourneecommercial.repository.mysql.AppartientRepository;
+import friutrodez.backendtourneecommercial.repository.mysql.ItineraireRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Service de gestion des clients.
@@ -26,14 +31,18 @@ public class ClientService {
     private final ValidatorService validatorService;
 
     private final AdresseToolsService addressToolsService = new AdresseToolsService();
+    private final AppartientRepository appartientRepository;
+    private final ItineraireService itineraireService;
 
     /**
      * @param clientMongoTemplate Le template mongoDB pour les clients.
      * @param validatorService    Un service pour valider la ressource.
      */
-    public ClientService(ClientMongoTemplate clientMongoTemplate, ValidatorService validatorService) {
+    public ClientService(ClientMongoTemplate clientMongoTemplate, ValidatorService validatorService, AppartientRepository appartientRepository, ItineraireRepository itineraireRepository, ItineraireService itineraireService) {
         this.clientMongoTemplate = clientMongoTemplate;
         this.validatorService = validatorService;
+        this.appartientRepository = appartientRepository;
+        this.itineraireService = itineraireService;
     }
 
     /**
@@ -97,6 +106,23 @@ public class ClientService {
         savedClient.setClientEffectif(editData.isClientEffectif());
 
         clientMongoTemplate.save(savedClient);
+    }
 
+    @Transactional
+    public void deleteOneClient(String idClient, Utilisateur user) {
+        // On supprime le client : on peut le faire en premier (pas de FK, car dans MongoDB)
+        DeleteResult deleteResult = clientMongoTemplate.removeClientsWithId(idClient, String.valueOf(user.getId()));
+        if (!deleteResult.wasAcknowledged()) {
+            throw new NoSuchElementException("Le client n'a pas été trouvé");
+        }
+
+        // Ses appartenances et ses itinéraires liés (règle métier)
+        appartientRepository.findAllByIdEmbedded_ClientId(idClient)
+                .stream()
+                .map(appartient -> appartient.getIdEmbedded().getItineraire().getId())
+                .distinct()
+                .forEach(i -> itineraireService.deleteItineraire(i, user));
+
+        ;
     }
 }
