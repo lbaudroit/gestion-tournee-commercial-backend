@@ -106,7 +106,7 @@ public class ItineraryGenerator implements ItineraryGeneratorService {
         if (points.size() == 1) {
             List<Point> routeTmp = new ArrayList<>(route);
             routeTmp.add(points.getFirst());
-            int distance = distanceOfBranch + points.getFirst().getDistance(startEnd);
+            int distance = distanceOfBranch + currentPoint.getDistance(points.getFirst())+points.getFirst().getDistance(startEnd);
             setBestRoute(new BestRoute(routeTmp, distance));
         } else {
             List<CompletableFuture<Void>> futures = new ArrayList<>();
