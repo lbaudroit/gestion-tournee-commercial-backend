@@ -44,7 +44,7 @@ public class ClientService {
      * @param idUser     L'id de l'utilisateur qui veut créé le client.
      * @return le client créé.
      */
-    public Client CreateOneClient(Client clientData, String idUser) {
+    public Client createOneClient(Client clientData, String idUser) {
         validatorService.mustValidate(clientData);
         clientData.setIdUtilisateur(idUser);
 
