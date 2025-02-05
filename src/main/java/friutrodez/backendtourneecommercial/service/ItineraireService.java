@@ -151,7 +151,7 @@ public class ItineraireService {
     public void check(Itineraire itineraire, Utilisateur user, ItineraireCreationDTO dto) {
         checkItineraire(itineraire);
         if (dto.idClients().length > Itineraire.MAX_CLIENTS) {
-            throw new DonneesInvalidesException("Le nombre de client ne doit pas être supérieur.");
+            throw new DonneesInvalidesException("Le nombre de clients ne doit pas être supérieur à "+Itineraire.MAX_CLIENTS+".");
         }
         if (!allIdClientExists(dto.idClients())) {
             throw new DonneesInvalidesException("Au moins un id client n'existe pas.");
