@@ -1,15 +1,10 @@
-package friutrodez.backendtourneecommercial.service.algorithmeVoyageur;
+package friutrodez.backendtourneecommercial.service.itineraryGenerator.utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.client.MultipartBodyBuilder;
-import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
+import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Point;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class ApiRequest {

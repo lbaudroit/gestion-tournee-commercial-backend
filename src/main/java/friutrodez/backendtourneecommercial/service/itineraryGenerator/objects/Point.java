@@ -1,6 +1,7 @@
-package friutrodez.backendtourneecommercial.service.algorithmeVoyageur;
+package friutrodez.backendtourneecommercial.service.itineraryGenerator.objects;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashMap;
 
@@ -26,6 +27,13 @@ public class Point {
         this.longitude = longitude;
         this.latitude = latitude;
         this.distances = new HashMap<>();
+    }
+
+    public Point(Point oringin) {
+        this.id = oringin.id;
+        this.longitude = oringin.longitude;
+        this.latitude = oringin.latitude;
+        this.distances = oringin.distances;
     }
 
     /**
@@ -73,6 +81,11 @@ public class Point {
      */
     public int getDistance(Point point) {
         return this.distances.get(point);
+    }
+
+    public void setDistances(HashMap<Point, Integer> distances) {
+        this.distances.clear();
+        this.distances.putAll(distances);
     }
 
     @Override

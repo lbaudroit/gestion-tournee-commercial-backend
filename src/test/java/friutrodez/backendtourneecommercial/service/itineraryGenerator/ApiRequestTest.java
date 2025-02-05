@@ -1,5 +1,7 @@
-package friutrodez.backendtourneecommercial.service.algorithmeVoyageur;
+package friutrodez.backendtourneecommercial.service.itineraryGenerator;
 
+import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Point;
+import friutrodez.backendtourneecommercial.service.itineraryGenerator.utils.ApiRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.reactive.function.client.WebClientResponseException;

@@ -1,9 +1,8 @@
-package friutrodez.backendtourneecommercial.service.algorithmeVoyageur;
+package friutrodez.backendtourneecommercial.service.itineraryGenerator;
 
+import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Point;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class PointTest {
 

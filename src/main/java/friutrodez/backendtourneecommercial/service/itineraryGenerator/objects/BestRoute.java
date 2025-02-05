@@ -1,4 +1,4 @@
-package friutrodez.backendtourneecommercial.service.algorithmeVoyageur;
+package friutrodez.backendtourneecommercial.service.itineraryGenerator.objects;
 
 import lombok.Getter;
 
