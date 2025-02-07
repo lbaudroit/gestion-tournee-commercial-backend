@@ -29,6 +29,12 @@ import lombok.*;
 public class Itineraire {
 
     /**
+     * Le nombre maximal de clients pouvant être contenus dans un itinéraire
+     */
+    @Transient
+    public static final int MAX_CLIENTS = 8;
+
+    /**
      * Identifiant unique de l'itinéraire.
      * Généré automatiquement par la base de données.
      */

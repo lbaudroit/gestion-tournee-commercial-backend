@@ -27,7 +27,7 @@ public interface AppartientRepository extends JpaRepository<Appartient, Appartie
 
     void deleteAllByIdEmbedded_Itineraire_Id(long idEmbeddedItineraireId);
 
-    void deleteAppartientByIdEmbedded_Itineraire_Utilisateur(Utilisateur idEmbeddedItineraireUtilisateur);
-
     void deleteAppartientByIdEmbedded_Itineraire_UtilisateurAndIdEmbedded_Itineraire(Utilisateur idEmbeddedItineraireUtilisateur, Itineraire idEmbeddedItineraire);
+
+    List<Appartient> findAllByIdEmbedded_ClientId(String idEmbeddedClientId);
 }

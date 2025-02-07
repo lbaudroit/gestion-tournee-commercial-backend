@@ -22,11 +22,11 @@ import java.util.Optional;
 @Repository
 public interface ItineraireRepository extends JpaRepository<Itineraire, Long> {
 
-    List<Itineraire> getItinerairesByUtilisateur(Utilisateur utilisateur);
-
     List<Itineraire> getItinerairesByUtilisateur(Utilisateur utilisateur, Pageable pageable);
 
     Optional<Itineraire> findItineraireByIdAndUtilisateur(long id, Utilisateur utilisateur);
 
     long countItineraireByUtilisateur(Utilisateur utilisateur);
+
+    void deleteByIdAndUtilisateur(long id, Utilisateur utilisateur);
 }
