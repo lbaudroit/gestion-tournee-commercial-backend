@@ -22,6 +22,10 @@ public class BruteForceBranchAndBound implements Algorithm {
         return generateBranchAndBoundRecursively(points, startEnd, new ArrayList<Point>(), 0, Integer.MAX_VALUE);
     }
 
+    public static void setStartEnd(Point startEnd) {
+        BruteForceBranchAndBound.startEnd = startEnd;
+    }
+
     protected static BestRoute generateBranchAndBoundRecursively(List<Point> points, Point currentPoint, List<Point> route, int distanceOfBranch, int lowerBound) {
         if (points.size() == 1) {
             List<Point> routeTmp = new ArrayList<>(route);

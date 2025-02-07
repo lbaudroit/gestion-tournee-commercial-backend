@@ -1,0 +1,4 @@
+- Noeud racine
+---------------------------------------------------------------
++ Arbre(Liste<Client> lst, Point startEnd) :
+Creation de la racine(startEnd) avec Lst (constructeur speciale)

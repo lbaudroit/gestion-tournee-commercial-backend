@@ -2,6 +2,8 @@ package friutrodez.backendtourneecommercial.service.itineraryGenerator.utils.obj
 
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.utils.AlgoVoyageur;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -52,17 +54,16 @@ public class BenchMarkResults {
         sb.append("\n");
         sb.append("├").append("─".repeat(tableWidth - 2)).append("┤\n");
 
-        for (AlgoVoyageur algo : AlgoVoyageur.values()) {
-            String key = algo.name();
-            if (results.containsKey(key)) {
-                sb.append("│").append(String.format(" %-" + maxHeaderLength + "s │", key));
-                for (Integer value : results.get(key)) {
-                    String valueStr = String.valueOf(value);
-                    int padding = (maxHeaderLength - valueStr.length()) / 2;
-                    sb.append(String.format(" %" + (padding != 0 ? padding : "") + "s%-" + (maxHeaderLength - padding) + "s │", "", valueStr));
-                }
-                sb.append("\n");
+        List<String> sortedKeys = new ArrayList<>(results.keySet());
+        Collections.sort(sortedKeys);
+        for (String key : sortedKeys) {
+            sb.append("│").append(String.format(" %-" + maxHeaderLength + "s │", key));
+            for (Integer value : results.get(key)) {
+                String valueStr = String.valueOf(value);
+                int padding = (maxHeaderLength - valueStr.length()) / 2;
+                sb.append(String.format(" %" + (padding != 0 ? padding : "") + "s%-" + (maxHeaderLength - padding) + "s │", "", valueStr));
             }
+            sb.append("\n");
         }
         sb.append("└").append("─".repeat(tableWidth - 2)).append("┘\n");
 

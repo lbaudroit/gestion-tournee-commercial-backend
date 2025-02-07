@@ -33,7 +33,7 @@ public class Point {
         this.id = oringin.id;
         this.longitude = oringin.longitude;
         this.latitude = oringin.latitude;
-        this.distances = oringin.distances;
+        this.distances = new HashMap<>();
     }
 
     /**

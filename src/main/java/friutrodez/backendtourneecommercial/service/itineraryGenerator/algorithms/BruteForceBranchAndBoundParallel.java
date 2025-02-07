@@ -2,6 +2,7 @@ package friutrodez.backendtourneecommercial.service.itineraryGenerator.algorithm
 
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.BestRoute;
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Point;
+import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Settings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,8 @@ public class BruteForceBranchAndBoundParallel implements Algorithm {
         startEnd = startEndGiven;
         bestRouteParallelised = new BestRoute(null, Integer.MAX_VALUE);
         points.remove(startEnd);
-        generateBranchAndBoundParallelRecursively(points, startEnd, new ArrayList<Point>(), 0, 3);
+        int nombreDeNiveauxEnParallele = Settings.getNombreDeNiveauxEnParallele();
+        generateBranchAndBoundParallelRecursively(points, startEnd, new ArrayList<Point>(), 0, nombreDeNiveauxEnParallele);
         points.add(startEnd);
         return bestRouteParallelised;
     }
@@ -33,7 +35,7 @@ public class BruteForceBranchAndBoundParallel implements Algorithm {
         }
     }
     private static void generateBranchAndBoundParallelRecursively(List<Point> points, Point currentPoint, List<Point> route, int distanceOfBranch, int nombreDeNiveauxEnParallele) {
-        if (nombreDeNiveauxEnParallele > 0) {
+        if (nombreDeNiveauxEnParallele < points.size()) {
             if (points.size() == 1) {
                 List<Point> routeTmp = new ArrayList<>(route);
                 routeTmp.add(points.getFirst());
@@ -49,7 +51,7 @@ public class BruteForceBranchAndBoundParallel implements Algorithm {
                         List<Point> routeTmp = new ArrayList<>(route);
                         routeTmp.add(point);
                         CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-                            generateBranchAndBoundParallelRecursively(pointsTmp, point, routeTmp, distance, nombreDeNiveauxEnParallele - 1);
+                            generateBranchAndBoundParallelRecursively(pointsTmp, point, routeTmp, distance, nombreDeNiveauxEnParallele);
                         });
                         futures.add(future);
                     }
@@ -57,6 +59,7 @@ public class BruteForceBranchAndBoundParallel implements Algorithm {
                 CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
             }
         } else {
+            BruteForceBranchAndBound.setStartEnd(startEnd);
             setBestRoute(BruteForceBranchAndBound.generateBranchAndBoundRecursively(
                     points, currentPoint, route, distanceOfBranch, bestRouteParallelised.getDistance()));
         }
