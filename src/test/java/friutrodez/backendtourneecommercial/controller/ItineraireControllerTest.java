@@ -11,9 +11,18 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * PLAN DE TEST
+ * <p>
+ * Endpoint GET `/itineraire/generate` - nécessitant authentification
+ * <p>
+ * | ID | Cas               | Données attendues dans le body                 | Code HTTP attendu |
+ * |  1 | Un client connu   | Nombre de km non null, identifiant du client   | 200 (OK)          |
+ * |  2 | Un client inconnu | ∅                                              | 400 (Bad Request) |
+ */
 @AutoConfigureMockMvc
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -45,24 +54,30 @@ public class ItineraireControllerTest {
     @Order(1)
     @Test
     void testGenerateKnownClient() throws Exception {
+        String validClientId = client.get_id();
         String clientAsJson = objectMapper.writeValueAsString(client);
         System.out.println(clientAsJson);
         mockMvc.perform(get("/itineraire/generate")
-                        .param("clients", client.get_id())
+                        .param("clients", validClientId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(clientAsJson).header("Authorization", "Bearer " + headerToken))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.kilometres").isNotEmpty())
+                .andExpect(jsonPath("$.clients[0]._id").value(validClientId));
     }
 
-    @Order(1)
+    @Order(2)
     @Test
     void testGenerateUnknownClient() throws Exception {
+        String invalidClientId = "99999999";
+
         String clientAsJson = objectMapper.writeValueAsString(client);
         System.out.println(clientAsJson);
         mockMvc.perform(get("/itineraire/generate")
-                        .param("clients", "99999999")
+                        .param("clients", invalidClientId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(clientAsJson).header("Authorization", "Bearer " + headerToken))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(""));
     }
 }
