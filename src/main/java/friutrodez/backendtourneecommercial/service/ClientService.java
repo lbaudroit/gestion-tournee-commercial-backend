@@ -7,6 +7,9 @@ import friutrodez.backendtourneecommercial.model.Coordonnees;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 /**
  * Service de gestion des clients.
  * <p>
@@ -73,7 +76,13 @@ public class ClientService {
         validatorService.mustValidate(editData);
         Adresse address = editData.getAdresse();
 
-        Client savedClient = clientMongoTemplate.getOneClient(idClient, idUser);
+        Optional<Client> savedClientOpt = clientMongoTemplate.getOneClient(idClient, idUser);
+
+        if (savedClientOpt.isEmpty()) {
+            throw new NoSuchElementException("Le client n'a pas été trouvé");
+        }
+
+        Client savedClient = savedClientOpt.get();
 
         if (!savedClient.getAdresse().equals(editData.getAdresse())) {
             if (!addressToolsService.validateAdresse(address.getLibelle(), address.getCodePostal(), address.getVille())) {

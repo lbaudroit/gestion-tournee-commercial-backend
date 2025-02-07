@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -96,11 +97,11 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
      * @return Le client correspondant aux critères, ou null s'il n'est pas trouvé.
      * @throws IllegalArgumentException si l'un des identifiants est null ou vide.
      */
-    public Client getOneClient(String idClient, String idUser) {
+    public Optional<Client> getOneClient(String idClient, String idUser) {
         Query query = new Query().addCriteria(where("idUtilisateur").is(idUser))
                 .addCriteria(where("_id").is(idClient));
         System.out.println(query);
-        return mongoTemplate.findOne(query, collection);
+        return Optional.ofNullable(mongoTemplate.findOne(query, collection));
     }
 
     /**

@@ -13,6 +13,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.Optional;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -114,7 +116,9 @@ public class ClientControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer " + headerToken))
                 .andExpect(status().isOk());
-        Assertions.assertNull(clientMongoTemplate.getOneClient(client.get_id(), String.valueOf(configurationSecurityContextTest.getUser().getId())));
+
+        Optional<Client> client = clientMongoTemplate.getOneClient(this.client.get_id(), String.valueOf(configurationSecurityContextTest.getUser().getId()));
+        Assertions.assertTrue(client.isEmpty());
     }
 
     @Order(5)
