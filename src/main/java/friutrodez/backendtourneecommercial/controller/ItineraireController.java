@@ -18,10 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RequestMapping(path = "/itineraire/")
 @RestController
@@ -71,6 +68,8 @@ public class ItineraireController {
                 .sorted(Comparator.comparingInt(Appartient::getPosition))
                 .map(a -> a.getIdEmbedded().getClientId())
                 .map(c -> clientMongoTemplate.getOneClient(c, idUser))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .toList();
 
         ItineraireDTO dto = new ItineraireDTO(id, actualItinerary.getNom(), clients, actualItinerary.getDistance());
@@ -82,12 +81,17 @@ public class ItineraireController {
     public ResponseEntity<ResultatOptimisation> generateOptimalItineraire(@RequestParam("clients") List<Integer> idClients) {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        List<Client> clients = idClients
+        List<Optional<Client>> clients = idClients
                 .stream()
                 .map(i -> clientMongoTemplate.getOneClient(i.toString(), user.getId().toString()))
                 .toList();
 
-        List<Client> clientsCopy = new ArrayList<>(clients);
+        if (clients.stream().anyMatch(Optional::isEmpty)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        //noinspection OptionalGetWithoutIsPresent : vérification juste avant
+        List<Client> clientsCopy = new ArrayList<>(clients.stream().map(Optional::get).toList());
 
         return ResponseEntity.ok(itineraireService.optimizeShortest(clientsCopy, user));
     }

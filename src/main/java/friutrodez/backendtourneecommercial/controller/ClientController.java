@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Contrôleur REST pour la ressource client.
@@ -94,7 +95,10 @@ public class ClientController {
     public ResponseEntity<Client> getClient(@PathVariable(name = "id") String id) {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return ResponseEntity.ok(clientMongoTemplate.getOneClient(id, String.valueOf(user.getId())));
+        Optional<Client> client = clientMongoTemplate.getOneClient(id, String.valueOf(user.getId()));
+        
+        return client.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     /**
