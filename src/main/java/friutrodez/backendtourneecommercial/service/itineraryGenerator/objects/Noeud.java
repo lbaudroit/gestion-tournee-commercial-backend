@@ -56,11 +56,10 @@ public class Noeud {
         newMatrix = reduceMatrix(newMatrix).matrix();
         right = new Noeud(newMatrix, pointToIndexColumn, pointToIndexRow, value + highestRegret.regret());
         // Left side
-        newMatrix = new int[matrixContent.length][matrixContent.length];
         HashMap<Point, Integer> newPointToIndexColumn = removeFromPointToIndex(highestRegret.colonne(), pointToIndexColumn);
         HashMap<Point, Integer> newPointToIndexRow = removeFromPointToIndex(highestRegret.ligne(), pointToIndexRow);
         int[][] newMatrixContent = removeLineAndColumn(matrixContent, highestRegret.ligne(), highestRegret.colonne());
-        newMatrixContent[pointToIndexRow.get(highestRegret.colonne())][pointToIndexColumn.get(highestRegret.ligne())] = Integer.MAX_VALUE;
+        newMatrixContent[newPointToIndexRow.get(highestRegret.colonne())][newPointToIndexColumn.get(highestRegret.ligne())] = Integer.MAX_VALUE;
         ReduceReturn reduceReturn = reduceMatrix(newMatrixContent);
         newMatrixContent = reduceReturn.matrix();
         left = new Noeud(newMatrixContent, newPointToIndexColumn, newPointToIndexRow, value + reduceReturn.value());
