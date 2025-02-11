@@ -3,6 +3,7 @@ package friutrodez.backendtourneecommercial.service.itineraryGenerator.utils.obj
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Point;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class TestData {
@@ -37,15 +38,95 @@ public class TestData {
         return newList;
     }
 
-    public List<Point> getXFirstPoints(int x) {
-        List<Point> newList = new ArrayList<>();
-        for (int i = 0; i < x; i++) {
-            Point originalPoint = pointsExemples.get(i);
-            Point newPoint = new Point(originalPoint);
+    public List<Point> getPointsStatic1(Point startEnd) {
+        List<Point> pointsStatic = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            pointsStatic.add(pointsExemples.get(i));
         }
-        Point startEnd = new Point("startEnd", 2.8847171, 43.9596889);
-        generateDistancesWithHarvesineFormula(newList, startEnd);
-        return newList;
+        generateDistancesWithHarvesineFormula(pointsStatic, startEnd);
+        return pointsStatic;
+    }
+
+    public List<Point> getPointsStatic2(Point startEnd) {
+        List<Point> pointsStatic = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            pointsStatic.add(pointsExemples.get(i + 5));
+        }
+        generateDistancesWithHarvesineFormula(pointsStatic, startEnd);
+        return pointsStatic;
+    }
+
+    public List<Point> getPointsStatic3(Point startEnd) {
+        List<Point> pointsStatic = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            pointsStatic.add(pointsExemples.get(i + 10));
+        }
+        generateDistancesWithHarvesineFormula(pointsStatic, startEnd);
+        return pointsStatic;
+    }
+
+    public List<Point> getPointsStatic4(Point startEnd) {
+        List<Point> pointsStatic = new ArrayList<>();
+        startEnd.getDistances().clear();
+        pointsStatic.add(startEnd);
+        pointsStatic.add(new Point("B", 0, 0));
+        pointsStatic.add(new Point("C", 0, 0));
+        pointsStatic.add(new Point("D", 0, 0));
+        pointsStatic.add(new Point("E", 0, 0));
+        pointsStatic.add(new Point("F", 0, 0));
+        pointsStatic.add(new Point("G", 0, 0));
+        HashMap<Point, Integer> pointValue = new HashMap<>();
+        pointValue = pointsStatic.get(0).getDistances();
+        pointValue.put(pointsStatic.get(1), 33);
+        pointValue.put(pointsStatic.get(2), 45);
+        pointValue.put(pointsStatic.get(3), 49);
+        pointValue.put(pointsStatic.get(4), 32);
+        pointValue.put(pointsStatic.get(5), 10);
+        pointValue.put(pointsStatic.get(6), 31);
+        pointValue = pointsStatic.get(1).getDistances();
+        pointValue.put(pointsStatic.get(0), 28);
+        pointValue.put(pointsStatic.get(2), 13);
+        pointValue.put(pointsStatic.get(3), 46);
+        pointValue.put(pointsStatic.get(4), 37);
+        pointValue.put(pointsStatic.get(5), 30);
+        pointValue.put(pointsStatic.get(6), 27);
+        pointValue = pointsStatic.get(2).getDistances();
+        pointValue.put(pointsStatic.get(0), 43);
+        pointValue.put(pointsStatic.get(1), 14);
+        pointValue.put(pointsStatic.get(3), 41);
+        pointValue.put(pointsStatic.get(4), 32);
+        pointValue.put(pointsStatic.get(5), 29);
+        pointValue.put(pointsStatic.get(6), 21);
+        pointValue = pointsStatic.get(3).getDistances();
+        pointValue.put(pointsStatic.get(0), 49);
+        pointValue.put(pointsStatic.get(1), 50);
+        pointValue.put(pointsStatic.get(2), 38);
+        pointValue.put(pointsStatic.get(4), 24);
+        pointValue.put(pointsStatic.get(5), 44);
+        pointValue.put(pointsStatic.get(6), 27);
+        pointValue = pointsStatic.get(4).getDistances();
+        pointValue.put(pointsStatic.get(0), 30);
+        pointValue.put(pointsStatic.get(1), 34);
+        pointValue.put(pointsStatic.get(2), 28);
+        pointValue.put(pointsStatic.get(3), 27);
+        pointValue.put(pointsStatic.get(5), 13);
+        pointValue.put(pointsStatic.get(6), 27);
+        pointValue = pointsStatic.get(5).getDistances();
+        pointValue.put(pointsStatic.get(0), 6);
+        pointValue.put(pointsStatic.get(1), 28);
+        pointValue.put(pointsStatic.get(2), 32);
+        pointValue.put(pointsStatic.get(3), 41);
+        pointValue.put(pointsStatic.get(4), 17);
+        pointValue.put(pointsStatic.get(6), 37);
+        pointValue = pointsStatic.get(6).getDistances();
+        pointValue.put(pointsStatic.get(0), 32);
+        pointValue.put(pointsStatic.get(1), 31);
+        pointValue.put(pointsStatic.get(2), 19);
+        pointValue.put(pointsStatic.get(3), 26);
+        pointValue.put(pointsStatic.get(4), 24);
+        pointValue.put(pointsStatic.get(5), 41);
+        pointsStatic.remove(startEnd);
+        return pointsStatic;
     }
 
     private void setUpTestData() {

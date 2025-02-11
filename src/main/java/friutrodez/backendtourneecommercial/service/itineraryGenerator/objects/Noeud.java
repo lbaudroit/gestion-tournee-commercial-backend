@@ -2,10 +2,7 @@ package friutrodez.backendtourneecommercial.service.itineraryGenerator.objects;
 
 import lombok.Getter;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Noeud {
     private int[][] matrixContent;
@@ -13,14 +10,20 @@ public class Noeud {
     private HashMap<Point, Integer> pointToIndexRow;
     @Getter
     private int value;
-    public Noeud left;
-    public Noeud right;
+    private Point start;
+    private Point end;
+    private Noeud left;
+    private Noeud right;
+    private Noeud parent;
 
-    public Noeud(int[][] matrixContent, HashMap<Point, Integer> pointToIndexColumn, HashMap<Point, Integer> pointToIndexRow, int value) {
+    public Noeud(int[][] matrixContent, HashMap<Point, Integer> pointToIndexColumn, HashMap<Point, Integer> pointToIndexRow, int value, Point start, Point end, Noeud parent) {
         this.matrixContent = matrixContent;
         this.pointToIndexColumn = pointToIndexColumn;
         this.pointToIndexRow = pointToIndexRow;
         this.value = value;
+        this.start = start;
+        this.end = end;
+        this.parent = parent;
     }
 
     public Noeud(List<Point> pointList) {
@@ -39,7 +42,7 @@ public class Noeud {
         if (left != null && right != null) {
             Noeud leftNode = left.getLowestValueNode();
             Noeud rightNode = right.getLowestValueNode();
-            return leftNode.getValue() < rightNode.getValue() ? leftNode : rightNode;
+            return leftNode.getValue() <= rightNode.getValue() ? leftNode : rightNode;
         } else {
             return this;
         }
@@ -47,22 +50,32 @@ public class Noeud {
 
     public void expand() {
         // Right side
-        HighestRegret highestRegret = regret();
         int[][] newMatrix = new int[matrixContent.length][matrixContent.length];
         for (int i = 0; i < matrixContent.length; i++) {
             System.arraycopy(matrixContent[i], 0, newMatrix[i], 0, matrixContent.length);
         }
+        HighestRegret highestRegret = regret();
         newMatrix[pointToIndexRow.get(highestRegret.ligne())][pointToIndexColumn.get(highestRegret.colonne())] = Integer.MAX_VALUE;
         newMatrix = reduceMatrix(newMatrix).matrix();
-        right = new Noeud(newMatrix, pointToIndexColumn, pointToIndexRow, value + highestRegret.regret());
+        int valeur = value + highestRegret.regret();
+        if (valeur > 2000000 || valeur < 0) {
+            valeur = Integer.MAX_VALUE;
+        }
+        right = new Noeud(newMatrix, pointToIndexColumn, pointToIndexRow, valeur, null, null, this);
         // Left side
         HashMap<Point, Integer> newPointToIndexColumn = removeFromPointToIndex(highestRegret.colonne(), pointToIndexColumn);
         HashMap<Point, Integer> newPointToIndexRow = removeFromPointToIndex(highestRegret.ligne(), pointToIndexRow);
         int[][] newMatrixContent = removeLineAndColumn(matrixContent, highestRegret.ligne(), highestRegret.colonne());
-        newMatrixContent[newPointToIndexRow.get(highestRegret.colonne())][newPointToIndexColumn.get(highestRegret.ligne())] = Integer.MAX_VALUE;
+        if (newPointToIndexRow.containsKey(highestRegret.colonne()) && newPointToIndexColumn.containsKey(highestRegret.ligne())) {
+            newMatrixContent[newPointToIndexRow.get(highestRegret.colonne())][newPointToIndexColumn.get(highestRegret.ligne())] = Integer.MAX_VALUE;
+        }
         ReduceReturn reduceReturn = reduceMatrix(newMatrixContent);
         newMatrixContent = reduceReturn.matrix();
-        left = new Noeud(newMatrixContent, newPointToIndexColumn, newPointToIndexRow, value + reduceReturn.value());
+        valeur = value + reduceReturn.value();
+        if (valeur > 2000000 || valeur < 0) {
+            valeur = Integer.MAX_VALUE;
+        }
+        left = new Noeud(newMatrixContent, newPointToIndexColumn, newPointToIndexRow, valeur, highestRegret.ligne(), highestRegret.colonne(), this);
     }
 
     private int[][] removeLineAndColumn(int[][] matrix, Point ligne, Point colonne) {
@@ -129,9 +142,11 @@ public class Noeud {
                     min = value;
                 }
             }
-            valeur += min;
-            for (int column = 0; column < matrix[line].length; column++) {
-                newMatrix[line][column] = matrix[line][column] - min;
+            if (min != Integer.MAX_VALUE) {
+                valeur += min;
+                for (int column = 0; column < matrix[line].length; column++) {
+                    newMatrix[line][column] = matrix[line][column] - min;
+                }
             }
         }
         return valeur;
@@ -146,15 +161,18 @@ public class Noeud {
                     min = newMatrix[line][column];
                 }
             }
-            valeur += min;
-            for (int line = 0; line < newMatrix.length; line++) {
-                newMatrix[line][column] -= min;
+            if (min != Integer.MAX_VALUE) {
+                valeur += min;
+                for (int line = 0; line < newMatrix.length; line++) {
+                    newMatrix[line][column] -= min;
+                }
             }
         }
         return valeur;
     }
 
     private HighestRegret regret() {
+        // If the matrix is of size 2 with [big value, 0] [0, big value] print hi
         int maxRegret = -1;
         Point maxRegretLine = null;
         Point maxRegretColumn = null;
@@ -184,6 +202,9 @@ public class Noeud {
                 minLine = matrixContent[i][pointToIndexColumn.get(colonne)];
             }
         }
+        if (minColumn > 2000000 || minLine > 2000000) {
+            return Integer.MAX_VALUE;
+        }
         return minLine + minColumn;
     }
 
@@ -199,5 +220,17 @@ public class Noeud {
             }
         }
         return newPointToIndex;
+    }
+
+    public List<Noeud> getAllNodesOnRoute() {
+        if (parent == null) {
+            return new ArrayList<>();
+        } else {
+            List<Noeud> allNodes = parent.getAllNodesOnRoute();
+            if (start != null && end != null) {
+                allNodes.add(this);
+            }
+            return allNodes;
+        }
     }
 }

@@ -10,8 +10,7 @@ public enum AlgoVoyageur {
     BRUTE_FORCE,
     BRUTE_FORCE_BRANCH_AND_BOUND,
     BRUTE_FORCE_BRANCH_AND_BOUND_PARALLEL,
-    LITTLE,
-    LITTLE_PARALLEL;
+    LITTLE;
 
     @Override
     public String toString() {
@@ -20,7 +19,6 @@ public enum AlgoVoyageur {
             case BRUTE_FORCE_BRANCH_AND_BOUND -> "Brute force branch and bound";
             case BRUTE_FORCE_BRANCH_AND_BOUND_PARALLEL -> "Brute force branch and bound parallel";
             case LITTLE -> "Little";
-            case LITTLE_PARALLEL -> "Little parallel";
             default -> throw new IllegalArgumentException();
         };
     }
@@ -31,7 +29,6 @@ public enum AlgoVoyageur {
             case BRUTE_FORCE_BRANCH_AND_BOUND -> new friutrodez.backendtourneecommercial.service.itineraryGenerator.algorithms.BruteForceBranchAndBound();
             case BRUTE_FORCE_BRANCH_AND_BOUND_PARALLEL -> new friutrodez.backendtourneecommercial.service.itineraryGenerator.algorithms.BruteForceBranchAndBoundParallel();
             case LITTLE -> new friutrodez.backendtourneecommercial.service.itineraryGenerator.algorithms.Little();
-            case LITTLE_PARALLEL -> new friutrodez.backendtourneecommercial.service.itineraryGenerator.algorithms.LittleParallel();
             default -> throw new IllegalArgumentException();
         };
         try {

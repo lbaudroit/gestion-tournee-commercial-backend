@@ -34,11 +34,7 @@ class NoeudTest {
     @Test
     void expand() {
         noeud.expand();
-        Noeud left = noeud.left;
-        Noeud right = noeud.right;
         System.out.println(noeud.getValue());
-        System.out.println(left.getValue());
-        System.out.println(right.getValue());
     }
 
     @Test
