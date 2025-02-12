@@ -3,6 +3,7 @@ package friutrodez.backendtourneecommercial.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import friutrodez.backendtourneecommercial.helper.ConfigurationSecurityContextTest;
 import friutrodez.backendtourneecommercial.model.Client;
+import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,9 @@ public class ItineraireControllerTest {
     @Autowired
     ConfigurationSecurityContextTest configurationSecurityContextTest;
 
+    @Autowired
+    ClientMongoTemplate clientMongoTemplate;
+
     @BeforeAll
     void Setup() throws Exception {
         headerToken = configurationSecurityContextTest.getTokenForSecurity(mockMvc);
@@ -83,5 +87,11 @@ public class ItineraireControllerTest {
                         .content(clientAsJson).header("Authorization", "Bearer " + headerToken))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string(""));
+    }
+
+    @AfterAll
+    void after() {
+        clientMongoTemplate.remove(client);
+        clientMongoTemplate.remove(client2);
     }
 }
