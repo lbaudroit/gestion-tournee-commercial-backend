@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import friutrodez.backendtourneecommercial.helper.ConfigurationSecurityContextTest;
 import friutrodez.backendtourneecommercial.model.Client;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -22,6 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Transactional
+@Rollback
 @ActiveProfiles("production")
 public class ClientControllerTest {
 
@@ -43,6 +47,7 @@ public class ClientControllerTest {
     void Setup() throws Exception {
         headerToken = configurationSecurityContextTest.getTokenForSecurity(mockMvc);
         client = configurationSecurityContextTest.getMockClient(configurationSecurityContextTest.getUser());
+
         client.setNomEntreprise("entrepriseTest");
     }
 
