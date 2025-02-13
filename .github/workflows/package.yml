@@ -49,6 +49,7 @@ jobs:
   dockerize:
     name: Build Docker Image
     runs-on: ubuntu-latest
+    needs : build
 
     steps:
       - name: Checkout code
