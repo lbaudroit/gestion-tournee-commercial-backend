@@ -64,7 +64,7 @@ jobs:
          name: tournee-commercial-jar
         
       - name: Build Docker image
-        run: docker build -t tournee-commercial:0.0.1 .
+        run: docker build -f deployment/Dockerfile -t tournee-commercial:0.0.1 .
 
       - name: Save Docker image to a tar file
         run: docker save -o tournee-commercial-0.0.1.tar tournee-commercial:0.0.1
