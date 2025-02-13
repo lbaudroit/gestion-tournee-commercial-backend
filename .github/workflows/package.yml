@@ -55,13 +55,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Move to Docker build context
-        run: cd deployment
-
       - name: Download a Build Artifact
         uses: actions/download-artifact@v4.1.8
         with:
          name: tournee-commercial-jar
+
         
       - name: Build Docker image
         run: docker build -f deployment/Dockerfile -t tournee-commercial:0.0.1 .
