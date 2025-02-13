@@ -38,7 +38,7 @@ jobs:
         run: mvn clean package
 
       - name: Rename JAR file
-        run: mv /home/runner/work/gestion-tournee-commercial-backend/gestion-tournee-commercial-backend/target/backendtourneecommercial-0.0.1-SNAPSHOT.jar /home/runner/work/gestion-tournee-commercial-backend/gestion-tournee-commercial-backend/target/backendtourneecommercial.jar
+        run: mv /home/runner/work/gestion-tournee-commercial-backend/gestion-tournee-commercial-backend/target/backendtourneecommercial-0.0.1-SNAPSHOT.jar.original /home/runner/work/gestion-tournee-commercial-backend/gestion-tournee-commercial-backend/target/backendtourneecommercial.jar
 
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
