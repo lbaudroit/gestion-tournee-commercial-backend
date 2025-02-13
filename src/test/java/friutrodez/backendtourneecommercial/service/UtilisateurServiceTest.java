@@ -12,10 +12,10 @@ import org.springframework.test.annotation.Rollback;
 @Transactional
 @Rollback
 @SpringBootTest
-public class AuthenticationServiceTest {
+public class UtilisateurServiceTest {
 
     @Autowired
-    AuthenticationService authenticationService;
+    UtilisateurService authenticationService;
 
     @Test
     void testBuildUser() {
