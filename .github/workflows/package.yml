@@ -60,11 +60,8 @@ jobs:
         with:
          name: tournee-commercial-jar
 
-      - name: Move JAR file to Docker build context
-        run: |
-          mkdir -p gestion-tournee-commercial-backend/target
-          mv /home/runner/work/gestion-tournee-commercial-backend/gestion-tournee-commercial-backend/target/*.jar deployment/gestion-tournee-commercial-backend/target/
-
+      - name: List files
+        run: ls
         
       - name: Build Docker image
         run: docker build -f deployment/Dockerfile -t tournee-commercial:0.0.1 .
