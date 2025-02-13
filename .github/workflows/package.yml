@@ -63,6 +63,9 @@ jobs:
         with:
          name: tournee-commercial-jar
 
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+        
       - name: Build Docker image
         run: docker build -t tournee-commercial:0.0.1 .
 
