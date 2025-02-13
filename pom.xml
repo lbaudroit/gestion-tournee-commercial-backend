@@ -149,7 +149,6 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<mainClass>friutrodez.backendtourneecommercial.BackendtourneecommercialApplication</mainClass>
-					<layout>JAR</layout>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
