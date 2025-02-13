@@ -34,5 +34,5 @@ public class EtapesParcours {
     /**
      * Coordonnées géographiques de l'étape de parcours.
      */
-    private double[] coordonnees;
+    private Coordonnees coordonnees;
 }
