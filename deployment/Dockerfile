@@ -5,5 +5,4 @@ USER springUser
 WORKDIR /gestion-tournee-commercial-backend
 ARG JAR_FILE=backendtourneecommercial.jar
 COPY ${JAR_FILE} app.jar
-#ENTRYPOINT ["java","-jar","/app.jar"]
-ENTRYPOINT ["sh"]
+ENTRYPOINT ["java","-jar","/gestion-tournee-commercial-backend/app.jar"]
