@@ -69,7 +69,7 @@ jobs:
           driver-opts: image=moby/buildkit:v0.11.2-rootless
 
       - name: Build and load Docker image # Combined build and load
-        run: docker buildx build --platform linux/${{ matrix.platform }} --tag tournee-commercial:${{ matrix.platform }}-0.0.1 --file deployment/Dockerfile --load.
+        run: docker buildx build --platform linux/${{ matrix.platform }} --tag tournee-commercial:${{ matrix.platform }}-0.0.1 --file deployment/Dockerfile --load
 
       - name: Save Docker image to a tar file
         run: docker save -o tournee-commercial-${{ matrix.platform }}.tar tournee-commercial:${{ matrix.platform }}-0.0.1
