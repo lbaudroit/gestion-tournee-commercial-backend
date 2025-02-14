@@ -31,7 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 @Rollback
-@ActiveProfiles("production")
 public class AuthenticationControllerTest {
 
     @Autowired
