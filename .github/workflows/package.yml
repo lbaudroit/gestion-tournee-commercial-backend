@@ -73,15 +73,15 @@ jobs:
         with:
           context: .
           file: deployment/Dockerfile
-          platforms: ${{ matrix.platform }} # Crucial: Build for the specific platform
-          push: false # No push to registry
-          tags: tournee-commercial:${{ matrix.platform }}-0.0.1 # Important: Platform-specific tags
+          platforms: linux/${{ matrix.platform }} # Add linux/ back
+          push: false
+          tags: tournee-commercial-${{ matrix.platform }}-0.0.1 # No slashes in tag
   
       - name: Save Docker image to a tar file
-        run: docker save -o tournee-commercial-${{ matrix.platform }}.tar tournee-commercial:${{ matrix.platform }}-0.0.1
+        run: docker save -o tournee-commercial-${{ matrix.platform }}.tar tournee-commercial-${{ matrix.platform }}-0.0.1
   
       - name: Upload Docker artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tournee-commercial-docker-${{ matrix.platform }} # Platform-specific artifact names
+          name: tournee-commercial-docker-${{ matrix.platform }}
           path: tournee-commercial-${{ matrix.platform }}.tar
