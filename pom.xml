@@ -162,6 +162,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
+					<profiles>docker</profiles>
 					<mainClass>friutrodez.backendtourneecommercial.BackendtourneecommercialApplication</mainClass>
 					<excludes>
 						<exclude>
