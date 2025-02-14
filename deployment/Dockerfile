@@ -1,5 +1,5 @@
 #Ne lancer que dans githubAction
-FROM eclipse-temurin:23
+FROM eclipse-temurin:23.0.2_7-jdk-noble
 RUN addgroup --system spring && adduser --system --ingroup spring springUser
 USER springUser
 WORKDIR /gestion-tournee-commercial-backend
