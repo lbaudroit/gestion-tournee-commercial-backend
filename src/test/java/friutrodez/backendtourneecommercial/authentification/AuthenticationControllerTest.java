@@ -1,11 +1,11 @@
 package friutrodez.backendtourneecommercial.authentification;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import friutrodez.backendtourneecommercial.controller.AuthentificationController;
+import friutrodez.backendtourneecommercial.controller.AuthenticationController;
 import friutrodez.backendtourneecommercial.dto.DonneesAuthentification;
 import friutrodez.backendtourneecommercial.dto.JwtToken;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
-import friutrodez.backendtourneecommercial.service.AuthentificationService;
+import friutrodez.backendtourneecommercial.service.AuthenticationService;
 import friutrodez.backendtourneecommercial.service.JwtService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -31,13 +32,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @Rollback
 @ActiveProfiles("production")
-public class AuthentificationControllerTest {
+public class AuthenticationControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private AuthentificationService authentificationService;
+    private AuthenticationService authenticationService;
     @MockitoBean
     private JwtService jwtService;
     @Autowired
@@ -46,7 +47,7 @@ public class AuthentificationControllerTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private AuthentificationController authentificationController;
+    private AuthenticationController authenticationController;
 
     @Transactional
     @Rollback
@@ -62,11 +63,11 @@ public class AuthentificationControllerTest {
         testUser.setCodePostal("12000");
         testUser.setVille("Rodez");
 
-        String utilisateurJson = objectMapper.writeValueAsString(testUser);
+        String userAsJson = objectMapper.writeValueAsString(testUser);
 
-        mockMvc.perform(post("/auth/creer")
+        mockMvc.perform(post("/utilisateur/")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(utilisateurJson))
+                        .content(userAsJson))
                 .andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.notNullValue()));
 
@@ -83,40 +84,41 @@ public class AuthentificationControllerTest {
 
         testUser.setCodePostal("12000");
         testUser.setVille("Rodez");
-        String utilisateurJson = objectMapper.writeValueAsString(testUser);
+        String userAsJson = objectMapper.writeValueAsString(testUser);
 
         String expectedToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
 
-        JwtToken jwtToken = new JwtToken(expectedToken,1800000);
+        JwtToken jwtToken = new JwtToken(expectedToken, 1800000);
 
         UserDetails userDetailsMock = mock(UserDetails.class);
         when(userDetailsMock.getUsername()).thenReturn("Email@mail2.com");
         when(userDetailsMock.getPassword()).thenReturn("password");
 
-        when(jwtService.genererToken(any(UserDetails.class)))
+        when(jwtService.generateToken(any(UserDetails.class)))
                 .thenReturn(expectedToken);
 
-        mockMvc.perform(post("/auth/creer")
+        mockMvc.perform(post("/utilisateur/")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(utilisateurJson))
+                        .content(userAsJson))
                 .andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.notNullValue()));
 
-        DonneesAuthentification donneesAuthentification = new DonneesAuthentification("Email@mail2.com","pA3@.AZet4");
+        DonneesAuthentification authenticationData = new DonneesAuthentification("Email@mail2.com", "pA3@.AZet4");
 
-         mockMvc.perform(post("/auth/authentifier")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(donneesAuthentification)))
+        mockMvc.perform(post("/auth/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(authenticationData)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").value(expectedToken))
                 .andExpect(content().string(org.hamcrest.Matchers.notNullValue())).andReturn();
 
-         when(jwtService.extraireEmail(any(String.class))).thenReturn("Email@mail2.com");
-         when(jwtService.tokenEstValide(any(String.class),any(UserDetails.class))).thenReturn(true);
+        when(jwtService.extractEmail(any(String.class))).thenReturn("Email@mail2.com");
+        when(jwtService.isTokenValid(any(String.class), any(UserDetails.class))).thenReturn(true);
 
-         mockMvc.perform(get("/auth")
-                 .header("Authorization", "Bearer " + expectedToken))
-                 .andExpect(status().isOk()).andExpect(content().string("token fonctionnel"));
+        // appel à une méthode nécessitant authentification
+        mockMvc.perform(get("/utilisateur/")
+                        .header("Authorization", "Bearer " + expectedToken))
+                .andExpect(status().isOk());
 
     }
 

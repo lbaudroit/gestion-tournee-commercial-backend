@@ -11,10 +11,20 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+/**
+ * Classe de configuration de l'application.
+ * Met à disposition les outils d'authentification
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
+ */
 @Configuration
 public class ApplicationConfiguration {
 
     UtilisateurRepository utilisateurRepository;
+
     @Autowired
     public ApplicationConfiguration(UtilisateurRepository utilisateurRepository) {
         this.utilisateurRepository = utilisateurRepository;

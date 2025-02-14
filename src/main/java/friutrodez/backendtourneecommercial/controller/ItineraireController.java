@@ -1,0 +1,127 @@
+package friutrodez.backendtourneecommercial.controller;
+
+import friutrodez.backendtourneecommercial.dto.*;
+import friutrodez.backendtourneecommercial.model.Appartient;
+import friutrodez.backendtourneecommercial.model.Client;
+import friutrodez.backendtourneecommercial.model.Itineraire;
+import friutrodez.backendtourneecommercial.model.Utilisateur;
+import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
+import friutrodez.backendtourneecommercial.repository.mysql.AppartientRepository;
+import friutrodez.backendtourneecommercial.repository.mysql.ItineraireRepository;
+import friutrodez.backendtourneecommercial.service.ItineraireService;
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
+
+@RequestMapping(path = "/itineraire/")
+@RestController
+@AllArgsConstructor
+public class ItineraireController {
+
+    ItineraireRepository itineraireRepository;
+
+    private AppartientRepository appartientRepository;
+
+    private ItineraireService itineraireService;
+
+    private ClientMongoTemplate clientMongoTemplate;
+
+    private final static int PAGE_SIZE = 30;
+
+    @GetMapping(path = "count")
+    public ResponseEntity<Nombre> getItinerairesCount() {
+        Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        // Récupérer le nombre d'itinéraire
+        long counted = itineraireRepository.countItineraireByUtilisateur(user);
+        Nombre nombre = new Nombre((int) Math.ceil(counted / (double) PAGE_SIZE));
+        return ResponseEntity.ok(nombre);
+    }
+
+    @GetMapping(path = "lazy")
+    public ResponseEntity<List<Itineraire>> getItinerairesLazy(@RequestParam(name = "page") int page) {
+        Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        // Récupérer les itinéraires
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+        return ResponseEntity.ok(itineraireRepository.getItinerairesByUtilisateur(user, pageable));
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<ItineraireDTO> getItineraire(@PathVariable("id") Long id) {
+        Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Optional<Itineraire> itinerary = itineraireRepository.findItineraireByIdAndUtilisateur(id, user);
+        if (itinerary.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        String idUser = String.valueOf(user.getId());
+        Itineraire actualItinerary = itinerary.get();
+        List<Client> clients = appartientRepository.findAllByIdEmbedded_Itineraire_Id(id)
+                .stream()
+                .sorted(Comparator.comparingInt(Appartient::getPosition))
+                .map(a -> a.getIdEmbedded().getClientId())
+                .map(c -> clientMongoTemplate.getOneClient(c, idUser))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .toList();
+
+        ItineraireDTO dto = new ItineraireDTO(id, actualItinerary.getNom(), clients, actualItinerary.getDistance());
+
+        return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping(path = "generate")
+    public ResponseEntity<ResultatOptimisation> generateOptimalItineraire(@RequestParam("clients") List<Integer> idClients) {
+        Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        List<Optional<Client>> clients = idClients
+                .stream()
+                .map(i -> clientMongoTemplate.getOneClient(i.toString(), user.getId().toString()))
+                .toList();
+
+        if (clients.stream().anyMatch(Optional::isEmpty)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        //noinspection OptionalGetWithoutIsPresent : vérification juste avant
+        List<Client> clientsCopy = new ArrayList<>(clients.stream().map(Optional::get).toList());
+
+        return ResponseEntity.ok(itineraireService.optimizeShortest(clientsCopy, user));
+    }
+
+    @Transactional
+    @PostMapping
+    public ResponseEntity<Message> createItineraire(@RequestBody ItineraireCreationDTO dto) {
+        Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        itineraireService.createItineraire(dto, user);
+        return ResponseEntity.ok(new Message("Itinéraire créé"));
+    }
+
+    @Transactional
+    @PutMapping("{id}")
+    public ResponseEntity<Message> modifyItineraire(@PathVariable("id") long id, @RequestBody ItineraireCreationDTO dto) {
+        Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        itineraireService.editItineraire(dto, user, id);
+        return ResponseEntity.ok(new Message("Itinéraire modifié"));
+    }
+
+    @Transactional
+    @DeleteMapping("{id}")
+    public ResponseEntity<Message> deleteItineraire(@PathVariable("id") int itineraire_id) {
+        Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        try {
+            itineraireService.deleteItineraire(itineraire_id, user);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new Message("Itinéraire non trouvé"));
+        }
+        return ResponseEntity.ok(new Message("Itinéraire supprimé"));
+    }
+}

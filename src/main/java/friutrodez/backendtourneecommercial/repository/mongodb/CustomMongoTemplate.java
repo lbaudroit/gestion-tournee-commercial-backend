@@ -7,7 +7,10 @@ import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.*;
+import org.springframework.data.mongodb.core.query.BasicQuery;
+import org.springframework.data.mongodb.core.query.BasicUpdate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.List;
 
@@ -18,15 +21,14 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
  * Evite de répéter du code inutile dans la structure et évite de mettre
  * la classe de la collection à chaque appel
  * de méthode qui utilise la classe mongoTemplate.
- * @param <T> le type de la collection
  *
- * @author
- * Benjamin NICOL
- * Enzo CLUZEL
- * Leïla BAUDROIT
- * Ahmed BRIBACH
+ * @param <T> le type de la collection
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
-public abstract class CustomMongoTemplate<T>  {
+public abstract class CustomMongoTemplate<T> {
 
     /**
      * mongoTemplate obtenue à partir du bean qui étend cette classe par le constructeur.
@@ -41,9 +43,9 @@ public abstract class CustomMongoTemplate<T>  {
      * Constructeur de la classe CustomMongoTemplate.
      *
      * @param mongoTemplate le template MongoDB utilisé pour les opérations
-     * @param collection la classe de la collection MongoDB
+     * @param collection    la classe de la collection MongoDB
      */
-    public CustomMongoTemplate(MongoTemplate mongoTemplate, Class<T> collection){
+    public CustomMongoTemplate(MongoTemplate mongoTemplate, Class<T> collection) {
         this.mongoTemplate = mongoTemplate;
         this.collection = collection;
     }
@@ -51,7 +53,7 @@ public abstract class CustomMongoTemplate<T>  {
     /**
      * Trouve les documents dans la collection correspondant à la clé et la valeur spécifiées.
      *
-     * @param cle la clé de la requête
+     * @param cle    la clé de la requête
      * @param valeur la valeur de la requête
      * @return une liste de documents correspondant à la requête
      */
@@ -61,20 +63,21 @@ public abstract class CustomMongoTemplate<T>  {
 
     /**
      * Enleve une entité par rapport à la clé et la valeur
-     * @param cle la clé
+     *
+     * @param cle    la clé
      * @param valeur la valeur
      */
-    public void removeOne(String cle,String valeur) {
+    public void removeOne(String cle, String valeur) {
         mongoTemplate.remove(findOne(cle, valeur));
     }
 
     public T findOne(String cle, String valeur) {
-        return mongoTemplate.findOne(getQuery(cle,valeur),collection);
+        return mongoTemplate.findOne(getQuery(cle, valeur), collection);
     }
 
 
     public List<T> getAllEntities() {
-        return  mongoTemplate.findAll(collection);
+        return mongoTemplate.findAll(collection);
     }
 
     /*
@@ -87,7 +90,7 @@ public abstract class CustomMongoTemplate<T>  {
     /**
      * Vérifie si un document existe dans la collection correspondant à la clé et la valeur spécifiées.
      *
-     * @param cle la clé de la requête
+     * @param cle    la clé de la requête
      * @param valeur la valeur de la requête
      * @return true si le document existe, false sinon
      */
@@ -98,7 +101,7 @@ public abstract class CustomMongoTemplate<T>  {
     /**
      * Crée une requête MongoDB à partir de la clé et de la valeur spécifiées.
      *
-     * @param cle la clé de la requête
+     * @param cle    la clé de la requête
      * @param valeur la valeur de la requête
      * @return la requête MongoDB
      */
@@ -108,6 +111,7 @@ public abstract class CustomMongoTemplate<T>  {
 
     /**
      * Récupérer des entités selon les valeurs du document reçu
+     *
      * @param document le document
      * @return les documents correspondants
      */
@@ -122,7 +126,7 @@ public abstract class CustomMongoTemplate<T>  {
             throw new DonneesInvalidesException("La conversion en json n'a pas fonctionnée. Veuillez vérifier les données.");
         }
         BasicQuery basicQuery = new BasicQuery(entiteJson);
-        return mongoTemplate.find(basicQuery,collection);
+        return mongoTemplate.find(basicQuery, collection);
     }
 
     public DeleteResult remove(T entite) {
@@ -131,11 +135,12 @@ public abstract class CustomMongoTemplate<T>  {
 
     /**
      * Modifie le document de la collection appartenant à l'id
+     *
      * @param modificationsApportees les modifications apportées
-     * @param id l'id du document
+     * @param id                     l'id du document
      * @return le résultat de la modification
      */
-    public UpdateResult modifier(T modificationsApportees, String id)  {
+    public UpdateResult modifier(T modificationsApportees, String id) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         String entiteJson = "";
@@ -146,7 +151,7 @@ public abstract class CustomMongoTemplate<T>  {
         }
         BasicUpdate basicUpdate = new BasicUpdate(entiteJson);
         Query query = new Query(Criteria.where("_id").is(id));
-        return mongoTemplate.updateFirst(query,basicUpdate,collection);
+        return mongoTemplate.updateFirst(query, basicUpdate, collection);
     }
 
     /**
