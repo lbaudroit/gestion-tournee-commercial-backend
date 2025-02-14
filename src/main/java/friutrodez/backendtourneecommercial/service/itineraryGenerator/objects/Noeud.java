@@ -10,7 +10,9 @@ public class Noeud {
     private HashMap<Point, Integer> pointToIndexRow;
     @Getter
     private int value;
+    @Getter
     private Point start;
+    @Getter
     private Point end;
     private Noeud left;
     private Noeud right;
@@ -66,8 +68,8 @@ public class Noeud {
         HashMap<Point, Integer> newPointToIndexColumn = removeFromPointToIndex(highestRegret.colonne(), pointToIndexColumn);
         HashMap<Point, Integer> newPointToIndexRow = removeFromPointToIndex(highestRegret.ligne(), pointToIndexRow);
         int[][] newMatrixContent = removeLineAndColumn(matrixContent, highestRegret.ligne(), highestRegret.colonne());
-        if (newPointToIndexRow.containsKey(highestRegret.colonne()) && newPointToIndexColumn.containsKey(highestRegret.ligne())) {
-            newMatrixContent[newPointToIndexRow.get(highestRegret.colonne())][newPointToIndexColumn.get(highestRegret.ligne())] = Integer.MAX_VALUE;
+        if (newMatrixContent.length != 1) {
+            avoidCircuits(newMatrixContent, newPointToIndexRow, newPointToIndexColumn, highestRegret.ligne(), highestRegret.colonne());
         }
         ReduceReturn reduceReturn = reduceMatrix(newMatrixContent);
         newMatrixContent = reduceReturn.matrix();
@@ -76,6 +78,47 @@ public class Noeud {
             valeur = Integer.MAX_VALUE;
         }
         left = new Noeud(newMatrixContent, newPointToIndexColumn, newPointToIndexRow, valeur, highestRegret.ligne(), highestRegret.colonne(), this);
+    }
+
+    private void avoidCircuits(int[][] matrix, HashMap<Point, Integer> pointToIndexRow, HashMap<Point, Integer> pointToIndexColumn, Point start, Point end) {
+        /*if (pointToIndexRow.containsKey(end) && pointToIndexColumn.containsKey(start)) {
+            matrix[pointToIndexRow.get(end)][pointToIndexColumn.get(start)] = Integer.MAX_VALUE;
+        }*/
+        List<Point> starts = new ArrayList<>();
+        starts.add(start);
+        List<Point> ends = new ArrayList<>();
+        ends.add(end);
+        avoidCircuitsRecursive(starts, ends);
+        for (Point endGiven : ends) {
+            if (!starts.contains(endGiven)) {
+                for (Point startGiven : starts) {
+                    if (pointToIndexRow.containsKey(endGiven) && pointToIndexColumn.containsKey(startGiven)) {
+                        matrix[pointToIndexRow.get(endGiven)][pointToIndexColumn.get(startGiven)] = Integer.MAX_VALUE;
+                    }
+                }
+            }
+        }
+    }
+
+    private void avoidCircuitsRecursive(List<Point> starts, List<Point> ends) {
+        boolean toAdd = false;
+        for (Point endGiven : ends) {
+            if (endGiven == start) {
+                toAdd = true;
+            }
+        }
+        for (Point startGiven : starts) {
+            if (startGiven == end) {
+                toAdd = true;
+            }
+        }
+        if (toAdd) {
+            starts.add(start);
+            ends.add(end);
+        }
+        if (parent != null) {
+            parent.avoidCircuitsRecursive(starts, ends);
+        }
     }
 
     private int[][] removeLineAndColumn(int[][] matrix, Point ligne, Point colonne) {

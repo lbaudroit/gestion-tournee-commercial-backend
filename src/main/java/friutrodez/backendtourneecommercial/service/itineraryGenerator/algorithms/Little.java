@@ -4,16 +4,10 @@ import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Be
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Noeud;
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Point;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class Little implements Algorithm{
-    /**
-     * Generate the best route
-     *
-     * @param points   list of points without startEnd
-     * @param startEnd start and end point
-     * @return the best route generated
-     */
+public class Little implements Algorithm {
     public static BestRoute generate(List<Point> points, Point startEnd) {
         boolean run = true;
         points.add(startEnd);
@@ -28,12 +22,23 @@ public class Little implements Algorithm{
                 toExpand.expand();
             }
         }
-        return getResult(bestRoute);
+        return getResult(bestRoute, startEnd);
     }
 
-    private static BestRoute getResult(Noeud bestRoute){
+    private static BestRoute getResult(Noeud bestRoute, Point startEnd) {
+        List<Point> points = new ArrayList<>();
         List<Noeud> allNodesOnRoute = bestRoute.getAllNodesOnRoute();
-
-        return new BestRoute(null, bestRoute.getValue());
+        points.add(startEnd);
+        for (int i = 1; i < allNodesOnRoute.size(); i++) {
+            for (Noeud noeud : allNodesOnRoute) {
+                if (noeud.getStart().equals(points.getLast())) {
+                    points.add(noeud.getEnd());
+                    break;
+                }
+            }
+        }
+        points.remove(startEnd);
+        return new BestRoute(points, bestRoute.getValue());
     }
 }
+

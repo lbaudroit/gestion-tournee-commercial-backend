@@ -11,20 +11,20 @@ import java.util.concurrent.CompletableFuture;
 public class BruteForceBranchAndBoundParallel implements Algorithm {
     private static Point startEnd;
     private static BestRoute bestRouteParallelised;
+    private static final int NOMBRE_DE_NIVEAUX_EN_PARALLELE_MINIMUM = 1;
+    private static final int NOMBRE_DE_NIVEAUX_EN_PARALLELE_MAXIMUM = 4;
 
-    /**
-     * Generate the best route
-     *
-     * @param points   list of points without startEnd
-     * @param startEndGiven start and end point
-     * @return the best route generated
-     */
     public static BestRoute generate(List<Point> points, Point startEndGiven) {
         startEnd = startEndGiven;
         bestRouteParallelised = new BestRoute(null, Integer.MAX_VALUE);
         points.remove(startEnd);
         int nombreDeNiveauxEnParallele = Settings.getNombreDeNiveauxEnParallele();
-        generateBranchAndBoundParallelRecursively(points, startEnd, new ArrayList<Point>(), 0, nombreDeNiveauxEnParallele);
+        if(nombreDeNiveauxEnParallele < NOMBRE_DE_NIVEAUX_EN_PARALLELE_MINIMUM) {
+            nombreDeNiveauxEnParallele = NOMBRE_DE_NIVEAUX_EN_PARALLELE_MINIMUM;
+        } else if (nombreDeNiveauxEnParallele > NOMBRE_DE_NIVEAUX_EN_PARALLELE_MAXIMUM) {
+            nombreDeNiveauxEnParallele = NOMBRE_DE_NIVEAUX_EN_PARALLELE_MAXIMUM;
+        }
+        generateBranchAndBoundParallelRecursively(points, startEnd, new ArrayList<>(), 0, nombreDeNiveauxEnParallele);
         points.add(startEnd);
         return bestRouteParallelised;
     }
@@ -34,8 +34,9 @@ public class BruteForceBranchAndBoundParallel implements Algorithm {
             bestRouteParallelised = new BestRoute(new ArrayList<>(bestRoute.getPoints()), bestRoute.getDistance());
         }
     }
+
     private static void generateBranchAndBoundParallelRecursively(List<Point> points, Point currentPoint, List<Point> route, int distanceOfBranch, int nombreDeNiveauxEnParallele) {
-        if (nombreDeNiveauxEnParallele < points.size()) {
+        if (nombreDeNiveauxEnParallele > route.size()) {
             if (points.size() == 1) {
                 List<Point> routeTmp = new ArrayList<>(route);
                 routeTmp.add(points.getFirst());

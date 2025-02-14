@@ -10,18 +10,21 @@ import java.util.List;
 public class BenchMarkResults {
     List<String> headers;
 
-    HashMap<String, List<Integer>> results;
+    HashMap<String, List<Long>> results;
 
     public BenchMarkResults(List<String> headers) {
         this.headers = headers;
         this.results = new HashMap<>();
     }
 
-    public void addLine(String key, List<Integer> values) {
+    public void addLine(String key, List<Long> values) {
         if (values.size() == headers.size() - 1) {
             results.put(key, values);
         } else {
-            throw new IllegalArgumentException("Values size must be equal to headers size minus 1");
+            for (int i = values.size(); i < headers.size() - 1; i++) {
+                values.add(null);
+            }
+            results.put(key, values);
         }
     }
 
@@ -58,8 +61,8 @@ public class BenchMarkResults {
         Collections.sort(sortedKeys);
         for (String key : sortedKeys) {
             sb.append("│").append(String.format(" %-" + maxHeaderLength + "s │", key));
-            for (Integer value : results.get(key)) {
-                String valueStr = String.valueOf(value);
+            for (Long value : results.get(key)) {
+                String valueStr = value != null ? String.format("%.3f", value / 1000.0) : "N/A";
                 int padding = (maxHeaderLength - valueStr.length()) / 2;
                 sb.append(String.format(" %" + (padding != 0 ? padding : "") + "s%-" + (maxHeaderLength - padding) + "s │", "", valueStr));
             }
@@ -76,7 +79,7 @@ public class BenchMarkResults {
         sb.append(String.join(",", headers)).append("\n");
         for (String key : results.keySet()) {
             sb.append(key).append(",");
-            for (Integer value : results.get(key)) {
+            for (Long value : results.get(key)) {
                 sb.append(value).append(",");
             }
             sb.append("\n");

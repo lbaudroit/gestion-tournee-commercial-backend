@@ -15,9 +15,9 @@ class BenchMarkResultsTest {
         headers.add("Algorithme");
         headers.add("3 Noeuds");
         headers.add("4 Noeuds");
-        List<Integer> results1 = new ArrayList<>();
+        List<Long> results1 = new ArrayList<>();
         results1.add(null);
-        results1.add(243272742);
+        results1.add(243272742L);
         BenchMarkResults benchMarkResults = new BenchMarkResults(headers);
         benchMarkResults.addLine("Bruteforceeheheh", results1);
         System.out.println(benchMarkResults.display());
@@ -29,9 +29,9 @@ class BenchMarkResultsTest {
         headers.add("Algorithme");
         headers.add("3 Noeuds");
         headers.add("4 Noeuds");
-        List<Integer> results1 = new ArrayList<>();
+        List<Long> results1 = new ArrayList<>();
         results1.add(null);
-        results1.add(243272742);
+        results1.add(243272742L);
         BenchMarkResults benchMarkResults = new BenchMarkResults(headers);
         benchMarkResults.addLine("Bruteforceeheheh", results1);
         System.out.println(benchMarkResults.csv());

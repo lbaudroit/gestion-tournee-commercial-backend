@@ -65,70 +65,6 @@ public class TestData {
         return pointsStatic;
     }
 
-    public List<Point> getPointsStatic4(Point startEnd) {
-        List<Point> pointsStatic = new ArrayList<>();
-        startEnd.getDistances().clear();
-        pointsStatic.add(startEnd);
-        pointsStatic.add(new Point("B", 0, 0));
-        pointsStatic.add(new Point("C", 0, 0));
-        pointsStatic.add(new Point("D", 0, 0));
-        pointsStatic.add(new Point("E", 0, 0));
-        pointsStatic.add(new Point("F", 0, 0));
-        pointsStatic.add(new Point("G", 0, 0));
-        HashMap<Point, Integer> pointValue = new HashMap<>();
-        pointValue = pointsStatic.get(0).getDistances();
-        pointValue.put(pointsStatic.get(1), 33);
-        pointValue.put(pointsStatic.get(2), 45);
-        pointValue.put(pointsStatic.get(3), 49);
-        pointValue.put(pointsStatic.get(4), 32);
-        pointValue.put(pointsStatic.get(5), 10);
-        pointValue.put(pointsStatic.get(6), 31);
-        pointValue = pointsStatic.get(1).getDistances();
-        pointValue.put(pointsStatic.get(0), 28);
-        pointValue.put(pointsStatic.get(2), 13);
-        pointValue.put(pointsStatic.get(3), 46);
-        pointValue.put(pointsStatic.get(4), 37);
-        pointValue.put(pointsStatic.get(5), 30);
-        pointValue.put(pointsStatic.get(6), 27);
-        pointValue = pointsStatic.get(2).getDistances();
-        pointValue.put(pointsStatic.get(0), 43);
-        pointValue.put(pointsStatic.get(1), 14);
-        pointValue.put(pointsStatic.get(3), 41);
-        pointValue.put(pointsStatic.get(4), 32);
-        pointValue.put(pointsStatic.get(5), 29);
-        pointValue.put(pointsStatic.get(6), 21);
-        pointValue = pointsStatic.get(3).getDistances();
-        pointValue.put(pointsStatic.get(0), 49);
-        pointValue.put(pointsStatic.get(1), 50);
-        pointValue.put(pointsStatic.get(2), 38);
-        pointValue.put(pointsStatic.get(4), 24);
-        pointValue.put(pointsStatic.get(5), 44);
-        pointValue.put(pointsStatic.get(6), 27);
-        pointValue = pointsStatic.get(4).getDistances();
-        pointValue.put(pointsStatic.get(0), 30);
-        pointValue.put(pointsStatic.get(1), 34);
-        pointValue.put(pointsStatic.get(2), 28);
-        pointValue.put(pointsStatic.get(3), 27);
-        pointValue.put(pointsStatic.get(5), 13);
-        pointValue.put(pointsStatic.get(6), 27);
-        pointValue = pointsStatic.get(5).getDistances();
-        pointValue.put(pointsStatic.get(0), 6);
-        pointValue.put(pointsStatic.get(1), 28);
-        pointValue.put(pointsStatic.get(2), 32);
-        pointValue.put(pointsStatic.get(3), 41);
-        pointValue.put(pointsStatic.get(4), 17);
-        pointValue.put(pointsStatic.get(6), 37);
-        pointValue = pointsStatic.get(6).getDistances();
-        pointValue.put(pointsStatic.get(0), 32);
-        pointValue.put(pointsStatic.get(1), 31);
-        pointValue.put(pointsStatic.get(2), 19);
-        pointValue.put(pointsStatic.get(3), 26);
-        pointValue.put(pointsStatic.get(4), 24);
-        pointValue.put(pointsStatic.get(5), 41);
-        pointsStatic.remove(startEnd);
-        return pointsStatic;
-    }
-
     private void setUpTestData() {
         pointsExemples = new ArrayList<>(List.of(
                 new Point("1", 2.5731058, 44.3489985),
@@ -150,7 +86,27 @@ public class TestData {
                 new Point("17", 2.2354147, 44.3086837),
                 new Point("18", 2.2497527, 44.5640878),
                 new Point("19", 3.0777094, 44.1019),
-                new Point("20", 2.2882397, 44.4084791)
+                new Point("20", 2.2882397, 44.4084791),
+                new Point("21", 2.5781575, 44.3450212),
+                new Point("22", 2.5719853, 44.3389929),
+                new Point("23", 2.7665794, 44.5220135),
+                new Point("24", 2.5623613, 44.3260710),
+                new Point("25", 3.0591324, 44.1129134),
+                new Point("26", 2.5724302, 44.3646868),
+                new Point("27", 2.8877689, 43.9557112),
+                new Point("28", 2.5649327, 44.5432054),
+                new Point("29", 2.4444577, 44.4721584),
+                new Point("30", 2.8482681, 44.6879996),
+                new Point("31", 2.7301576, 44.2753170),
+                new Point("32", 2.0446113, 44.2268724),
+                new Point("33", 2.0385077, 44.2348278),
+                new Point("34", 3.1638683, 44.0116526),
+                new Point("35", 3.0691277, 44.3254818),
+                new Point("36", 2.2433488, 44.3042918),
+                new Point("37", 2.2384665, 44.3126614),
+                new Point("38", 2.2528045, 44.5601101),
+                new Point("39", 3.0807612, 44.1058777),
+                new Point("40", 2.2912915, 44.4045014)
         ));
     }
 

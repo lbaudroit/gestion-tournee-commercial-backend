@@ -1,6 +1,7 @@
 package friutrodez.backendtourneecommercial.service.itineraryGenerator.utils;
 
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Point;
+import friutrodez.backendtourneecommercial.service.itineraryGenerator.utils.objects.BenchMarkResults;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,8 @@ class BenchmarkTest {
 
     @Test
     void benchmark() {
-        System.out.println(Benchmark.benchmark(startEnd).display());
+        BenchMarkResults benchMarkResults = Benchmark.benchmark(startEnd);
+        System.out.println(benchMarkResults.display());
+        System.out.println(benchMarkResults.csv());
     }
 }
