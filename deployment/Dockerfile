@@ -1,5 +1,5 @@
 #Ne lancer que dans githubAction
-FROM arm64v8/eclipse-temurin:23
+FROM eclipse-temurin:23
 RUN addgroup --system spring && adduser --system --ingroup spring springUser
 USER springUser
 WORKDIR /gestion-tournee-commercial-backend
