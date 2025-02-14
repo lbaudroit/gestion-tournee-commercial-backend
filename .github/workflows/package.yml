@@ -76,6 +76,9 @@ jobs:
           platforms: linux/${{ matrix.platform }} # Add linux/ back
           push: false
           tags: tournee-commercial-${{ matrix.platform }}-0.0.1 # No slashes in tag
+
+      - name: Load Docker image into Docker daemon
+        run: docker load -i /tmp/docker-actions-toolkit-Hz8HEq/iidfile
   
       - name: Save Docker image to a tar file
         run: docker save -o tournee-commercial-${{ matrix.platform }}.tar tournee-commercial-${{ matrix.platform }}-0.0.1
