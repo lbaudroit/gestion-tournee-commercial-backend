@@ -52,7 +52,7 @@ jobs:
     needs: build
     strategy:
       matrix:
-        platform: [amd64, arm64/v8]
+        platform: [amd64, arm64]
 
     steps:
       - name: Checkout code
