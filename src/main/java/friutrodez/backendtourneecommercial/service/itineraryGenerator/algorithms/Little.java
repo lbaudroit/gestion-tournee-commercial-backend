@@ -1,7 +1,7 @@
 package friutrodez.backendtourneecommercial.service.itineraryGenerator.algorithms;
 
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.BestRoute;
-import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Noeud;
+import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Node;
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Point;
 
 import java.util.ArrayList;
@@ -11,10 +11,10 @@ public class Little implements Algorithm {
     public static BestRoute generate(List<Point> points, Point startEnd) {
         boolean run = true;
         points.add(startEnd);
-        Noeud racine = new Noeud(points);
-        Noeud bestRoute = null;
+        Node racine = new Node(points);
+        Node bestRoute = null;
         while (run) {
-            Noeud toExpand = racine.getLowestValueNode();
+            Node toExpand = racine.getLowestValueNode();
             if (toExpand.getSizeMatrix() == 0) {
                 bestRoute = toExpand.getLowestValueNode();
                 run = false;
@@ -25,12 +25,12 @@ public class Little implements Algorithm {
         return getResult(bestRoute, startEnd);
     }
 
-    private static BestRoute getResult(Noeud bestRoute, Point startEnd) {
+    private static BestRoute getResult(Node bestRoute, Point startEnd) {
         List<Point> points = new ArrayList<>();
-        List<Noeud> allNodesOnRoute = bestRoute.getAllNodesOnRoute();
+        List<Node> allNodesOnRoute = bestRoute.getAllNodesOnRoute();
         points.add(startEnd);
         for (int i = 1; i < allNodesOnRoute.size(); i++) {
-            for (Noeud noeud : allNodesOnRoute) {
+            for (Node noeud : allNodesOnRoute) {
                 if (noeud.getStart().equals(points.getLast())) {
                     points.add(noeud.getEnd());
                     break;

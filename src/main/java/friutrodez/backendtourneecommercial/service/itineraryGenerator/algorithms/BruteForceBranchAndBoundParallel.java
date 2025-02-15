@@ -30,8 +30,8 @@ public class BruteForceBranchAndBoundParallel implements Algorithm {
     }
 
     private static synchronized void setBestRoute(BestRoute bestRoute) {
-        if (bestRoute.getDistance() < bestRouteParallelised.getDistance()) {
-            bestRouteParallelised = new BestRoute(new ArrayList<>(bestRoute.getPoints()), bestRoute.getDistance());
+        if (bestRoute.distance() < bestRouteParallelised.distance()) {
+            bestRouteParallelised = new BestRoute(new ArrayList<>(bestRoute.points()), bestRoute.distance());
         }
     }
 
@@ -46,7 +46,7 @@ public class BruteForceBranchAndBoundParallel implements Algorithm {
                 List<CompletableFuture<Void>> futures = new ArrayList<>();
                 for (Point point : points) {
                     int distance = distanceOfBranch + currentPoint.getDistance(point);
-                    if (distance < bestRouteParallelised.getDistance()) {
+                    if (distance < bestRouteParallelised.distance()) {
                         List<Point> pointsTmp = new ArrayList<>(points);
                         pointsTmp.remove(point);
                         List<Point> routeTmp = new ArrayList<>(route);
@@ -62,7 +62,7 @@ public class BruteForceBranchAndBoundParallel implements Algorithm {
         } else {
             BruteForceBranchAndBound.setStartEnd(startEnd);
             setBestRoute(BruteForceBranchAndBound.generateBranchAndBoundRecursively(
-                    points, currentPoint, route, distanceOfBranch, bestRouteParallelised.getDistance()));
+                    points, currentPoint, route, distanceOfBranch, bestRouteParallelised.distance()));
         }
     }
 }

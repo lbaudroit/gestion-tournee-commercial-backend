@@ -35,7 +35,7 @@ public class BruteForce implements Algorithm {
                 route.add(point);
                 BestRoute distanceTmp = generateBruteForceRecursively(pointsTmp, point, route, distanceOfBranch + currentPoint.getDistance(point));
                 route.remove(point);
-                if (distanceTmp.getDistance() < bestRoute.getDistance()) {
+                if (distanceTmp.distance() < bestRoute.distance()) {
                     bestRoute = distanceTmp;
                 }
             }

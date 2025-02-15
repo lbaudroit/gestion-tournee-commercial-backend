@@ -37,9 +37,9 @@ public class BruteForceBranchAndBound implements Algorithm {
                 if (distanceOfBranch + currentPoint.getDistance(point) < lowerBound) {
                     List<Point> pointsTmp = new ArrayList<>(points);
                     route.add(point);
-                    BestRoute distanceTmp = generateBranchAndBoundRecursively(pointsTmp, point, route, distanceOfBranch + currentPoint.getDistance(point), bestRoute.getDistance());
+                    BestRoute distanceTmp = generateBranchAndBoundRecursively(pointsTmp, point, route, distanceOfBranch + currentPoint.getDistance(point), bestRoute.distance());
                     route.remove(point);
-                    if (distanceTmp.getDistance() < bestRoute.getDistance()) {
+                    if (distanceTmp.distance() < bestRoute.distance()) {
                         bestRoute = distanceTmp;
                     }
                 }

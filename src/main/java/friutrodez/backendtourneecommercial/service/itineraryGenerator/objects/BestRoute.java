@@ -3,18 +3,17 @@ package friutrodez.backendtourneecommercial.service.itineraryGenerator.objects;
 import lombok.Getter;
 
 import java.util.List;
-import java.util.Objects;
 
-@Getter
-public class BestRoute {
-    private final List<Point> points;
-    private int distance;
+/**
+ * Classe représentant le meilleur itinéraire avec une liste de points et une distance totale.
+ */
+public record BestRoute(List<Point> points, int distance) {
 
-    public BestRoute(List<Point> points, int distance) {
-        this.points = points;
-        this.distance = distance;
-    }
-
+    /**
+     * Retourne une représentation sous forme de chaîne de caractères de l'objet BestRoute.
+     *
+     * @return Représentation sous forme de chaîne de caractères de l'objet BestRoute.
+     */
     @Override
     public String toString() {
         return "BestRoute{" +
@@ -23,14 +22,4 @@ public class BestRoute {
                 '}';
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        BestRoute bestRoute = (BestRoute) o;
-
-        if (distance != bestRoute.distance) return false;
-        return Objects.equals(points, bestRoute.points) ||Objects.equals(points.reversed(),bestRoute.points);
-    }
 }

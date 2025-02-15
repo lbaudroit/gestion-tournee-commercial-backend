@@ -60,7 +60,7 @@ public class TestData {
      * @return Liste statique de points.
      */
     public List<Point> getStaticPoints1(Point startEnd) {
-        return getStaticPoints(startEnd, 0);
+        return getStaticPoints(startEnd, 0, 5);
     }
 
     /**
@@ -70,7 +70,7 @@ public class TestData {
      * @return Liste statique de points.
      */
     public List<Point> getStaticPoints2(Point startEnd) {
-        return getStaticPoints(startEnd, 5);
+        return getStaticPoints(startEnd, 5, 3);
     }
 
     /**
@@ -80,7 +80,7 @@ public class TestData {
      * @return Liste statique de points.
      */
     public List<Point> getStaticPoints3(Point startEnd) {
-        return getStaticPoints(startEnd, 10);
+        return getStaticPoints(startEnd, 10, 4);
     }
 
     /**
@@ -90,8 +90,8 @@ public class TestData {
      * @param startIndex Index de départ pour la sous-liste.
      * @return Liste statique de points.
      */
-    private List<Point> getStaticPoints(Point startEnd, int startIndex) {
-        List<Point> pointsStatic = new ArrayList<>(examplePoints.subList(startIndex, startIndex + 5));
+    private List<Point> getStaticPoints(Point startEnd, int startIndex, int size) {
+        List<Point> pointsStatic = new ArrayList<>(examplePoints.subList(startIndex, startIndex + size));
         generateDistancesWithHarvesineFormula(pointsStatic, startEnd);
         return pointsStatic;
     }
