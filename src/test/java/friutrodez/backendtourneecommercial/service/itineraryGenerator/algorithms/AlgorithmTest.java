@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class AlgorithmTest {
 
     private Generator itineraryGenerator;
@@ -62,10 +60,10 @@ class AlgorithmTest {
     void generateSameWithAllAlgorithm() {
         TestData testData = new TestData();
         Point startEnd = testData.getStartEnd();
-        System.out.println(BruteForce.generate(testData.getPointsStatic1(startEnd), startEnd));
-        System.out.println(BruteForceBranchAndBound.generate(testData.getPointsStatic1(startEnd), startEnd));
-        System.out.println(BruteForceBranchAndBoundParallel.generate(testData.getPointsStatic1(startEnd), startEnd));
-        System.out.println(Little.generate(testData.getPointsStatic1(startEnd), startEnd));
+        System.out.println(BruteForce.generate(testData.getStaticPoints1(startEnd), startEnd));
+        System.out.println(BruteForceBranchAndBound.generate(testData.getStaticPoints1(startEnd), startEnd));
+        System.out.println(BruteForceBranchAndBoundParallel.generate(testData.getStaticPoints1(startEnd), startEnd));
+        System.out.println(Little.generate(testData.getStaticPoints1(startEnd), startEnd));
     }
 
     private List<Point> createListOf(int size) {

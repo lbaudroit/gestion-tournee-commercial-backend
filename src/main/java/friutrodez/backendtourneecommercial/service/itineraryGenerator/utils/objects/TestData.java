@@ -3,31 +3,46 @@ package friutrodez.backendtourneecommercial.service.itineraryGenerator.utils.obj
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Point;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Classe utilitaire pour générer des données de test pour les itinéraires.
+ */
 public class TestData {
 
-    private static List<Point> pointsExemples;
+    private static List<Point> examplePoints;
 
+    /**
+     * Constructeur qui initialise les données de test.
+     */
     public TestData() {
         setUpTestData();
     }
 
-    public List<Point> getPointsExemples() {
-        return pointsExemples;
-    }
-
+    /**
+     * Retourne un point de départ et d'arrivée.
+     *
+     * @return Point de départ et d'arrivée.
+     */
     public Point getStartEnd() {
         return new Point("startEnd", 2.8847171, 43.9596889);
     }
 
+    /**
+     * Génère une liste de x points aléatoires à partir des points d'exemple.
+     * Les distances entre les points sont calculées en utilisant la formule de Haversine.
+     *
+     * @param x        Nombre de points à générer. Doit être inférieur ou égal à 40.
+     * @param startEnd Point de départ et d'arrivée.
+     * @return Liste de points générés aléatoirement.
+     */
     public List<Point> getXRandPoints(int x, Point startEnd) {
+        if (x > examplePoints.size()) {
+            throw new IllegalArgumentException("Le nombre de points doit être inférieur ou égal à 40.");
+        }
         List<Point> newList = new ArrayList<>();
         for (int i = 0; i < x; i++) {
-            int randomIndex = (int) (Math.random() * pointsExemples.size());
-            Point originalPoint = pointsExemples.get(randomIndex);
-            Point newPoint = new Point(originalPoint);
+            Point newPoint = new Point(examplePoints.get((int) (Math.random() * examplePoints.size())));
             if (!newList.contains(newPoint)) {
                 newList.add(newPoint);
             } else {
@@ -38,35 +53,54 @@ public class TestData {
         return newList;
     }
 
-    public List<Point> getPointsStatic1(Point startEnd) {
-        List<Point> pointsStatic = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            pointsStatic.add(pointsExemples.get(i));
-        }
+    /**
+     * Retourne une liste statique de points à partir de l'index 0.
+     *
+     * @param startEnd Point de départ et d'arrivée.
+     * @return Liste statique de points.
+     */
+    public List<Point> getStaticPoints1(Point startEnd) {
+        return getStaticPoints(startEnd, 0);
+    }
+
+    /**
+     * Retourne une liste statique de points à partir de l'index 5.
+     *
+     * @param startEnd Point de départ et d'arrivée.
+     * @return Liste statique de points.
+     */
+    public List<Point> getStaticPoints2(Point startEnd) {
+        return getStaticPoints(startEnd, 5);
+    }
+
+    /**
+     * Retourne une liste statique de points à partir de l'index 10.
+     *
+     * @param startEnd Point de départ et d'arrivée.
+     * @return Liste statique de points.
+     */
+    public List<Point> getStaticPoints3(Point startEnd) {
+        return getStaticPoints(startEnd, 10);
+    }
+
+    /**
+     * Retourne une liste statique de points à partir d'un index donné.
+     *
+     * @param startEnd   Point de départ et d'arrivée.
+     * @param startIndex Index de départ pour la sous-liste.
+     * @return Liste statique de points.
+     */
+    private List<Point> getStaticPoints(Point startEnd, int startIndex) {
+        List<Point> pointsStatic = new ArrayList<>(examplePoints.subList(startIndex, startIndex + 5));
         generateDistancesWithHarvesineFormula(pointsStatic, startEnd);
         return pointsStatic;
     }
 
-    public List<Point> getPointsStatic2(Point startEnd) {
-        List<Point> pointsStatic = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            pointsStatic.add(pointsExemples.get(i + 5));
-        }
-        generateDistancesWithHarvesineFormula(pointsStatic, startEnd);
-        return pointsStatic;
-    }
-
-    public List<Point> getPointsStatic3(Point startEnd) {
-        List<Point> pointsStatic = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            pointsStatic.add(pointsExemples.get(i + 10));
-        }
-        generateDistancesWithHarvesineFormula(pointsStatic, startEnd);
-        return pointsStatic;
-    }
-
+    /**
+     * Initialise les données de test avec une liste de points prédéfinis.
+     */
     private void setUpTestData() {
-        pointsExemples = new ArrayList<>(List.of(
+        examplePoints = List.of(
                 new Point("1", 2.5731058, 44.3489985),
                 new Point("2", 2.576037, 44.3350156),
                 new Point("3", 2.7635276, 44.5259912),
@@ -107,9 +141,15 @@ public class TestData {
                 new Point("38", 2.2528045, 44.5601101),
                 new Point("39", 3.0807612, 44.1058777),
                 new Point("40", 2.2912915, 44.4045014)
-        ));
+        );
     }
 
+    /**
+     * Génère les distances entre les points en utilisant la formule de Haversine.
+     *
+     * @param points   Liste de points pour lesquels générer les distances.
+     * @param startEnd Point de départ et d'arrivée.
+     */
     private void generateDistancesWithHarvesineFormula(List<Point> points, Point startEnd) {
         points.add(startEnd);
         for (Point point : points) {
@@ -120,12 +160,5 @@ public class TestData {
             }
         }
         points.remove(startEnd);
-    }
-
-    public static void main(String[] args) {
-        TestData testData = new TestData();
-        Point startEnd = new Point("startEnd", 2.8847171, 43.9596889);
-        List<Point> pointsExemples = testData.getPointsExemples();
-        List<Point> points = testData.getXRandPoints(5, startEnd);
     }
 }

@@ -18,7 +18,7 @@ public class BruteForceBranchAndBoundParallel implements Algorithm {
         startEnd = startEndGiven;
         bestRouteParallelised = new BestRoute(null, Integer.MAX_VALUE);
         points.remove(startEnd);
-        int nombreDeNiveauxEnParallele = Settings.getNombreDeNiveauxEnParallele();
+        int nombreDeNiveauxEnParallele = Settings.getNumberOfParallelLevels();
         if(nombreDeNiveauxEnParallele < NOMBRE_DE_NIVEAUX_EN_PARALLELE_MINIMUM) {
             nombreDeNiveauxEnParallele = NOMBRE_DE_NIVEAUX_EN_PARALLELE_MINIMUM;
         } else if (nombreDeNiveauxEnParallele > NOMBRE_DE_NIVEAUX_EN_PARALLELE_MAXIMUM) {

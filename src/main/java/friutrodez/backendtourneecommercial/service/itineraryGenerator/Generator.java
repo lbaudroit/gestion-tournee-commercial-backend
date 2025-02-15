@@ -1,10 +1,8 @@
 package friutrodez.backendtourneecommercial.service.itineraryGenerator;
 
-import friutrodez.backendtourneecommercial.service.itineraryGenerator.algorithms.Algorithm;
-import friutrodez.backendtourneecommercial.service.itineraryGenerator.algorithms.BruteForce;
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.BestRoute;
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Point;
-import friutrodez.backendtourneecommercial.service.itineraryGenerator.utils.AlgoVoyageur;
+import friutrodez.backendtourneecommercial.service.itineraryGenerator.algorithms.AvaibleAlgorithm;
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.utils.ApiRequest;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -12,7 +10,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class Generator {
@@ -20,7 +17,7 @@ public class Generator {
     private static Point startEnd;
     private static BestRoute bestRouteParallelised;
 
-    public BestRoute run(List<Point> points, double startEndLongitude, double startEndLatitude, AlgoVoyageur algoVoyageur) {
+    public BestRoute run(List<Point> points, double startEndLongitude, double startEndLatitude, AvaibleAlgorithm algoVoyageur) {
         points = new ArrayList<>(points);
         Point startEnd = createPointStartEnd(startEndLongitude, startEndLatitude);
         generateDistances(points, startEnd);

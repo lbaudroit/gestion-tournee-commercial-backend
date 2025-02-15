@@ -6,5 +6,5 @@ import lombok.Setter;
 public class Settings {
     @Setter
     @Getter
-    private static int nombreDeNiveauxEnParallele = 2;
+    private static int numberOfParallelLevels = 2;
 }

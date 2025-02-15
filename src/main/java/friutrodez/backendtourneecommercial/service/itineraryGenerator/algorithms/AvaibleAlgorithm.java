@@ -1,12 +1,11 @@
-package friutrodez.backendtourneecommercial.service.itineraryGenerator.utils;
+package friutrodez.backendtourneecommercial.service.itineraryGenerator.algorithms;
 
-import friutrodez.backendtourneecommercial.service.itineraryGenerator.algorithms.Algorithm;
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Point;
 
 import java.lang.reflect.Method;
 import java.util.List;
 
-public enum AlgoVoyageur {
+public enum AvaibleAlgorithm {
     BRUTE_FORCE,
     BRUTE_FORCE_BRANCH_AND_BOUND,
     BRUTE_FORCE_BRANCH_AND_BOUND_PARALLEL,

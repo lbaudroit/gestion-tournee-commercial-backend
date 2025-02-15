@@ -1,6 +1,5 @@
-package friutrodez.backendtourneecommercial.service.itineraryGenerator;
+package friutrodez.backendtourneecommercial.service.itineraryGenerator.objects;
 
-import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Point;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
