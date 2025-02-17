@@ -8,6 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Little implements Algorithm {
+
+    /**
+     * Génère le meilleur itinéraire.
+     *
+     * @param points liste de points sans startEnd
+     * @param startEndGiven point de départ et d'arrivée
+     * @return le meilleur itinéraire généré
+     */
     public static BestRoute generate(List<Point> points, Point startEnd) {
         boolean run = true;
         points.add(startEnd);

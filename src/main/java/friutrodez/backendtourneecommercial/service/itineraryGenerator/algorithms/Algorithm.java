@@ -5,15 +5,18 @@ import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Po
 
 import java.util.List;
 
+/**
+ * Interface pour les algorithmes de génération d'itinéraires.
+ */
 public interface Algorithm {
     /**
-     * Generate the best route
+     * Génère le meilleur itinéraire.
      *
-     * @param points list of points without startEnd
-     * @param startEnd start and end point
-     * @return the best route generated
+     * @param points liste de points sans startEnd
+     * @param startEndGiven point de départ et d'arrivée
+     * @return le meilleur itinéraire généré
      */
-    public static BestRoute generate(List<Point> points, Point startEnd) {
+    public static BestRoute generate(List<Point> points, Point startEndGiven) {
         return null;
     }
 }

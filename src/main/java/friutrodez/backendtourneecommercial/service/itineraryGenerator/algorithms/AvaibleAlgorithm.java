@@ -5,6 +5,9 @@ import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Po
 import java.lang.reflect.Method;
 import java.util.List;
 
+/**
+ * Enumération des algorithmes disponibles pour la génération d'itinéraires.
+ */
 public enum AvaibleAlgorithm {
     BRUTE_FORCE,
     BRUTE_FORCE_BRANCH_AND_BOUND,
@@ -22,16 +25,21 @@ public enum AvaibleAlgorithm {
         };
     }
 
+    /**
+     * Retourne la méthode de génération d'itinéraire correspondant à l'algorithme sélectionné.
+     *
+     * @return La méthode de génération d'itinéraire.
+     * @throws RuntimeException si la méthode de génération n'est pas trouvée.
+     */
     public Method getAlgorithm() {
-        Algorithm tmp =  switch (this) {
-            case BRUTE_FORCE -> new friutrodez.backendtourneecommercial.service.itineraryGenerator.algorithms.BruteForce();
-            case BRUTE_FORCE_BRANCH_AND_BOUND -> new friutrodez.backendtourneecommercial.service.itineraryGenerator.algorithms.BruteForceBranchAndBound();
-            case BRUTE_FORCE_BRANCH_AND_BOUND_PARALLEL -> new friutrodez.backendtourneecommercial.service.itineraryGenerator.algorithms.BruteForceBranchAndBoundParallel();
-            case LITTLE -> new friutrodez.backendtourneecommercial.service.itineraryGenerator.algorithms.Little();
-            default -> throw new IllegalArgumentException();
+        Algorithm algorithm = switch (this) {
+            case BRUTE_FORCE -> new BruteForce();
+            case BRUTE_FORCE_BRANCH_AND_BOUND -> new BruteForceBranchAndBound();
+            case BRUTE_FORCE_BRANCH_AND_BOUND_PARALLEL -> new BruteForceBranchAndBoundParallel();
+            case LITTLE -> new Little();
         };
         try {
-            return tmp.getClass().getMethod("generate", List.class, Point.class);
+            return algorithm.getClass().getMethod("generate", List.class, Point.class);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

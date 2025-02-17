@@ -80,7 +80,7 @@ public class TestData {
      * @return Liste statique de points.
      */
     public List<Point> getStaticPoints3(Point startEnd) {
-        return getStaticPoints(startEnd, 10, 4);
+        return getStaticPoints(startEnd, 10, 7);
     }
 
     /**

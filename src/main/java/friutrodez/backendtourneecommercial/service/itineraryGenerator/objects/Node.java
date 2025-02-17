@@ -105,6 +105,14 @@ public class Node {
         generateLeft(highestRegret);
     }
 
+    /**
+     * Génère le nœud enfant gauche en mettant à jour la matrice.
+     * La matrice est mise à jour en supprimant la ligne et la colonne avec le plus grand regret.
+     * La matrice est ensuite réduite et la nouvelle valeur est calculée.
+     * Si la nouvelle valeur est infinie, elle est définie à Integer.MAX_VALUE.
+     *
+     * @param highestRegret Objet HighestRegret contenant les informations sur le plus grand regret.
+     */
     private void generateLeft(HighestRegret highestRegret) {
         HashMap<Point, Integer> newPointToIndexColumn = removeFromPointToIndex(highestRegret.colonne(), pointToIndexColumn);
         HashMap<Point, Integer> newPointToIndexRow = removeFromPointToIndex(highestRegret.ligne(), pointToIndexRow);
@@ -121,6 +129,14 @@ public class Node {
         left = new Node(newMatrixContent, newPointToIndexColumn, newPointToIndexRow, newValue, highestRegret.ligne(), highestRegret.colonne(), this);
     }
 
+    /**
+     * Génère le nœud enfant droit en mettant à jour la matrice.
+     * La matrice est mise à jour en définissant la direction inverse avec le plus grand regret à l'infini.
+     * La matrice est ensuite réduite et la nouvelle valeur est calculée.
+     * Si la nouvelle valeur est infinie, elle est définie à Integer.MAX_VALUE.
+     *
+     * @param highestRegret Objet HighestRegret contenant les informations sur le plus grand regret.
+     */
     private void generateRight(HighestRegret highestRegret) {
         int[][] newMatrix = copyMatrix(matrixContent);
         newMatrix[pointToIndexRow.get(highestRegret.ligne())][pointToIndexColumn.get(highestRegret.colonne())] = Integer.MAX_VALUE;
@@ -163,7 +179,7 @@ public class Node {
     private void avoidCircuits(int[][] matrix, HashMap<Point, Integer> pointToIndexRow, HashMap<Point, Integer> pointToIndexColumn, Point start, Point end) {
         List<Point> starts = new ArrayList<>(Collections.singletonList(start));
         List<Point> ends = new ArrayList<>(Collections.singletonList(end));
-        getPointsOfCircuitRecursively(starts, ends);
+        completeStartsEndsWithCircuit(starts, ends);
         for (Point endGiven : ends) {
             if (!starts.contains(endGiven)) {
                 for (Point startGiven : starts) {
@@ -176,21 +192,29 @@ public class Node {
     }
 
     /**
-     * Récupère les points d'un circuit récursivement.
-     * Par rapport au point de départ et arrivé donner par le premier appel
+     * Complète les listes de points de départ et d'arrivée avec les points du circuit.
+     * Cette méthode parcourt tous les nœuds sur la route et ajoute les points de départ et d'arrivée
+     * aux listes correspondantes si un point de départ est déjà dans la liste des points d'arrivée ou vice versa.
      *
      * @param starts Liste des points de départ.
      * @param ends   Liste des points d'arrivée.
      */
-    private void getPointsOfCircuitRecursively(List<Point> starts, List<Point> ends) {
-        boolean toAdd = ends.contains(start) || starts.contains(end);
-        if (toAdd) {
-            starts.add(start);
-            ends.add(end);
-        }
-        if (parent != null) {
-            parent.getPointsOfCircuitRecursively(starts, ends);
-        }
+    private void completeStartsEndsWithCircuit(List<Point> starts, List<Point> ends) {
+        List<Node> allNodesOnRoute = getAllNodesOnRoute();
+        boolean added;
+        do {
+            added = false;
+            Iterator<Node> iterator = allNodesOnRoute.iterator();
+            while (iterator.hasNext()) {
+                Node node = iterator.next();
+                if (starts.contains(node.getEnd()) || ends.contains(node.getStart())) {
+                    starts.add(node.getStart());
+                    ends.add(node.getEnd());
+                    iterator.remove();
+                    added = true;
+                }
+            }
+        } while (added);
     }
 
     /**
@@ -236,8 +260,11 @@ public class Node {
 
     /**
      * Crée une matrice à partir d'une liste de points.
+     * Initialise les mappages des points aux indices de colonne et de ligne.
+     * Remplit la matrice avec les distances entre les points.
      *
      * @param pointList Liste des points.
+     * @throws IllegalArgumentException Si la liste de points est invalide.
      */
     private void createMatrixWithPointList(List<Point> pointList) {
         pointToIndexColumn = new HashMap<>();
@@ -256,7 +283,9 @@ public class Node {
 
     /**
      * Copie les valeurs de la liste de points dans la matrice.
-     * (utilisé dans la méthode createMatrixWithPointList)
+     * Pour chaque point de la liste, calcule la distance vers chaque autre point
+     * et remplit la matrice avec ces distances.
+     * Si un point est comparé à lui-même, la valeur est définie à Integer.MAX_VALUE.
      *
      * @param pointList Liste des points.
      */
@@ -283,6 +312,8 @@ public class Node {
 
     /**
      * Réduit les lignes de la matrice.
+     * Pour chaque ligne, trouve la valeur minimale et la soustrait de chaque élément de la ligne.
+     * Ajoute la valeur minimale de chaque ligne à la valeur totale de réduction.
      *
      * @param matrix    Matrice d'origine.
      * @param newMatrix Nouvelle matrice.
@@ -304,6 +335,8 @@ public class Node {
 
     /**
      * Réduit les colonnes de la matrice.
+     * Pour chaque colonne, trouve la valeur minimale et la soustrait de chaque élément de la colonne.
+     * Ajoute la valeur minimale de chaque colonne à la valeur totale de réduction.
      *
      * @param newMatrix Nouvelle matrice.
      * @return Valeur de réduction.
@@ -327,6 +360,14 @@ public class Node {
         return valeur;
     }
 
+    /**
+     * Calcule le plus grand regret pour un nœud.
+     * Le regret est calculé en trouvant les zéros dans la matrice et en déterminant
+     * la somme des plus petits éléments de la ligne et de la colonne pour chaque zéro.
+     * Le zéro avec la plus grande somme est considéré comme ayant le plus grand regret.
+     *
+     * @return Objet HighestRegret contenant la ligne, la colonne et la valeur du plus grand regret.
+     */
     private HighestRegret regret() {
         int maxRegret = -1;
         Point maxRegretLine = null;
@@ -397,6 +438,8 @@ public class Node {
 
     /**
      * Retourne tous les nœuds sur la route.
+     * Cette méthode est utilisée pour obtenir la liste de tous les nœuds
+     * depuis le nœud courant jusqu'à la racine de l'arbre.
      *
      * @return Liste des nœuds sur la route.
      */

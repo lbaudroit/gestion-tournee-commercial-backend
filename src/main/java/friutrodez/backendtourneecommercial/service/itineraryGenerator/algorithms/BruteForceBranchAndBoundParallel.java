@@ -14,6 +14,13 @@ public class BruteForceBranchAndBoundParallel implements Algorithm {
     private static final int NOMBRE_DE_NIVEAUX_EN_PARALLELE_MINIMUM = 1;
     private static final int NOMBRE_DE_NIVEAUX_EN_PARALLELE_MAXIMUM = 4;
 
+    /**
+     * Génère le meilleur itinéraire.
+     *
+     * @param points liste de points sans startEnd
+     * @param startEndGiven point de départ et d'arrivée
+     * @return le meilleur itinéraire généré
+     */
     public static BestRoute generate(List<Point> points, Point startEndGiven) {
         startEnd = startEndGiven;
         bestRouteParallelised = new BestRoute(null, Integer.MAX_VALUE);
