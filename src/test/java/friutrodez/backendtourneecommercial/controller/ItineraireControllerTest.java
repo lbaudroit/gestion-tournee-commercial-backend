@@ -52,6 +52,7 @@ public class ItineraireControllerTest {
 
     @BeforeAll
     void Setup() throws Exception {
+        configurationSecurityContextTest.resetUser();
         headerToken = configurationSecurityContextTest.getTokenForSecurity(mockMvc);
         client = configurationSecurityContextTest.getMockClient(configurationSecurityContextTest.getUser());
         client2 = configurationSecurityContextTest.getMockClient(configurationSecurityContextTest.getUser());

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import friutrodez.backendtourneecommercial.helper.ConfigurationSecurityContextTest;
 import friutrodez.backendtourneecommercial.model.Adresse;
 import friutrodez.backendtourneecommercial.model.Client;
+import friutrodez.backendtourneecommercial.model.Contact;
 import friutrodez.backendtourneecommercial.model.Coordonnees;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
 import org.junit.jupiter.api.*;
@@ -51,6 +52,7 @@ public class ClientControlleurTest {
         client.setNomEntreprise("entrepriseTest");
         Adresse adresse = new Adresse("6 Impasse du Suc","81490","Boissezon");
         client.setAdresse(adresse);
+        client.setContact(new Contact("Nom","Prenom","0000000000"));
         headerToken = configurationSecurityContextTest.getTokenForSecurity(mockMvc);
         //configurationSecurityContextTest.setSecurityContext();
     }
@@ -59,7 +61,7 @@ public class ClientControlleurTest {
     @Test
     void creationClientTest() throws Exception {
         String jsonClient= objectMapper.writeValueAsString(client);
-        mockMvc.perform(put("/client/creer")
+        mockMvc.perform(post("/client/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonClient).header("Authorization", "Bearer " + headerToken))
                 .andExpect(status().isOk());
@@ -76,7 +78,7 @@ public class ClientControlleurTest {
 
         String jsonClient = objectMapper.writeValueAsString(client);
 
-        mockMvc.perform(put("/client/creer")
+        mockMvc.perform(post("/client/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonClient).header("Authorization","Bearer " +headerToken ))
                 .andExpect(status().isBadRequest());
@@ -88,8 +90,8 @@ public class ClientControlleurTest {
     @Order(2)
     @Test
     void clientRecupererUnTest() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/client/recuperer/")
-                .param("id",client.get_id()).header("Authorization","Bearer " +headerToken ))
+        MvcResult mvcResult = mockMvc.perform(get("/client/"+client.get_id())
+                .header("Authorization","Bearer " +headerToken ))
                 .andExpect(status().isOk()).andReturn();
 
         Assertions.assertDoesNotThrow(()->objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Client.class),"Aucune donnée a été récupéré");
@@ -130,11 +132,11 @@ public class ClientControlleurTest {
     @Order(6)
     @Test
     void clientSupprimerTest() throws Exception {
-        MvcResult mvcResult= mockMvc.perform(delete("/client/supprimer/")
+        MvcResult mvcResult= mockMvc.perform(delete("/client/"+client.get_id())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("id",client.get_id()).header("Authorization","Bearer " +headerToken ))
+                        .header("Authorization","Bearer " +headerToken ))
                 .andExpect(status().isOk()).andReturn();
-        Assertions.assertNull(clientMongoTemplate.getOneClient(client.get_id(),String.valueOf( configurationSecurityContextTest.getUser().getId())));
+        Assertions.assertTrue(clientMongoTemplate.getOneClient(client.get_id(),String.valueOf( configurationSecurityContextTest.getUser().getId())).isEmpty());
     }
 
     @Order(5)
