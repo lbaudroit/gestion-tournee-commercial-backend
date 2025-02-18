@@ -48,7 +48,7 @@ class BenchMarkResultsTest {
         benchMarkResults.addLine("Bruteforce", results1);
         String display = benchMarkResults.display();
         assertTrue(display.contains("Bruteforce"));
-        assertTrue(display.contains("0.243272742"));
+        assertTrue(display.contains("0.243272742") || display.contains("0,243272742"));
     }
 
     /**
@@ -75,7 +75,7 @@ class BenchMarkResultsTest {
         BenchMarkResults benchMarkResults = new BenchMarkResults(headers);
         benchMarkResults.addLine("Bruteforce", results1);
         String csv = benchMarkResults.csv();
-        assertTrue(csv.contains("Bruteforce,0.243272742"));
+        assertTrue(csv.contains("Bruteforce;0.243272742") || csv.contains("Bruteforce;0,243272742"));
     }
 
     /**
@@ -93,7 +93,7 @@ class BenchMarkResultsTest {
         benchMarkResults.addLine("Bruteforce", results1);
         String display = benchMarkResults.display();
         assertTrue(display.contains("Bruteforce"));
-        assertTrue(display.contains("0.243272742"));
+        assertTrue(display.contains("0.243272742") || display.contains("0,243272742"));
         assertTrue(display.contains("N/A"));
     }
 
