@@ -5,6 +5,9 @@ import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -75,6 +78,39 @@ public class JwtServiceTest {
 
         String token = jwtService.generateToken(userDetails);
 
-        Assertions.assertEquals(new Date()String.valueOf(30 * 60 * 1000),jwtService.extractExpiration(token));
+        Assertions.assertEquals(Date.from(Instant.now().plus(30, ChronoUnit.MINUTES)).toString(),jwtService.extractExpiration(token).toString());
+    }
+    @Test
+    void testExpired() {
+        JwtService jwtService = new JwtService();
+        Utilisateur userDetails = new Utilisateur();
+
+        userDetails.setMotDePasse("123");
+        userDetails.setNom("testNom");
+        userDetails.setEmail("testEmail@e.e");
+
+        String token = jwtService.generateToken(userDetails);
+        Assertions.assertFalse(jwtService.isTokenExpired(token));
+
+        // TODO test : token expired true
+    }
+
+    @Test
+    void testValid() {
+        JwtService jwtService = new JwtService();
+        Utilisateur userDetails = new Utilisateur();
+
+        userDetails.setMotDePasse("123");
+        userDetails.setNom("testNom");
+        userDetails.setEmail("testEmail@e.e");
+
+        String token = jwtService.generateToken(userDetails);
+        Assertions.assertTrue(jwtService.isTokenValid(token,userDetails));
+        Assertions.assertFalse(jwtService.isTokenValid(token,null));
+
+        Utilisateur userDetails2 = new Utilisateur();
+        userDetails2.setMotDePasse("ersgfh");
+        userDetails2.setEmail("sdfghj");
+        Assertions.assertFalse(jwtService.isTokenValid(token,userDetails2));
     }
 }
