@@ -53,26 +53,29 @@ public class JwtFilter extends OncePerRequestFilter {
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        try {
+            final String authHeader = request.getHeader("Authorization");
 
-        final String authHeader = request.getHeader("Authorization");
-
-        // Vérifie si le header possède le bearer token
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        // Enlève le "bearer"
-        final String jwt = authHeader.substring(7);
-        final String username = jwtService.extractEmail(jwt);
-
-        if (username != null && null == SecurityContextHolder.getContext().getAuthentication()) {
-            UserDetails userDetails = authenticationService.loadUserDetails(username);
-            if (jwtService.isTokenValid(jwt, userDetails)) {
-                authenticationService.tryAuthenticateWithRequest(userDetails,request);
+            // Vérifie si le header possède le bearer token
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                filterChain.doFilter(request, response);
+                return;
             }
-        }
-        filterChain.doFilter(request, response);
+
+            // Enlève le "bearer"
+            final String jwt = authHeader.substring(7);
+            final String username = jwtService.extractEmail(jwt);
+
+            if (username != null && null == SecurityContextHolder.getContext().getAuthentication()) {
+                UserDetails userDetails = authenticationService.loadUserDetails(username);
+                if (jwtService.isTokenValid(jwt, userDetails)) {
+                    authenticationService.tryAuthenticateWithRequest(userDetails, request);
+                }
+            }
+            filterChain.doFilter(request, response);
+        } catch (Exception ex) {
+            filterChain.doFilter(request, response);
+        } 
     }
 
 
