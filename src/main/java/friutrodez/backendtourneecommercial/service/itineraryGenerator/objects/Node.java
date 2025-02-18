@@ -9,6 +9,11 @@ import java.util.*;
  * Classe représentant un nœud dans l'arbre de recherche de l'algorithme Little.
  * Chaque nœud contient une matrice de distances, une valeur associée à cette matrice,
  * un point de départ et un point d'arrivée, ainsi que des références vers ses enfants et son parent.
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 public class Node {
     @Getter(AccessLevel.MODULE)
@@ -123,9 +128,6 @@ public class Node {
         ReduceReturn reduceReturn = reduceMatrix(newMatrixContent);
         newMatrixContent = reduceReturn.matrix();
         int newValue = value + reduceReturn.value();
-        if (isInfinity(newValue)) {
-            newValue = Integer.MAX_VALUE;
-        }
         left = new Node(newMatrixContent, newPointToIndexColumn, newPointToIndexRow, newValue, highestRegret.ligne(), highestRegret.colonne(), this);
     }
 
@@ -177,8 +179,8 @@ public class Node {
      * @param end               Point d'arrivée.
      */
     private void avoidCircuits(int[][] matrix, HashMap<Point, Integer> pointToIndexRow, HashMap<Point, Integer> pointToIndexColumn, Point start, Point end) {
-        List<Point> starts = new ArrayList<>(Collections.singletonList(start));
-        List<Point> ends = new ArrayList<>(Collections.singletonList(end));
+        List<Point> starts = new ArrayList<>(List.of(start));
+        List<Point> ends = new ArrayList<>(List.of(end));
         completeStartsEndsWithCircuit(starts, ends);
         for (Point endGiven : ends) {
             if (!starts.contains(endGiven)) {

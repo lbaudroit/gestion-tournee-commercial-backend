@@ -1,10 +1,8 @@
-package friutrodez.backendtourneecommercial.service.itineraryGenerator.utils;
+package friutrodez.backendtourneecommercial.service.itineraryGenerator.utils.objects;
 
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.algorithms.AvaibleAlgorithm;
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Point;
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Settings;
-import friutrodez.backendtourneecommercial.service.itineraryGenerator.utils.objects.BenchMarkResults;
-import friutrodez.backendtourneecommercial.service.itineraryGenerator.utils.objects.TestData;
 
 import java.util.ArrayList;
 import java.util.List;

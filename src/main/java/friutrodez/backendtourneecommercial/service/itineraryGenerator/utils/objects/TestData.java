@@ -7,6 +7,11 @@ import java.util.List;
 
 /**
  * Classe utilitaire pour générer des données de test pour les itinéraires.
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 public class TestData {
 
@@ -37,8 +42,8 @@ public class TestData {
      * @return Liste de points générés aléatoirement.
      */
     public List<Point> getXRandPoints(int x, Point startEnd) {
-        if (x > examplePoints.size()) {
-            throw new IllegalArgumentException("Le nombre de points doit être inférieur ou égal à 40.");
+        if (x > examplePoints.size() || x < 0) {
+            throw new IllegalArgumentException("Le nombre de points doit être inférieur ou égal à 40 et supérieur à 0.");
         }
         List<Point> newList = new ArrayList<>();
         for (int i = 0; i < x; i++) {
@@ -84,6 +89,27 @@ public class TestData {
     }
 
     /**
+     * Retourne une liste de points static à partir de l'index 0 de longueur 15.
+     *
+     * @param startEnd Point de départ et d'arrivée.
+     * @return Liste statique de points.
+     */
+    public List<Point> getStaticPoints4(Point startEnd) {
+        return getStaticPoints(startEnd, 0, 15);
+    }
+
+    /**
+     * Retourne une liste de points static à partir de l'index 10 de longueur 18.
+     *
+     * @param startEnd Point de départ et d'arrivée.
+     * @return Liste statique de points.
+     */
+    public List<Point> getStaticPoints5(Point startEnd) {
+        return getStaticPoints(startEnd, 10, 18);
+    }
+
+
+    /**
      * Retourne une liste statique de points à partir d'un index donné.
      *
      * @param startEnd   Point de départ et d'arrivée.
@@ -91,7 +117,10 @@ public class TestData {
      * @return Liste statique de points.
      */
     private List<Point> getStaticPoints(Point startEnd, int startIndex, int size) {
-        List<Point> pointsStatic = new ArrayList<>(examplePoints.subList(startIndex, startIndex + size));
+        List<Point> pointsStatic = new ArrayList<>();
+        for (int i = startIndex; i < startIndex + size; i++) {
+            pointsStatic.add(new Point(examplePoints.get(i)));
+        }
         generateDistancesWithHarvesineFormula(pointsStatic, startEnd);
         return pointsStatic;
     }
@@ -113,7 +142,7 @@ public class TestData {
                 new Point("10", 2.8513199, 44.6840223),
                 new Point("11", 2.7271058, 44.2792943),
                 new Point("12", 2.0415595, 44.2308501),
-                new Point("13", 2.0415595, 44.2308501),
+                new Point("13", 2.1120094, 44.2357478),
                 new Point("14", 3.1608165, 44.0076749),
                 new Point("15", 3.0721795, 44.3215041),
                 new Point("16", 2.240297, 44.3082695),

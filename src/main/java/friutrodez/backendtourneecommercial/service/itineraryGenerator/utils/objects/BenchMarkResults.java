@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * Classe pour stocker et gérer les résultats des benchmarks.
+ *
  * @author Benjamin NICOL
  * @author Enzo CLUZEL
  * @author Leïla BAUDROIT

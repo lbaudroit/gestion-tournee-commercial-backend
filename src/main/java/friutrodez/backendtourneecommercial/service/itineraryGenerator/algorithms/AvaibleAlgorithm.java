@@ -7,6 +7,11 @@ import java.util.List;
 
 /**
  * Enumération des algorithmes disponibles pour la génération d'itinéraires.
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 public enum AvaibleAlgorithm {
     BRUTE_FORCE,
@@ -21,7 +26,6 @@ public enum AvaibleAlgorithm {
             case BRUTE_FORCE_BRANCH_AND_BOUND -> "Brute force branch and bound";
             case BRUTE_FORCE_BRANCH_AND_BOUND_PARALLEL -> "Brute force branch and bound parallel";
             case LITTLE -> "Little";
-            default -> throw new IllegalArgumentException();
         };
     }
 
@@ -29,19 +33,15 @@ public enum AvaibleAlgorithm {
      * Retourne la méthode de génération d'itinéraire correspondant à l'algorithme sélectionné.
      *
      * @return La méthode de génération d'itinéraire.
-     * @throws RuntimeException si la méthode de génération n'est pas trouvée.
+     * @throws NoSuchMethodException si la méthode n'existe pas.
      */
-    public Method getAlgorithm() {
+    public Method getAlgorithm() throws NoSuchMethodException {
         Algorithm algorithm = switch (this) {
             case BRUTE_FORCE -> new BruteForce();
             case BRUTE_FORCE_BRANCH_AND_BOUND -> new BruteForceBranchAndBound();
             case BRUTE_FORCE_BRANCH_AND_BOUND_PARALLEL -> new BruteForceBranchAndBoundParallel();
             case LITTLE -> new Little();
         };
-        try {
-            return algorithm.getClass().getMethod("generate", List.class, Point.class);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
+        return algorithm.getClass().getMethod("generate", List.class, Point.class);
     }
 }

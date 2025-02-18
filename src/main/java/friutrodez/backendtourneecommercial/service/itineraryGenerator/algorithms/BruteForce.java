@@ -9,6 +9,11 @@ import java.util.List;
 /**
  * Classe BruteForce implémentant l'interface Algorithm.
  * Utilise une approche de force brute pour générer le meilleur itinéraire.
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 public class BruteForce implements Algorithm {
 
@@ -22,8 +27,12 @@ public class BruteForce implements Algorithm {
      * @return le meilleur itinéraire généré
      */
     public static BestRoute generate(List<Point> points, Point startEndGiven) {
-        startEnd = startEndGiven;
-        return generateBruteForceRecursively(new ArrayList<>(points), startEnd, new ArrayList<>(), 0);
+        BestRoute result = Algorithm.trivialCasesAndVerifyValidity(points, startEndGiven);
+        if (result == null) {
+            startEnd = startEndGiven;
+            result =  generateBruteForceRecursively(new ArrayList<>(points), startEnd, new ArrayList<>(), 0);
+        }
+        return result;
     }
 
     /**
@@ -42,7 +51,7 @@ public class BruteForce implements Algorithm {
      */
     private static BestRoute generateBruteForceRecursively(List<Point> points, Point currentPoint, List<Point> route, int distanceOfBranch) {
         if (points.size() == 1) {
-            int totalDistance = distanceOfBranch + points.get(0).getDistance(startEnd);
+            int totalDistance = distanceOfBranch + points.getFirst().getDistance(startEnd);
             return new BestRoute(new ArrayList<>(route), totalDistance);
         }
         points.remove(currentPoint);

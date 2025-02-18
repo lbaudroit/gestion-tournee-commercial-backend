@@ -6,6 +6,11 @@ import java.util.HashMap;
 
 /**
  * Représente un point avec un ID, une longitude, une latitude et un dictionnaire des distances vers d'autres points.
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 @Getter
 public class Point {

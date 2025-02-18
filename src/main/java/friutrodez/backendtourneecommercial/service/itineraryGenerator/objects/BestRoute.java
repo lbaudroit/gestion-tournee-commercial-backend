@@ -1,11 +1,14 @@
 package friutrodez.backendtourneecommercial.service.itineraryGenerator.objects;
 
-import lombok.Getter;
-
 import java.util.List;
 
 /**
  * Classe représentant le meilleur itinéraire avec une liste de points et une distance totale.
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 public record BestRoute(List<Point> points, int distance) {
 

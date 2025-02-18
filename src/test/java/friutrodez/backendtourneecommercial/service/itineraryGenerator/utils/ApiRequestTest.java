@@ -10,10 +10,21 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Classe de test pour ApiRequest.
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
+ */
 class ApiRequestTest {
     ApiRequest apiRequest;
     ArrayList<Point> points;
 
+    /**
+     * Configuration avant chaque test.
+     */
     @BeforeEach
     void setUp() {
         apiRequest = new ApiRequest();
@@ -38,6 +49,9 @@ class ApiRequestTest {
         points.add(point8);
     }
 
+    /**
+     * Test de la méthode createMatrix avec des points valides.
+     */
     @Test
     void createMatrixWithValidPoints() {
         try {
@@ -49,6 +63,9 @@ class ApiRequestTest {
         }
     }
 
+    /**
+     * Test de la méthode createMatrix avec une liste de points vide.
+     */
     @Test
     void createMatrixWithEmptyPoints() {
         List<Point> emptyPoints = new ArrayList<>();
@@ -60,6 +77,9 @@ class ApiRequestTest {
         }
     }
 
+    /**
+     * Test de la méthode createMatrix avec un seul point.
+     */
     @Test
     void createMatrixWithSinglePoint() {
         List<Point> singlePoint = List.of(new Point("single", 2.8847171, 43.9596889));
@@ -71,6 +91,9 @@ class ApiRequestTest {
         }
     }
 
+    /**
+     * Test de la méthode createMatrix avec des coordonnées invalides.
+     */
     @Test
     void createMatrixWithInvalidCoordinates() {
         List<Point> invalidPoints = List.of(new Point("invalid", 999.0, 999.0));

@@ -9,6 +9,11 @@ import java.util.List;
 
 /**
  * Classe pour effectuer des requêtes API pour générer des matrices de distances.
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 public class ApiRequest {
     private final WebClient webClient;

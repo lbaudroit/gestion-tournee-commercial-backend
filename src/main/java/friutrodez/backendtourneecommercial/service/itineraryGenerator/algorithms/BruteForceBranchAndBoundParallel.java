@@ -8,68 +8,108 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Classe implémentant l'algorithme de force brute avec branchement et bornes en parallèle.
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
+ */
 public class BruteForceBranchAndBoundParallel implements Algorithm {
     private static Point startEnd;
-    private static BestRoute bestRouteParallelised;
-    private static final int NOMBRE_DE_NIVEAUX_EN_PARALLELE_MINIMUM = 1;
-    private static final int NOMBRE_DE_NIVEAUX_EN_PARALLELE_MAXIMUM = 4;
+    private static BestRoute bestRouteParallel;
+    private static final int MIN_PARALLEL_LEVELS = 1;
+    private static final int MAX_PARALLEL_LEVELS = 4;
 
     /**
-     * Génère le meilleur itinéraire.
+     * Génère le meilleur itinéraire en utilisant l'algorithme de force brute avec branchement et bornes en parallèle.
      *
-     * @param points liste de points sans startEnd
-     * @param startEndGiven point de départ et d'arrivée
-     * @return le meilleur itinéraire généré
+     * @param points Liste des points à visiter.
+     * @param startEndGiven Point de départ et d'arrivée.
+     * @return Le meilleur itinéraire trouvé.
      */
     public static BestRoute generate(List<Point> points, Point startEndGiven) {
-        startEnd = startEndGiven;
-        bestRouteParallelised = new BestRoute(null, Integer.MAX_VALUE);
-        points.remove(startEnd);
-        int nombreDeNiveauxEnParallele = Settings.getNumberOfParallelLevels();
-        if(nombreDeNiveauxEnParallele < NOMBRE_DE_NIVEAUX_EN_PARALLELE_MINIMUM) {
-            nombreDeNiveauxEnParallele = NOMBRE_DE_NIVEAUX_EN_PARALLELE_MINIMUM;
-        } else if (nombreDeNiveauxEnParallele > NOMBRE_DE_NIVEAUX_EN_PARALLELE_MAXIMUM) {
-            nombreDeNiveauxEnParallele = NOMBRE_DE_NIVEAUX_EN_PARALLELE_MAXIMUM;
+        bestRouteParallel = Algorithm.trivialCasesAndVerifyValidity(points, startEndGiven);
+        if (bestRouteParallel == null) {
+            startEnd = startEndGiven;
+            bestRouteParallel = new BestRoute(null, Integer.MAX_VALUE);
+            int parallelLevels = Math.min(MAX_PARALLEL_LEVELS, Math.max(MIN_PARALLEL_LEVELS, Settings.getNumberOfParallelLevels()));
+            generateBranchAndBoundParallel(points, startEnd, new ArrayList<>(), 0, parallelLevels);
         }
-        generateBranchAndBoundParallelRecursively(points, startEnd, new ArrayList<>(), 0, nombreDeNiveauxEnParallele);
-        points.add(startEnd);
-        return bestRouteParallelised;
+        return bestRouteParallel;
     }
 
-    private static synchronized void setBestRoute(BestRoute bestRoute) {
-        if (bestRoute.distance() < bestRouteParallelised.distance()) {
-            bestRouteParallelised = new BestRoute(new ArrayList<>(bestRoute.points()), bestRoute.distance());
+    /**
+     * Met à jour le meilleur itinéraire si le nouvel itinéraire est meilleur.
+     *
+     * @param route Le nouvel itinéraire à comparer.
+     */
+    private static synchronized void updateBestRoute(BestRoute route) {
+        if (route.distance() < bestRouteParallel.distance()) {
+            bestRouteParallel = new BestRoute(new ArrayList<>(route.points()), route.distance());
         }
     }
 
-    private static void generateBranchAndBoundParallelRecursively(List<Point> points, Point currentPoint, List<Point> route, int distanceOfBranch, int nombreDeNiveauxEnParallele) {
-        if (nombreDeNiveauxEnParallele > route.size()) {
+    /**
+     * Génère l'itinéraire en utilisant l'algorithme de branchement et bornes en parallèle.
+     *
+     * @param points Liste des points à visiter.
+     * @param currentPoint Point actuel dans l'itinéraire.
+     * @param route Itinéraire actuel.
+     * @param branchDistance Distance actuelle de l'itinéraire.
+     * @param parallelLevels Niveau de parallélisme.
+     */
+    private static void generateBranchAndBoundParallel(List<Point> points, Point currentPoint, List<Point> route, int branchDistance, int parallelLevels) {
+        if (parallelLevels > route.size()) {
             if (points.size() == 1) {
-                List<Point> routeTmp = new ArrayList<>(route);
-                routeTmp.add(points.getFirst());
-                int distance = distanceOfBranch + currentPoint.getDistance(points.getFirst()) + points.getFirst().getDistance(startEnd);
-                setBestRoute(new BestRoute(routeTmp, distance));
+                endCase(points, currentPoint, route, branchDistance);
             } else {
-                List<CompletableFuture<Void>> futures = new ArrayList<>();
-                for (Point point : points) {
-                    int distance = distanceOfBranch + currentPoint.getDistance(point);
-                    if (distance < bestRouteParallelised.distance()) {
-                        List<Point> pointsTmp = new ArrayList<>(points);
-                        pointsTmp.remove(point);
-                        List<Point> routeTmp = new ArrayList<>(route);
-                        routeTmp.add(point);
-                        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-                            generateBranchAndBoundParallelRecursively(pointsTmp, point, routeTmp, distance, nombreDeNiveauxEnParallele);
-                        });
-                        futures.add(future);
-                    }
-                }
-                CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+                normalCase(points, currentPoint, route, branchDistance, parallelLevels);
             }
         } else {
-            BruteForceBranchAndBound.setStartEnd(startEnd);
-            setBestRoute(BruteForceBranchAndBound.generateBranchAndBoundRecursively(
-                    points, currentPoint, route, distanceOfBranch, bestRouteParallelised.distance()));
+            updateBestRoute(BruteForceBranchAndBound.generateForParallel(points, currentPoint, route, branchDistance,
+                    bestRouteParallel.distance(), startEnd));
         }
+    }
+
+    /**
+     * Cas de fin lorsque tous les points ont été visités.
+     *
+     * @param points Liste des points restants (un seul point).
+     * @param currentPoint Point actuel dans l'itinéraire.
+     * @param route Itinéraire actuel.
+     * @param branchDistance Distance actuelle de l'itinéraire.
+     */
+    private static void endCase(List<Point> points, Point currentPoint, List<Point> route, int branchDistance) {
+        List<Point> tempRoute = new ArrayList<>(route);
+        tempRoute.add(points.getFirst());
+        int distance = branchDistance + currentPoint.getDistance(points.getFirst()) + points.getFirst().getDistance(startEnd);
+        updateBestRoute(new BestRoute(tempRoute, distance));
+    }
+
+    /**
+     * Cas normal pour générer les branches en parallèle.
+     *
+     * @param points Liste des points à visiter.
+     * @param currentPoint Point actuel dans l'itinéraire.
+     * @param route Itinéraire actuel.
+     * @param branchDistance Distance actuelle de l'itinéraire.
+     * @param parallelLevels Niveau de parallélisme.
+     */
+    private static void normalCase(List<Point> points, Point currentPoint, List<Point> route, int branchDistance, int parallelLevels) {
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
+        for (Point point : points) {
+            int distance = branchDistance + currentPoint.getDistance(point);
+            if (distance < bestRouteParallel.distance()) {
+                List<Point> tempPoints = new ArrayList<>(points);
+                tempPoints.remove(point);
+                List<Point> tempRoute = new ArrayList<>(route);
+                tempRoute.add(point);
+                CompletableFuture<Void> future = CompletableFuture.runAsync(() -> generateBranchAndBoundParallel(tempPoints, point, tempRoute, distance, parallelLevels));
+                futures.add(future);
+            }
+        }
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
     }
 }

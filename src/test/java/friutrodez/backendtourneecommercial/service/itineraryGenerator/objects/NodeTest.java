@@ -9,6 +9,14 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Classe de test pour la classe Node.
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
+ */
 class NodeTest {
 
     TestData testData;
@@ -20,6 +28,9 @@ class NodeTest {
     Node racine3;
     Point startEnd;
 
+    /**
+     * Configuration avant chaque test.
+     */
     @BeforeEach
     void setUp() {
         testData = new TestData();
@@ -32,14 +43,19 @@ class NodeTest {
         racine3 = new Node(points3);
     }
 
-
+    /**
+     * Test de la méthode getSizeMatrix.
+     */
     @Test
     void testGetSizeMatrix() {
         assertEquals(5, racine1.getSizeMatrix());
         assertEquals(3, racine2.getSizeMatrix());
-        assertEquals(4, racine3.getSizeMatrix());
+        assertEquals(7, racine3.getSizeMatrix());
     }
 
+    /**
+     * Test de la méthode getLowestValueNode.
+     */
     @Test
     void getLowestValueNode() {
         assertEquals(racine1, racine1.getLowestValueNode());
@@ -47,7 +63,7 @@ class NodeTest {
         assertEquals(racine2, racine2.getLowestValueNode());
         assertEquals(121800, racine2.getLowestValueNode().getValue());
         assertEquals(racine3, racine3.getLowestValueNode());
-        assertEquals(91866, racine3.getLowestValueNode().getValue());
+        assertEquals(111129, racine3.getLowestValueNode().getValue());
         racine1.expand();
         racine2.expand();
         racine3.expand();
@@ -56,15 +72,21 @@ class NodeTest {
         assertEquals(racine2.getLeft(), racine2.getLowestValueNode());
         assertEquals(140222, racine2.getLowestValueNode().getValue());
         assertEquals(racine3.getLeft(), racine3.getLowestValueNode());
-        assertEquals(193523, racine3.getLowestValueNode().getValue());
+        assertEquals(135535, racine3.getLowestValueNode().getValue());
     }
 
+    /**
+     * Test de la méthode expand.
+     */
     @Test
     void expand() {
         racine1.expand();
         verifyRoot1Expand();
     }
 
+    /**
+     * Vérifie l'expansion de racine1.
+     */
     void verifyRoot1Expand() {
         // Vérification pour la gauche
         assertNotNull(racine1.getLeft());
@@ -120,6 +142,9 @@ class NodeTest {
 
     }
 
+    /**
+     * Test de la méthode getAllNodesOnRoute.
+     */
     @Test
     void getAllNodesOnRoute() {
         racine1.expand();
