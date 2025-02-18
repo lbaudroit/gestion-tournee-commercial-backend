@@ -2,10 +2,12 @@ package friutrodez.backendtourneecommercial.repository.mongodb;
 
 import com.mongodb.client.result.DeleteResult;
 import friutrodez.backendtourneecommercial.model.Client;
+import friutrodez.backendtourneecommercial.model.Coordonnees;
 import friutrodez.backendtourneecommercial.service.SequenceGeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -130,5 +132,27 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
         long totalElements = mongoTemplate.count(query, collection);
         // Calcul du nombre total de pages
         return (int) Math.ceil((double) totalElements / PAGE_SIZE);
+    }
+
+    /**
+     * Récupère tous les prospects autour d'une coordonnées.
+     * Seulement les prospects dans un rayon de 1000 mètres autour du point sont récupérés.
+     * @param point La coordonnée servant comme point d'origine.
+     * @return Les clients trouvés.
+     */
+    public List<Client> getAllProspectsAround(Coordonnees point, String idUser) {
+        BasicQuery query = new BasicQuery(
+                "{coordonnees : {\n" +
+                "      $near : {\n" +
+                "         $geometry : {\n" +
+                "            type : \"Point\",\n" +
+                        // Longitude et latitude sont inversées dans la bd
+                "            coordinates : ["+point.latitude()+", "+point.longitude()+" ]\n" +
+                "         },\n" +
+                "         $maxDistance : 1000\n" +
+                "      }\n" +
+                "    }" +
+                ",\"idUtilisateur\": \""+idUser+"\",\"clientEffectif\": false}");
+        return mongoTemplate.find(query,collection);
     }
 }
