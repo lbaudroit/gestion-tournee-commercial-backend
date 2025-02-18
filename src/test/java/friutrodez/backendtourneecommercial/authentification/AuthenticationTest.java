@@ -53,7 +53,7 @@ public class AuthenticationTest {
         testUser2.setNom("testUser2");
         testUser2.setPrenom("testPrenom2");
         testUser2.setMotDePasse("A232Eez@d ");
-        testUser2.setEmail("Email@mail.com");
+        testUser2.setEmail("Email2@mail.com");
         testUser2.setLibelleAdresse("50 Avenue de Bordeaux");
 
         testUser2.setCodePostal("12000");

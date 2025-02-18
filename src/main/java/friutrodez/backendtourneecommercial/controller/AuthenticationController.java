@@ -6,6 +6,7 @@ import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.service.AuthenticationService;
 import friutrodez.backendtourneecommercial.service.JwtService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,7 +45,6 @@ public class AuthenticationController {
     @PostMapping
     public ResponseEntity<JwtToken> authenticate(@RequestBody DonneesAuthentification authData) {
         Utilisateur utilisateur = authenticationService.tryAuthenticate(authData);
-
         String jwtToken = jwtService.generateToken(utilisateur);
         JwtToken jwtTokenDTO = new JwtToken(jwtToken, jwtService.JWT_EXPIRATION);
         return ResponseEntity.ok(jwtTokenDTO);

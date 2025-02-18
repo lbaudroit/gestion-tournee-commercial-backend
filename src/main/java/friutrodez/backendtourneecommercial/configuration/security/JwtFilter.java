@@ -1,11 +1,13 @@
 package friutrodez.backendtourneecommercial.configuration.security;
 
+import friutrodez.backendtourneecommercial.service.AuthenticationService;
 import friutrodez.backendtourneecommercial.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,15 +25,20 @@ import java.io.IOException;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
+    private final AuthenticationService authenticationService;
 
     private final JwtService jwtService;
 
-    private final UserDetailsService userDetailsService;
-
+    /**
+     *
+     * @param authenticationService Récupération d'un service pour authentifier l'utilisateur.
+     *                             Annotée avec lazy car le filtre doit être créé avant le service
+     * @param jwtService Le service pour les jwt.
+     */
     @Autowired
-    public JwtFilter(UserDetailsService userDetailsService, JwtService jwtService) {
+    public JwtFilter( @Lazy AuthenticationService authenticationService, JwtService jwtService) {
+        this.authenticationService = authenticationService;
         this.jwtService = jwtService;
-        this.userDetailsService = userDetailsService;
     }
 
     /**
@@ -60,9 +67,9 @@ public class JwtFilter extends OncePerRequestFilter {
         final String username = jwtService.extractEmail(jwt);
 
         if (username != null && null == SecurityContextHolder.getContext().getAuthentication()) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+            UserDetails userDetails = authenticationService.loadUserDetails(username);
             if (jwtService.isTokenValid(jwt, userDetails)) {
-                setAuthentication(createAuthToken(userDetails, request));
+                authenticationService.tryAuthenticateWithRequest(userDetails,request);
             }
         }
         filterChain.doFilter(request, response);

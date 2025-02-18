@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Service de gestion des itinéraires.
@@ -167,13 +168,14 @@ public class ItineraireService {
         if (dto.idClients().length > 8) {
             throw new DonneesInvalidesException("Le nombre de client ne doit pas être supérieur.");
         }
-        if (!allIdClientExists(dto.idClients())) {
-            throw new DonneesInvalidesException("Au moins un id client n'existe pas.");
-        }
 
         Query query = new Query(Criteria.where("_id").in(Arrays.stream(dto.idClients()).toList()));
-        boolean oneIsNotFromCurrentUser = clientMongoTemplate.mongoTemplate.
-                find(query, Client.class).
+        List<Client> list = clientMongoTemplate.mongoTemplate.
+                find(query, Client.class);
+        if(list.size() != dto.idClients().length) {
+            throw new DonneesInvalidesException("Un id client est invalide.");
+        }
+        boolean oneIsNotFromCurrentUser = list.
                 stream().
                 anyMatch(client -> !client.getIdUtilisateur().equals(String.valueOf(user.getId())));
         if (oneIsNotFromCurrentUser) {
@@ -197,23 +199,6 @@ public class ItineraireService {
         }
 
         return appartientRepository.saveAll(appartients);
-    }
-
-    /**
-     * Méthode pour vérifier si tous les ids en paramètre sont existants.
-     *
-     * @param idClients Les ids à vérifier.
-     * @return true si tous les ids existent sinon false.
-     */
-    private boolean allIdClientExists(String[] idClients) {
-        boolean allExists = true;
-        for (String id : idClients) {
-            if (!clientMongoTemplate.exists("_id", id)) {
-                allExists = false;
-                break;
-            }
-        }
-        return allExists;
     }
 
     /**

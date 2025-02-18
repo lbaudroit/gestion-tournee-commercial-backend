@@ -4,11 +4,13 @@ import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
 import friutrodez.backendtourneecommercial.model.Adresse;
 import friutrodez.backendtourneecommercial.model.Client;
 import friutrodez.backendtourneecommercial.model.Contact;
+import friutrodez.backendtourneecommercial.model.Coordonnees;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
 
 @SpringBootTest
 class ClientServiceTest {
@@ -40,9 +42,10 @@ class ClientServiceTest {
         client.setNomEntreprise("UneEntreprise");
         client.setContact(new Contact("test", "test", "0102030405"));
 
-        Adresse adresse = new Adresse("6 Impasse du Suc", "81490", "Boissezon");
+        Adresse adress = new Adresse("6 Impasse du Suc", "81490", "Boissezon");
 
-        client.setAdresse(adresse);
+        client.setAdresse(adress);
+
         Client clientRecupere = clientService.CreateOneClient(client, "1");
 
         Assertions.assertEquals(clientRecupere.getIdUtilisateur(), "1");
@@ -50,5 +53,29 @@ class ClientServiceTest {
         Assertions.assertNotNull(clientRecupere.getCoordonnees());
     }
 
-    ;
+    @Test
+    void testEditClient() {
+        Client client = new Client();
+        client.setNomEntreprise("UneEntreprise");
+        client.setContact(new Contact("test", "test", "0102030405"));
+
+        Adresse adress = new Adresse("6 Impasse du Suc", "81490", "Boissezon");
+
+        client.setAdresse(adress);
+
+        Client clientRecupere = clientService.CreateOneClient(client, "1");
+        Coordonnees savedCoordinates = clientRecupere.getCoordonnees();
+        Client clientEdit = new Client();
+        clientEdit.set_id(clientRecupere.get_id());
+        clientEdit.setContact(new Contact("test", "test", "0102030405"));
+
+        clientEdit.setNomEntreprise("ModifieClient");
+        Adresse adress2 = new Adresse("64 Avenue de Bordeaux", "12000", "Rodez");
+        clientEdit.setAdresse(adress2);
+        clientService.editOneClient(clientEdit.get_id(),clientEdit,"1");
+
+        Assertions.assertNotEquals(savedCoordinates,clientEdit.getCoordonnees());
+        Assertions.assertNotEquals(clientRecupere.getNomEntreprise(),clientEdit.getNomEntreprise());
+    }
+
 }

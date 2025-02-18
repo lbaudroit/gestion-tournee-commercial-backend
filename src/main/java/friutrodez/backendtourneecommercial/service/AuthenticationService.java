@@ -5,9 +5,15 @@ import friutrodez.backendtourneecommercial.exception.AdresseInvalideException;
 import friutrodez.backendtourneecommercial.model.Adresse;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mysql.UtilisateurRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 
 /**
@@ -28,6 +34,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final AdresseToolsService addressToolsService = new AdresseToolsService();
     private final ValidatorService validatorService;
+    private final UserDetailsService userDetailsService;
 
     /**
      * @param userRepository        Un repository pour l'utilisateur.
@@ -35,11 +42,12 @@ public class AuthenticationService {
      * @param authenticationManager Un manageur pour authentifier l'utilisateur.
      * @param validatorService      Un service pour valider la ressource.
      */
-    public AuthenticationService(UtilisateurRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, ValidatorService validatorService) {
+    public AuthenticationService(UtilisateurRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, ValidatorService validatorService, UserDetailsService userDetailsService) {
         this.utilisateurRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.validatorService = validatorService;
+        this.userDetailsService = userDetailsService;
     }
 
     /**
@@ -49,13 +57,45 @@ public class AuthenticationService {
      * @return l'utilisateur authentifié.
      */
     public Utilisateur tryAuthenticate(DonneesAuthentification donneeAuthentification) {
-        authenticationManager.authenticate(
+        Authentication authentication =authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         donneeAuthentification.email(),
                         donneeAuthentification.motDePasse()
                 )
+
         );
-        return utilisateurRepository.findByEmail(donneeAuthentification.email());
+        setAuthentication(authentication);
+        return (Utilisateur) authentication.getPrincipal();
+    }
+
+    public UserDetails loadUserDetails(String username) {
+        return userDetailsService.loadUserByUsername(username);
+    }
+
+    /**
+     * Méthode pour authentifier un utilisateur dans l' "authenticationManager". Ajoute les informations de la requête en cours.
+     * @param userDetails Les détails utilisateur.
+     * @param request La requête en cours.
+     * @return L'utilisateur authentifié.
+     */
+    public Utilisateur tryAuthenticateWithRequest(UserDetails userDetails, HttpServletRequest request) {
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+            userDetails,null,userDetails.getAuthorities()
+        );
+
+        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        setAuthentication(authToken);
+        return (Utilisateur) authToken.getPrincipal();
+    }
+
+    /**
+     * Connecte l'utilisateur à Spring en l'ajoutant au SecurityContext.<br>
+     * La requête peut être effectuée après cette connexion.
+     *
+     * @param authentication l'authentification à ajouter dans le contexte de la sécurité.
+     */
+    private void setAuthentication(Authentication authentication) {
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     /**
