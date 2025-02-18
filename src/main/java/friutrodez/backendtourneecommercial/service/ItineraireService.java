@@ -8,6 +8,9 @@ import friutrodez.backendtourneecommercial.model.*;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
 import friutrodez.backendtourneecommercial.repository.mysql.AppartientRepository;
 import friutrodez.backendtourneecommercial.repository.mysql.ItineraireRepository;
+import friutrodez.backendtourneecommercial.service.itineraryGenerator.Generator;
+import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.BestRoute;
+import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Point;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -61,23 +64,38 @@ public class ItineraireService {
      * entre eux et le nombre de kilomètres associés à cet itinéraire
      */
     public ResultatOptimisation optimizeShortest(List<Client> clients, Utilisateur user) {
-        // STUB
-        Collections.shuffle(clients);
-        int kilometres = (int) (Math.random() * 1000);
-        return new ResultatOptimisation(transformToClientId(clients), kilometres);
+        List<Point> points = getPointsFromClients(clients);
+
+        Generator generator = new Generator();
+        BestRoute bestRoute = generator.run(points, user.getLongitude(), user.getLatitude(), Generator.DEFAULT_ALGORITHM);
+
+        int kilometres = bestRoute.distance();
+        List<Point> pointsOptimized = bestRoute.points();
+        return new ResultatOptimisation(transformToClientId(pointsOptimized), kilometres);
+    }
+
+    private static List<Point> getPointsFromClients(List<Client> clients) {
+        List<Point> points = new ArrayList<>();
+        for (Client client : clients) {
+            String id = client.get_id();
+            Coordonnees coordonnees = client.getCoordonnees();
+            points.add(new Point(id, coordonnees.longitude(), coordonnees.latitude()));
+        }
+        return points;
     }
 
     /**
-     * Récupère les identifiants de clients
+     * Récupère les identifiants des clients dans une liste de points.
      *
-     * @param clients les clients dont on veut les identifiants
+     * @param points les points (avec le même ID que les clients) dont on veut les identifiants
      * @return une liste des identifiants
      */
-    private List<ClientId> transformToClientId(List<Client> clients) {
-        return clients.stream()
-                .map(Client::get_id)
-                .map(ClientId::new)
-                .toList();
+    private List<ClientId> transformToClientId(List<Point> points) {
+        List<ClientId> clientIds = new ArrayList<>();
+        for (Point point : points) {
+            clientIds.add(new ClientId(point.getId()));
+        }
+        return clientIds;
     }
 
     /**

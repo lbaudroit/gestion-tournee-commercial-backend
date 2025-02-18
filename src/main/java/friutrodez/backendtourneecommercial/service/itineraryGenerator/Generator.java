@@ -22,6 +22,7 @@ import java.util.List;
  */
 public class Generator {
     private static final String START_END_ID = "startEnd";
+    public static final AvaibleAlgorithm DEFAULT_ALGORITHM = AvaibleAlgorithm.LITTLE;
 
     /**
      * Exécute l'algorithme pour générer le meilleur itinéraire.
