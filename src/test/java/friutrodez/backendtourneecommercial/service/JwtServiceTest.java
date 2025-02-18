@@ -1,11 +1,11 @@
-package friutrodez.backendtourneecommercial.authentification;
+package friutrodez.backendtourneecommercial.service;
 
 import friutrodez.backendtourneecommercial.model.Utilisateur;
-import friutrodez.backendtourneecommercial.service.JwtService;
 import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Date;
 import java.util.HashMap;
 
 public class JwtServiceTest {
@@ -38,6 +38,7 @@ public class JwtServiceTest {
 
         userDetails.setMotDePasse("123");
         userDetails.setNom("testNom");
+        userDetails.setEmail("testEmail@e.e");
         HashMap<String, Object> claims = new HashMap<>();
         claims.put("id", 1);
 
@@ -46,5 +47,34 @@ public class JwtServiceTest {
         Assertions.assertEquals(claims1.get("id"), 1
                 , "extraireTousClaims ne renvoient pas l'id correcte");
 
+        Assertions.assertEquals("testEmail@e.e",jwtService.extractEmail(token));
+
+    }
+    @Test
+    void testExtractEmail() {
+        JwtService jwtService = new JwtService();
+        Utilisateur userDetails = new Utilisateur();
+
+        userDetails.setMotDePasse("123");
+        userDetails.setNom("testNom");
+        userDetails.setEmail("testEmail@e.e");
+
+        String token = jwtService.generateToken(userDetails);
+
+        Assertions.assertEquals("testEmail@e.e",jwtService.extractEmail(token));
+    }
+
+    @Test
+    void testExtractExpiration() {
+        JwtService jwtService = new JwtService();
+        Utilisateur userDetails = new Utilisateur();
+
+        userDetails.setMotDePasse("123");
+        userDetails.setNom("testNom");
+        userDetails.setEmail("testEmail@e.e");
+
+        String token = jwtService.generateToken(userDetails);
+
+        Assertions.assertEquals(new Date()String.valueOf(30 * 60 * 1000),jwtService.extractExpiration(token));
     }
 }
