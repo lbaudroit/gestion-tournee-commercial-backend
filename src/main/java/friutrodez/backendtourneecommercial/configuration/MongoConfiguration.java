@@ -51,4 +51,11 @@ public class MongoConfiguration extends AbstractMongoClientConfiguration {
         return "mydatabase";
     }
 
+    // Auto Index Creation
+    @Override
+    protected boolean autoIndexCreation() {
+        return true;
+    }
+
+
 }
