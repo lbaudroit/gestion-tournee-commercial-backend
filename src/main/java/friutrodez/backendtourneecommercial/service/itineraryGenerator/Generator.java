@@ -2,7 +2,7 @@ package friutrodez.backendtourneecommercial.service.itineraryGenerator;
 
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.BestRoute;
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Point;
-import friutrodez.backendtourneecommercial.service.itineraryGenerator.algorithms.AvaibleAlgorithm;
+import friutrodez.backendtourneecommercial.service.itineraryGenerator.algorithms.AvailableAlgorithm;
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.utils.ApiRequest;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class Generator {
     private static final String START_END_ID = "startEnd";
-    public static final AvaibleAlgorithm DEFAULT_ALGORITHM = AvaibleAlgorithm.LITTLE;
+    public static final AvailableAlgorithm DEFAULT_ALGORITHM = AvailableAlgorithm.LITTLE;
 
     /**
      * Exécute l'algorithme pour générer le meilleur itinéraire.
@@ -33,7 +33,7 @@ public class Generator {
      * @param algoVoyageur Algorithme à utiliser pour générer l'itinéraire.
      * @return Le meilleur itinéraire calculé.
      */
-    public BestRoute run(List<Point> points, double startEndLongitude, double startEndLatitude, AvaibleAlgorithm algoVoyageur) {
+    public BestRoute run(List<Point> points, double startEndLongitude, double startEndLatitude, AvailableAlgorithm algoVoyageur) {
         List<Point> routePoints = new ArrayList<>(points);
         Point startEnd = createPointStartEnd(startEndLongitude, startEndLatitude);
         generateDistances(routePoints, startEnd);
