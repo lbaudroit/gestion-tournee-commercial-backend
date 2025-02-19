@@ -38,7 +38,7 @@ public class ApiRequest {
     public void createMatrix(List<Point> points) {
         String response = webClient.post()
                 .uri(API_URL)
-                .bodyValue(parseMatrix(points))
+                .bodyValue(pointsToMatrix(points))
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
@@ -51,7 +51,7 @@ public class ApiRequest {
      * @param points Liste de points à inclure dans la matrice.
      * @return Chaîne JSON représentant le corps de la requête.
      */
-    private String parseMatrix(List<Point> points) {
+    private String pointsToMatrix(List<Point> points) {
         StringBuilder body = new StringBuilder("{\"locations\":[");
         for (Point point : points) {
             body.append("[").append(point.getLongitude()).append(",").append(point.getLatitude()).append("],");

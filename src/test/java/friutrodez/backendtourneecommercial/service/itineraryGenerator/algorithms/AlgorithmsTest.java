@@ -38,8 +38,8 @@ class AlgorithmsTest {
      */
     @Test
     void testAllAlgorithmsGoodResults() {
-        AvaibleAlgorithm[] algorithms = AvaibleAlgorithm.values();
-        for (AvaibleAlgorithm algorithm : algorithms) {
+        AvailableAlgorithm[] algorithms = AvailableAlgorithm.values();
+        for (AvailableAlgorithm algorithm : algorithms) {
             try {
                 // -1, -2, -3 sont des points statiques (toujours les mêmes points)
                 assertEquals(150454, runAlgorithm(algorithm, -1).distance());
@@ -163,8 +163,8 @@ class AlgorithmsTest {
      */
     @Test
     void littleWithBiggerProblem() {
-        assertEquals(292629, runAlgorithm(AvaibleAlgorithm.LITTLE, -4).distance());
-        assertEquals(282660, runAlgorithm(AvaibleAlgorithm.LITTLE, -5).distance());
+        assertEquals(292629, runAlgorithm(AvailableAlgorithm.LITTLE, -4).distance());
+        assertEquals(282660, runAlgorithm(AvailableAlgorithm.LITTLE, -5).distance());
     }
 
     /**
@@ -185,7 +185,7 @@ class AlgorithmsTest {
      * @param ammountOfPoints Le nombre de points à utiliser.
      * @return La meilleure route trouvée par l'algorithme.
      */
-    private BestRoute runAlgorithm(AvaibleAlgorithm algorithm, int ammountOfPoints) {
+    private BestRoute runAlgorithm(AvailableAlgorithm algorithm, int ammountOfPoints) {
         Point startEnd = testData.getStartEnd();
         List<Point> points = switch (ammountOfPoints) {
             case -1 -> new ArrayList<>(testData.getStaticPoints1(startEnd));

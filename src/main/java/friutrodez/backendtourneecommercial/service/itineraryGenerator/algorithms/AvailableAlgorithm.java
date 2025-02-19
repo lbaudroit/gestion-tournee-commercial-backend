@@ -13,7 +13,7 @@ import java.util.List;
  * @author Leïla BAUDROIT
  * @author Ahmed BRIBACH
  */
-public enum AvaibleAlgorithm {
+public enum AvailableAlgorithm {
     BRUTE_FORCE,
     BRUTE_FORCE_BRANCH_AND_BOUND,
     BRUTE_FORCE_BRANCH_AND_BOUND_PARALLEL,
