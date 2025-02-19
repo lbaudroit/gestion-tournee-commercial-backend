@@ -78,32 +78,4 @@ public class JwtFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         }
     }
-
-
-    /**
-     * Crée un token d'authentification pour l'ajout d'une connexion dans SecurityContext
-     *
-     * @param userDetails les informations de l'utilisateur
-     * @param request     la requête envoyée au serveur
-     * @return un toke d'authentification
-     */
-    private UsernamePasswordAuthenticationToken createAuthToken(UserDetails userDetails, HttpServletRequest request) {
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                userDetails,
-                null,
-                userDetails.getAuthorities()
-        );
-        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        return authToken;
-    }
-
-    /**
-     * Connecte l'utilisateur à Spring en l'ajoutant au SecurityContext.<br>
-     * La requête peut être effectuée après cette connexion.
-     *
-     * @param authToken le token d'authentification
-     */
-    private void setAuthentication(UsernamePasswordAuthenticationToken authToken) {
-        SecurityContextHolder.getContext().setAuthentication(authToken);
-    }
 }
