@@ -14,7 +14,7 @@ import java.io.IOException;
  * Service pour la gestion des adresses.
  * <p>
  * Cette classe propose des méthodes pour valider une adresse
- * et géolocaliser une adresse en donnant ces coordonnées
+ * et géolocaliser une adresse en donnant ces coordonnées.
  *
  * @author Benjamin NICOL
  * @author Enzo CLUZEL
@@ -37,12 +37,12 @@ public class AdresseToolsService {
 
     /**
      * Cette méthode récupère les adresses à partir de l'API du gouvernement.
-     * Puis elle renvoie si l'adresse est correcte.
+     * Puis, elle renvoie si l'adresse est correcte.
      *
      * @param label    Le libelle de l'adresse.
      * @param postCode Le code postal de l'adresse.
-     * @param city     La ville de l'adresse
-     * @return true si l'adresse correspond à celle donné en paramètre false sinon
+     * @param city     La ville de l'adresse.
+     * @return         True si l'adresse correspond à celle donnée en paramètre, sinon false.
      */
     public boolean validateAdresse(String label, String postCode, String city) {
         // Search with libelle and as filter codePostal
@@ -101,7 +101,7 @@ public class AdresseToolsService {
      * Convertie la première réponse en adresse.
      *
      * @param response La réponse de l'api.
-     * @return Une adresse.
+     * @return         Une adresse.
      */
     private Adresse parseGeoJsonResponse(String response) {
         try {
@@ -125,7 +125,7 @@ public class AdresseToolsService {
      * Extrait les coordonnées de l'adresse.
      *
      * @param response La réponse de l'api
-     * @return un tableau avec les coordonnées.
+     * @return         Un tableau avec les coordonnées.
      */
     private Double[] extractCoordinates(String response) {
         try {
