@@ -2,6 +2,7 @@ package friutrodez.backendtourneecommercial.configuration.security;
 
 import friutrodez.backendtourneecommercial.service.AuthenticationService;
 import friutrodez.backendtourneecommercial.service.JwtService;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -73,9 +74,9 @@ public class JwtFilter extends OncePerRequestFilter {
                 }
             }
             filterChain.doFilter(request, response);
-        } catch (Exception ex) {
+        } catch (ExpiredJwtException ex) {
             filterChain.doFilter(request, response);
-        } 
+        }
     }
 
 

@@ -92,7 +92,7 @@ public class AuthenticationControllerTest {
 
         UserDetails userDetailsMock = mock(UserDetails.class);
         when(userDetailsMock.getUsername()).thenReturn("Email@mail2.com");
-        when(userDetailsMock.getPassword()).thenReturn("password");
+        when(userDetailsMock.getPassword()).thenReturn("pA3@.AZet4");
 
         when(jwtService.generateToken(any(UserDetails.class)))
                 .thenReturn(expectedToken);
