@@ -6,9 +6,19 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-
+/**
+ * Classe de test pour FakeDataServiceTest.
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
+ */
 class FakeDataServiceTest {
 
+    /**
+     * Teste la génération de faux clients.
+     */
     @Test
     void testgenerateFakeClient() {
         FakeDataService fakeDataService = new FakeDataService();
@@ -21,6 +31,9 @@ class FakeDataServiceTest {
         Assertions.assertNotEquals(client,client2);
     }
 
+    /**
+     * Teste la génération de plusieurs faux clients.
+     */
     @Test
     void testGenerateFakeClients() {
         FakeDataService fakeDataService = new FakeDataService();

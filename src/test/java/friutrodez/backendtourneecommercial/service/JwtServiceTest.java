@@ -10,9 +10,20 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
 
+/**
+ * Classe de test pour JwtServiceTests.
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
+ */
 public class JwtServiceTest {
 
 
+    /**
+     * Teste la génération d'un token.
+     */
     @Test
     void testBuild() {
         JwtService jwtService = new JwtService();
@@ -33,6 +44,9 @@ public class JwtServiceTest {
 
     }
 
+    /**
+     * Teste l'extraction des données du token.
+     */
     @Test
     void testExtractClaims() {
         JwtService jwtService = new JwtService();
@@ -52,6 +66,9 @@ public class JwtServiceTest {
         Assertions.assertEquals("testEmail@e.e",jwtService.extractEmail(token));
 
     }
+    /**
+     * Teste l'extraction de l'email dans le token'.
+     */
     @Test
     void testExtractEmail() {
         JwtService jwtService = new JwtService();
@@ -66,6 +83,9 @@ public class JwtServiceTest {
         Assertions.assertEquals("testEmail@e.e",jwtService.extractEmail(token));
     }
 
+    /**
+     * Teste l'extraction de la date d'expiration du token'.
+     */
     @Test
     void testExtractExpiration() {
         JwtService jwtService = new JwtService();
@@ -79,6 +99,9 @@ public class JwtServiceTest {
 
         Assertions.assertEquals(Date.from(Instant.now().plus(30, ChronoUnit.MINUTES)).toString(),jwtService.extractExpiration(token).toString());
     }
+    /**
+     * Teste l'expiration du token.
+     */
     @Test
     void testExpired() {
         JwtService jwtService = new JwtService();
@@ -94,6 +117,9 @@ public class JwtServiceTest {
         // TODO test : token expired true
     }
 
+    /**
+     * Teste la validité du token.
+     */
     @Test
     void testValid() {
         JwtService jwtService = new JwtService();

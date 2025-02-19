@@ -1,5 +1,6 @@
 package friutrodez.backendtourneecommercial.service;
 
+import friutrodez.backendtourneecommercial.exception.AdresseInvalideException;
 import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
 import friutrodez.backendtourneecommercial.model.Adresse;
 import friutrodez.backendtourneecommercial.model.Client;
@@ -51,7 +52,7 @@ public class ClientService {
         Adresse address = clientData.getAdresse();
 
         if (!addressToolsService.validateAdresse(address.getLibelle(), address.getCodePostal(), address.getVille())) {
-            throw new DonneesInvalidesException("L'adresse du client est invalide.");
+            throw new AdresseInvalideException("L'adresse du client est invalide.");
         }
 
         Double[] coordinates = addressToolsService.geolocateAdresse(address.getLibelle(), address.getCodePostal(), address.getVille());
@@ -77,7 +78,7 @@ public class ClientService {
 
         if (!savedClient.getAdresse().equals(editData.getAdresse())) {
             if (!addressToolsService.validateAdresse(address.getLibelle(), address.getCodePostal(), address.getVille())) {
-                throw new DonneesInvalidesException("L'adresse du client est invalide.");
+                throw new AdresseInvalideException("L'adresse du client est invalide.");
             }
         }
 

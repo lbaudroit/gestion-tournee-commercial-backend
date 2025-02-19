@@ -20,6 +20,14 @@ import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
 
+/**
+ * Classe de test pour ItineraireServiceTest.
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
+ */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
 @Transactional
@@ -58,6 +66,9 @@ public class ItineraireServiceTest {
             Itineraire avec client qui appartient au client et existe   => valide
     */
 
+    /**
+     * Setup le contexte nécessaire pour le test.
+     */
     @BeforeAll
     public void setUp() {
 
@@ -73,45 +84,57 @@ public class ItineraireServiceTest {
                 CORRECT_DISTANCE);
 
 
-        Itineraire itineraire = setItineraireFromDTOAndUser(dto, user2);
+        Itineraire itineraire = setItineraryFromDTOAndUser(dto, user2);
         clientFromOtherUser = client;
 
     }
 
+    /**
+     * Teste la création d'un itinéaraire avec un nom incorrect.
+     */
     @Test
     public void itineraireWithoutNameTest() {
         ItineraireCreationDTO dto = new ItineraireCreationDTO(INCORRECT_NAME, new String[]{"1"}, CORRECT_DISTANCE);
-        Itineraire itineraire = setItineraireFromDTOAndUser(dto, user);
+        Itineraire itineraire = setItineraryFromDTOAndUser(dto, user);
         Assertions.assertThrows(DonneesInvalidesException.class, () -> itineraryService.check(itineraire, user, dto));
     }
 
+    /**
+     * Teste la création d'un itinéraire avec une distance négative.
+     */
     @Test
-    public void itineraireWithoutPositiveDistanceTest() {
+    public void itineraryWithoutPositiveDistanceTest() {
         ItineraireCreationDTO dto = new ItineraireCreationDTO(CORRECT_NAME, new String[]{"1"}, INCORRECT_DISTANCE);
-        Itineraire itineraire = setItineraireFromDTOAndUser(dto, user);
+        Itineraire itineraire = setItineraryFromDTOAndUser(dto, user);
         Assertions.assertThrows(DonneesInvalidesException.class, () -> itineraryService.check(itineraire, user, dto));
     }
 
+    /**
+     * Teste la création d'un itinéraire avec plus de 8 clients.
+     */
     @Test
-    public void itineraireWithMoreThan8Clients() {
+    public void itineraryWithMoreThan8Clients() {
         String[] idClients = new String[9];
         for (int i = 0; i < 9; i++) {
             Client c = configurationSecurityContextTest.getMockClient(user);
             idClients[i] = c.get_id();
         }
         ItineraireCreationDTO dto = new ItineraireCreationDTO(CORRECT_NAME, idClients, CORRECT_DISTANCE);
-        Itineraire itineraire = setItineraireFromDTOAndUser(dto, user);
+        Itineraire itineraire = setItineraryFromDTOAndUser(dto, user);
         Assertions.assertThrows(DonneesInvalidesException.class, () -> itineraryService.check(itineraire, user, dto));
 
     }
+    /**
+     * Teste la création d'un itinéraire avec un mauvais id client.
+     */
     @Test
     void itineraireWithIncorrectClients() {
         ItineraireCreationDTO dto = new ItineraireCreationDTO(CORRECT_NAME, new String[]{null}, CORRECT_DISTANCE);
-        Itineraire itineraire = setItineraireFromDTOAndUser(dto, user);
+        Itineraire itineraire = setItineraryFromDTOAndUser(dto, user);
         Assertions.assertThrows(DonneesInvalidesException.class, () -> itineraryService.check(itineraire, user, dto));
 
         ItineraireCreationDTO dto2 = new ItineraireCreationDTO(CORRECT_NAME, new String[]{"-1","-5",String.valueOf(Integer.MAX_VALUE)}, CORRECT_DISTANCE);
-        Itineraire itineraire2 = setItineraireFromDTOAndUser(dto2, user);
+        Itineraire itineraire2 = setItineraryFromDTOAndUser(dto2, user);
         Assertions.assertThrows(DonneesInvalidesException.class, () -> itineraryService.check(itineraire2, user, dto2));
 
     }
@@ -119,19 +142,19 @@ public class ItineraireServiceTest {
     @Test
     public void itineraireWithClientFromOtherClient() {
         ItineraireCreationDTO dto = new ItineraireCreationDTO(CORRECT_NAME, new String[]{clientFromOtherUser.get_id()}, CORRECT_DISTANCE);
-        Itineraire itineraire = setItineraireFromDTOAndUser(dto, user);
+        Itineraire itineraire = setItineraryFromDTOAndUser(dto, user);
         Assertions.assertThrows(DonneesInvalidesException.class, () -> itineraryService.check(itineraire, user, dto));
     }
 
     @Test
-    public void correctItineraireTest() {
+    public void correctItineraryTest() {
         String[] idClients = new String[8];
         for (int i = 0; i < 8; i++) {
             Client c = configurationSecurityContextTest.getMockClient(user);
             idClients[i] = c.get_id();
         }
         ItineraireCreationDTO dto = new ItineraireCreationDTO(CORRECT_NAME, idClients, CORRECT_DISTANCE);
-        Itineraire itinerary = setItineraireFromDTOAndUser(dto, user);
+        Itineraire itinerary = setItineraryFromDTOAndUser(dto, user);
         final  Itineraire[] savedItinerary = new Itineraire[1];
         Assertions.assertDoesNotThrow(() -> itineraryService.check(itinerary, user, dto));
         Assertions.assertDoesNotThrow(() -> savedItinerary[0] = itineraryService.createItineraire(dto, user));
@@ -140,10 +163,44 @@ public class ItineraireServiceTest {
         Assertions.assertFalse(itineraryRepository.existsById(savedItinerary[0].getId()));
     }
 
-    private Itineraire setItineraireFromDTOAndUser(ItineraireCreationDTO dto, Utilisateur user) {
+    /**
+     * Teste la modification de l'itinéraire.
+     */
+    @Test
+    public void editItineraryTest() {
+        String[] idClients = new String[8];
+        for (int i = 0; i < 8; i++) {
+            Client c = configurationSecurityContextTest.getMockClient(user);
+            idClients[i] = c.get_id();
+        }
+        ItineraireCreationDTO dto = new ItineraireCreationDTO(CORRECT_NAME, idClients, CORRECT_DISTANCE);
+        Itineraire itinerary = setItineraryFromDTOAndUser(dto, user);
+        itinerary.setNom("TestCreate");
+        final  Itineraire[] savedItinerary = new Itineraire[1];
+        Assertions.assertDoesNotThrow(() -> itineraryService.check(itinerary, user, dto));
+        Assertions.assertDoesNotThrow(() -> savedItinerary[0] = itineraryService.createItineraire(dto, user));
+
+        Client newClient = configurationSecurityContextTest.getMockClient(user);
+        dto.idClients()[dto.idClients().length-1] = newClient.get_id();
+        Itineraire itineraryEdit = setItineraryFromDTOAndUser(dto, user);
+        itineraryEdit.setNom("Test");
+        final  Itineraire[] savedEditItinerary = new Itineraire[1];
+        Assertions.assertDoesNotThrow(() -> itineraryService.check(itineraryEdit, user, dto));
+        Assertions.assertDoesNotThrow(() -> savedEditItinerary[0] = itineraryService.editItineraire(dto,user,itinerary.getId()));
+
+        Assertions.assertNotEquals("TestCreate",savedEditItinerary[0].getNom());
+    }
+
+    /**
+     * Méthode outil pour créer un itinéraire.
+     */
+    private Itineraire setItineraryFromDTOAndUser(ItineraireCreationDTO dto, Utilisateur user) {
         return Itineraire.builder().nom(dto.nom()).distance(dto.distance()).utilisateur(user).build();
     }
 
+    /**
+     * Teste la génération d'un chemin optimisé.
+     */
     @Test
     public void generateOptimizedPathTest() {
         Client[] clients = new Client[8];
