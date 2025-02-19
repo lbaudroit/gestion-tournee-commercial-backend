@@ -18,6 +18,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Classe de test pour UtilisateurController.
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
@@ -39,12 +47,19 @@ public class UserControllerTest {
 
     String headerToken;
 
+    /**
+     * Setup nécessaire pour faire fonctionner les tests.
+     * @throws Exception si le token n'a pas été récupéré.
+     */
     @BeforeAll
     void setSecurity() throws Exception {
         headerToken = configurationSecurityContextTest.getTokenForSecurity(mockMvc);
         testUser = configurationSecurityContextTest.getUser();
     }
 
+    /**
+     * Teste la modification d'un utilisateur à partir du controlleur.
+     */
     @Test
     void testEditUser() throws Exception {
         testUser.setNom("modificationTestUser");

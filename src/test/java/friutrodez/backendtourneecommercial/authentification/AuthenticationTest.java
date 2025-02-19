@@ -21,6 +21,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Classe de test pour tester 'l'authentification'.
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -37,6 +45,9 @@ public class AuthenticationTest {
     String userAsJson1;
     String userAsJson2;
 
+    /**
+     * Setup nécessaire pour faire fonctionner les tests.
+     */
     @BeforeAll
     void Setup() throws Exception {
         Utilisateur testUser = new Utilisateur();
@@ -84,6 +95,9 @@ public class AuthenticationTest {
 
     }
 
+    /**
+     * Teste que les tokens sont différents pour deux authentifications d'un seul utilisateur.
+     */
     @Test
     void testTokenShouldBeDifferentForTwoAuthentication() throws Exception {
         MvcResult mvcResult = mockMvc.perform(post("/auth/")
@@ -96,6 +110,9 @@ public class AuthenticationTest {
         Assertions.assertNotEquals(token.token(), userToken.token(), "Les tokens sont les mêmes pour deux authentifications");
     }
 
+    /**
+     * Teste que les tokens entre deux utilisateurs sont différents lors de l'authentification.
+     */
     @Test
     void testTokenShouldBeDifferentForTwoDistinctUser() throws Exception {
         MvcResult mvcResult = mockMvc.perform(post("/auth/")
@@ -109,6 +126,9 @@ public class AuthenticationTest {
         Assertions.assertNotEquals(token.token(), userToken.token(), "Les tokens sont les mêmes pour deux authentifications");
     }
 
+    /**
+     * Teste que l'authentification n'est pas faite si l'utilisateur n'existe pas dans la bd.
+     */
     @Test
     void testAuthenticationForbidden() throws Exception {
         Utilisateur userToAuthenticate = new Utilisateur();
@@ -122,6 +142,9 @@ public class AuthenticationTest {
                 .andExpect(status().isForbidden());
     }
 
+    /**
+     * Teste que l'accés n'est pas possible si aucun token n'est donné à une ressource dont un token est nécessaire.
+     */
     @Test
     void testNoTokenAccess() throws Exception {
         mockMvc.perform(get("/utilisateur/"))

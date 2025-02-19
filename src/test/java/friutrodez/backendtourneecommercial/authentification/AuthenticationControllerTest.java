@@ -27,6 +27,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * Classe de test pour authenticationController.
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
@@ -49,10 +57,13 @@ public class AuthenticationControllerTest {
     @Autowired
     private AuthenticationController authenticationController;
 
+    /**
+     * Teste la création du compte à partir du controlleur.
+     */
     @Transactional
     @Rollback
     @Test
-    void testUtilisateurCreationDeCompte() throws Exception {
+    void testCreationOfAnAccount() throws Exception {
         Utilisateur testUser = new Utilisateur();
         testUser.setNom("testuser");
         testUser.setPrenom("testPrenom");
@@ -73,6 +84,9 @@ public class AuthenticationControllerTest {
 
     }
 
+    /**
+     * Teste le fonctionnement du token sur une ressource.
+     */
     @Test
     void testToken() throws Exception {
         Utilisateur testUser = new Utilisateur();
