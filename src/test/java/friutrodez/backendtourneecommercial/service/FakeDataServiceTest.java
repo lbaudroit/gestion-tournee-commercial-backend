@@ -30,6 +30,11 @@ class FakeDataServiceTest {
         Assertions.assertTrue(allNotEquals(clientList));
     }
 
+    /**
+     * Méthode pour vérifier que tous les clients ne sont pas égaux.
+     * @param clientList La liste de clients à vérifier.
+     * @return           True si tous les clients ne sont pas égaux sinon false.
+     */
     private boolean allNotEquals(List<Client> clientList) {
         for(int i = 0 ; i< clientList.size() ; i++) {
             for(int j = 0 ; j < clientList.size() ; j++) {

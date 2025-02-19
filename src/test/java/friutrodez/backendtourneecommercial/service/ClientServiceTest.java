@@ -15,13 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class ClientServiceTest {
 
-
     @Autowired
     ClientService clientService;
-
-    @BeforeEach
-    void setUp() {
-    }
 
     @Test
     void testCreateValidationClient() {
@@ -46,11 +41,11 @@ class ClientServiceTest {
 
         client.setAdresse(adress);
 
-        Client clientRecupere = clientService.CreateOneClient(client, "1");
+        Client retrievedUser = clientService.CreateOneClient(client, "1");
 
-        Assertions.assertEquals(clientRecupere.getIdUtilisateur(), "1");
+        Assertions.assertEquals(retrievedUser.getIdUtilisateur(), "1");
 
-        Assertions.assertNotNull(clientRecupere.getCoordonnees());
+        Assertions.assertNotNull(retrievedUser.getCoordonnees());
     }
 
     @Test
@@ -63,10 +58,10 @@ class ClientServiceTest {
 
         client.setAdresse(adress);
 
-        Client clientRecupere = clientService.CreateOneClient(client, "1");
-        Coordonnees savedCoordinates = clientRecupere.getCoordonnees();
+        Client retrievedClient = clientService.CreateOneClient(client, "1");
+        Coordonnees savedCoordinates = retrievedClient.getCoordonnees();
         Client clientEdit = new Client();
-        clientEdit.set_id(clientRecupere.get_id());
+        clientEdit.set_id(retrievedClient.get_id());
         clientEdit.setContact(new Contact("test", "test", "0102030405"));
 
         clientEdit.setNomEntreprise("ModifieClient");
@@ -75,7 +70,7 @@ class ClientServiceTest {
         clientService.editOneClient(clientEdit.get_id(),clientEdit,"1");
 
         Assertions.assertNotEquals(savedCoordinates,clientEdit.getCoordonnees());
-        Assertions.assertNotEquals(clientRecupere.getNomEntreprise(),clientEdit.getNomEntreprise());
+        Assertions.assertNotEquals(retrievedClient.getNomEntreprise(),clientEdit.getNomEntreprise());
     }
 
 }
