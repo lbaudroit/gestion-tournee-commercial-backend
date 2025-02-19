@@ -58,6 +58,20 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
     }
 
     /**
+     * Récupère tous les clients mis dans la liste d'ids lié à l'utilisateur.
+     * @param ids Les ids des clients.
+     * @param idUser L'id de l'utilisateur.
+     * @return Les clients si trouvés.
+     */
+    public List<Client> getAllClientsIn(List<String> ids,String idUser) {
+        Query query = new Query(Criteria.where("_id")
+                .in(ids))
+                .addCriteria(Criteria.where("idUtilisateur").is(idUser));
+        return mongoTemplate.find(query, Client.class);
+
+    }
+
+    /**
      * Récupère une liste paginée de clients associés à un utilisateur donné.
      *
      * @param idUser l'identifiant de l'utilisateur dont on souhaite récupérer les clients

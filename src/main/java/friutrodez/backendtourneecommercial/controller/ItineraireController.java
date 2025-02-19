@@ -1,6 +1,7 @@
 package friutrodez.backendtourneecommercial.controller;
 
 import friutrodez.backendtourneecommercial.dto.*;
+import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
 import friutrodez.backendtourneecommercial.model.Appartient;
 import friutrodez.backendtourneecommercial.model.Client;
 import friutrodez.backendtourneecommercial.model.Itineraire;
@@ -13,15 +14,14 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RequestMapping(path = "/itineraire/")
 @RestController
@@ -79,14 +79,14 @@ public class ItineraireController {
     }
 
     @GetMapping(path = "generate")
-    public ResponseEntity<ResultatOptimisation> generateOptimalItineraire(@RequestParam("clients") List<Integer> idClients) {
+    public ResponseEntity<ResultatOptimisation> generateOptimalItineraire(@RequestParam("clients") List<String> idClients) {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        List<Client> clients = idClients
-                .stream()
-                .map(i -> clientMongoTemplate.getOneClient(i.toString(), user.getId().toString()))
-                .toList();
+        List<Client> clients = clientMongoTemplate.getAllClientsIn(idClients,String.valueOf(user.getId()));
 
+        if(idClients.size() != clients.size()) {
+            throw new DonneesInvalidesException("Un id donné est invalide.");
+        }
         List<Client> clientsCopy = new ArrayList<>(clients);
 
         return ResponseEntity.ok(itineraireService.optimizeShortest(clientsCopy, user));
