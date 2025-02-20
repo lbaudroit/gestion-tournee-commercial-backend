@@ -1,6 +1,7 @@
 package friutrodez.backendtourneecommercial.controller;
 
 import friutrodez.backendtourneecommercial.dto.*;
+import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
 import friutrodez.backendtourneecommercial.model.Appartient;
 import friutrodez.backendtourneecommercial.model.Client;
 import friutrodez.backendtourneecommercial.model.Itineraire;
@@ -14,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -81,20 +84,14 @@ public class ItineraireController {
     }
 
     @GetMapping(path = "generate")
-    public ResponseEntity<ResultatOptimisation> generateOptimalItineraire(@RequestParam("clients") List<Integer> idClients) {
+    public ResponseEntity<ResultatOptimisation> generateOptimalItineraire(@RequestParam("clients") List<String> idClients) {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Client> clients = clientMongoTemplate.getAllClientsIn(idClients,String.valueOf(user.getId()));
 
-        List<Optional<Client>> clients = idClients
-                .stream()
-                .map(i -> clientMongoTemplate.getOneClient(i.toString(), user.getId().toString()))
-                .toList();
-
-        if (clients.stream().anyMatch(Optional::isEmpty)) {
-            return ResponseEntity.badRequest().build();
+        if(idClients.size() != clients.size()) {
+            throw new DonneesInvalidesException("Un id donné est invalide.");
         }
-
-        //noinspection OptionalGetWithoutIsPresent : vérification juste avant
-        List<Client> clientsCopy = new ArrayList<>(clients.stream().map(Optional::get).toList());
+        List<Client> clientsCopy = new ArrayList<>(clients);
 
         return ResponseEntity.ok(itineraireService.optimizeShortest(clientsCopy, user));
     }
