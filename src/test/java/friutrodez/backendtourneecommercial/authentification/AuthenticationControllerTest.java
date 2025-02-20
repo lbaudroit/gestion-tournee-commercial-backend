@@ -27,11 +27,18 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * Classe de test pour authenticationController.
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
 @Rollback
-@ActiveProfiles("production")
 public class AuthenticationControllerTest {
 
     @Autowired
@@ -49,10 +56,13 @@ public class AuthenticationControllerTest {
     @Autowired
     private AuthenticationController authenticationController;
 
+    /**
+     * Teste la création du compte à partir du controlleur.
+     */
     @Transactional
     @Rollback
     @Test
-    void testUtilisateurCreationDeCompte() throws Exception {
+    void testCreationOfAnAccount() throws Exception {
         Utilisateur testUser = new Utilisateur();
         testUser.setNom("testuser");
         testUser.setPrenom("testPrenom");
@@ -73,6 +83,9 @@ public class AuthenticationControllerTest {
 
     }
 
+    /**
+     * Teste le fonctionnement du token sur une ressource.
+     */
     @Test
     void testToken() throws Exception {
         Utilisateur testUser = new Utilisateur();
@@ -92,7 +105,7 @@ public class AuthenticationControllerTest {
 
         UserDetails userDetailsMock = mock(UserDetails.class);
         when(userDetailsMock.getUsername()).thenReturn("Email@mail2.com");
-        when(userDetailsMock.getPassword()).thenReturn("password");
+        when(userDetailsMock.getPassword()).thenReturn("pA3@.AZet4");
 
         when(jwtService.generateToken(any(UserDetails.class)))
                 .thenReturn(expectedToken);

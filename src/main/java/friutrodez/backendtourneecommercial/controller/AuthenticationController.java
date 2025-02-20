@@ -6,6 +6,7 @@ import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.service.AuthenticationService;
 import friutrodez.backendtourneecommercial.service.JwtService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,10 +42,15 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;
     }
 
+    /**
+     * Endpoint d'API pour authentifier l'utilisateur avec son email et mot de passe.
+     * @param authData Les données d'authentifications.
+     * @return         Un JWTToken pour permettre à l'utilisateur d'accéder aux autres ressources.
+     *                 Le temps d'expiration est donné aussi.
+     */
     @PostMapping
     public ResponseEntity<JwtToken> authenticate(@RequestBody DonneesAuthentification authData) {
         Utilisateur utilisateur = authenticationService.tryAuthenticate(authData);
-
         String jwtToken = jwtService.generateToken(utilisateur);
         JwtToken jwtTokenDTO = new JwtToken(jwtToken, jwtService.JWT_EXPIRATION);
         return ResponseEntity.ok(jwtTokenDTO);

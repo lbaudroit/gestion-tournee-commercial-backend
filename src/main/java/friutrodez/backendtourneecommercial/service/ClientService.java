@@ -1,11 +1,21 @@
 package friutrodez.backendtourneecommercial.service;
 
+import com.mongodb.client.result.DeleteResult;
+import friutrodez.backendtourneecommercial.exception.AdresseInvalideException;
 import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
 import friutrodez.backendtourneecommercial.model.Adresse;
 import friutrodez.backendtourneecommercial.model.Client;
+import java.util.List;
 import friutrodez.backendtourneecommercial.model.Coordonnees;
+import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
+import friutrodez.backendtourneecommercial.repository.mysql.AppartientRepository;
+import friutrodez.backendtourneecommercial.repository.mysql.ItineraireRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 /**
  * Service de gestion des clients.
@@ -26,14 +36,21 @@ public class ClientService {
     private final ValidatorService validatorService;
 
     private final AdresseToolsService addressToolsService = new AdresseToolsService();
+    private final AppartientRepository appartientRepository;
+    private final ItineraireRepository itineraireRepository;
 
     /**
      * @param clientMongoTemplate Le template mongoDB pour les clients.
      * @param validatorService    Un service pour valider la ressource.
      */
-    public ClientService(ClientMongoTemplate clientMongoTemplate, ValidatorService validatorService) {
+    public ClientService(ClientMongoTemplate clientMongoTemplate,
+                         ValidatorService validatorService,
+                         AppartientRepository appartientRepository,
+                         ItineraireRepository itineraireRepository) {
         this.clientMongoTemplate = clientMongoTemplate;
         this.validatorService = validatorService;
+        this.appartientRepository = appartientRepository;
+        this.itineraireRepository = itineraireRepository;
     }
 
     /**
@@ -51,7 +68,7 @@ public class ClientService {
         Adresse address = clientData.getAdresse();
 
         if (!addressToolsService.validateAdresse(address.getLibelle(), address.getCodePostal(), address.getVille())) {
-            throw new DonneesInvalidesException("L'adresse du client est invalide.");
+            throw new AdresseInvalideException("L'adresse du client est invalide.");
         }
 
         Double[] coordinates = addressToolsService.geolocateAdresse(address.getLibelle(), address.getCodePostal(), address.getVille());
@@ -73,11 +90,17 @@ public class ClientService {
         validatorService.mustValidate(editData);
         Adresse address = editData.getAdresse();
 
-        Client savedClient = clientMongoTemplate.getOneClient(idClient, idUser);
+        Optional<Client> savedClientOpt = clientMongoTemplate.getOneClient(idClient, idUser);
+
+        if (savedClientOpt.isEmpty()) {
+            throw new NoSuchElementException("Le client n'a pas été trouvé");
+        }
+
+        Client savedClient = savedClientOpt.get();
 
         if (!savedClient.getAdresse().equals(editData.getAdresse())) {
             if (!addressToolsService.validateAdresse(address.getLibelle(), address.getCodePostal(), address.getVille())) {
-                throw new DonneesInvalidesException("L'adresse du client est invalide.");
+                throw new AdresseInvalideException("L'adresse du client est invalide.");
             }
         }
 
@@ -97,6 +120,34 @@ public class ClientService {
         savedClient.setClientEffectif(editData.isClientEffectif());
 
         clientMongoTemplate.save(savedClient);
+    }
 
+    @Transactional
+    public void deleteOneClient(String idClient, Utilisateur user) {
+        // On supprime le client : on peut le faire en premier (pas de FK, car dans MongoDB)
+        DeleteResult deleteResult = clientMongoTemplate.removeClientsWithId(idClient, String.valueOf(user.getId()));
+        if (!deleteResult.wasAcknowledged() || deleteResult.getDeletedCount() == 0) {
+            throw new NoSuchElementException("Le client n'a pas été trouvé");
+        }
+
+        // Ses appartenances et ses itinéraires liés (règle métier)
+        appartientRepository.findAllByIdEmbedded_ClientId(idClient)
+                .stream()
+                .map(appartient -> appartient.getIdEmbedded().getItineraire())
+                .distinct()
+                .forEach(i -> {
+                    appartientRepository.deleteAppartientByIdEmbedded_Itineraire_UtilisateurAndIdEmbedded_Itineraire(
+                            user, i);
+                    itineraireRepository.deleteByIdAndUtilisateur(i.getId(), user);
+                });
+    }
+
+    /**
+     * Méthode pour récupérer tous les prospects se trouvant dans un rayon de 1000 mètres de la position.
+     * @param point Le centre du rayon.
+     * @return Les clients dans le cercle de 1000 mètres.
+     */
+    public List<Client> getAllProspectsAround(Coordonnees point, String idUser) {
+        return clientMongoTemplate.getAllProspectsAround(point,idUser);
     }
 }

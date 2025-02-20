@@ -4,7 +4,19 @@ package friutrodez.backendtourneecommercial.model;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Classe de test pour Client.
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
+ */
 public class ClientTest {
+
+    /**
+     * Teste l'égalité entre plusieurs clients.
+     */
     @Test
     void testEquals() {
         Client client = new Client();
