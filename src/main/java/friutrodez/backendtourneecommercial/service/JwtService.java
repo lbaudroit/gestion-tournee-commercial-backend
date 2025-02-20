@@ -30,12 +30,13 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
+    public static final int EXPIRATION_TOKEN = 1800000;
     /**
      * Clé d'encryption encrypté en HMAC-SHA256.
      * On peut utiliser ce site <a href="https://www.devglan.com/online-tools/hmac-sha256-online?ref=blog.tericcabrel.com">...</a>
      * pour créer la clé
      **/
-    private final String ENCRYPTION_KEY = "gd5kn1HM/aj36IU7VsRRwrPuYiFvOYQdB8yIdA4UIaU=";
+    private static final String ENCRYPTION_KEY = "gd5kn1HM/aj36IU7VsRRwrPuYiFvOYQdB8yIdA4UIaU=";
 
     /**
      * durée en minutes du token
@@ -69,7 +70,7 @@ public class JwtService {
     }
 
     public String generateToken(HashMap<String, Object> claimsExtras, UserDetails userDetails) {
-        return buildToken(claimsExtras, userDetails, JWT_EXPIRATION);
+        return buildToken(claimsExtras, userDetails);
     }
 
 
@@ -81,13 +82,11 @@ public class JwtService {
      *
      * @param claimsExtras les claims à mettre dans le token
      * @param userDetails  l'username de l'utilisateur
-     * @param expiration   la date d'expiration
      * @return un token signé avec son payload
      */
     private String buildToken(
             HashMap<String, Object> claimsExtras,
-            UserDetails userDetails,
-            long expiration
+            UserDetails userDetails
     ) {
         String salt = generateSalt();
 
@@ -97,10 +96,10 @@ public class JwtService {
 
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .setExpiration(new Date(System.currentTimeMillis() + (long) EXPIRATION_TOKEN))
                 .setId(salt)
 
-                .signWith(getSignedKey(ENCRYPTION_KEY), SignatureAlgorithm.HS256)
+                .signWith(getSignedKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -113,7 +112,7 @@ public class JwtService {
      */
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractEmail(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        return userDetails != null && (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
     /**
@@ -144,7 +143,7 @@ public class JwtService {
      */
     public Claims extractAllClaims(String token) {
         return Jwts.parserBuilder().
-                setSigningKey(getSignedKey(ENCRYPTION_KEY)).
+                setSigningKey(getSignedKey()).
                 build()
                 .parseClaimsJws(token)
                 .getBody();
@@ -164,11 +163,10 @@ public class JwtService {
     }
 
     /**
-     * @param cleEncryption la clé utilisée pour cryptée
      * @return une clé hashé en hmac256
      */
-    private SecretKey getSignedKey(String cleEncryption) {
-        byte[] keyBytes = Decoders.BASE64.decode(cleEncryption);
+    private SecretKey getSignedKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(ENCRYPTION_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

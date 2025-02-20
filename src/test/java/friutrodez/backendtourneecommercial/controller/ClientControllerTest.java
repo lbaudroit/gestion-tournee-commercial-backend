@@ -11,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -20,6 +19,14 @@ import java.util.Optional;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Classe de test pour ClientController.
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
+ */
 @AutoConfigureMockMvc
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -42,6 +49,9 @@ public class ClientControllerTest {
     @Autowired
     ConfigurationSecurityContextTest configurationSecurityContextTest;
 
+    /**
+     * Setup nécessaire pour faire fonctionner les tests.
+     */
     @BeforeAll
     void Setup() throws Exception {
         headerToken = configurationSecurityContextTest.getTokenForSecurity(mockMvc);
@@ -50,9 +60,12 @@ public class ClientControllerTest {
         client.setNomEntreprise("entrepriseTest");
     }
 
+    /**
+     * Teste la creation du client.
+     */
     @Order(1)
     @Test
-    void testCreationClient() throws Exception {
+    void testBuildClient() throws Exception {
         String clientAsJson = objectMapper.writeValueAsString(client);
         System.out.println(clientAsJson);
         mockMvc.perform(post("/client/")
@@ -65,6 +78,9 @@ public class ClientControllerTest {
         client = clientFound;
     }
 
+    /**
+     * Teste la création du client avec de mauvaises données.
+     */
     @Order(4)
     @Test
     void testClientWithWrongData() throws Exception {
@@ -93,6 +109,9 @@ public class ClientControllerTest {
 
     }
 
+    /**
+     * Teste la modification du client.
+     */
     @Order(3)
     @Test
     void testModifyClient() throws Exception {
@@ -113,6 +132,9 @@ public class ClientControllerTest {
         Assertions.assertNotEquals(clientRecupere.getNomEntreprise(), client.getNomEntreprise(), "Le client n'a pas été modifié");
     }
 
+    /**
+     * Teste de la suppresion du client.
+     */
     @Order(6)
     @Test
     void testDeleteClient() throws Exception {
@@ -125,6 +147,9 @@ public class ClientControllerTest {
         Assertions.assertTrue(client.isEmpty());
     }
 
+    /**
+     * Teste la récupération de tous les clients.
+     */
     @Order(5)
     @Test
     void testGetAllClients() throws Exception {

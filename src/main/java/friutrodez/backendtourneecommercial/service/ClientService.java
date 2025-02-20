@@ -1,15 +1,18 @@
 package friutrodez.backendtourneecommercial.service;
 
 import com.mongodb.client.result.DeleteResult;
+import friutrodez.backendtourneecommercial.exception.AdresseInvalideException;
 import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
-import friutrodez.backendtourneecommercial.model.*;
+import friutrodez.backendtourneecommercial.model.Adresse;
+import friutrodez.backendtourneecommercial.model.Client;
+import java.util.List;
+import friutrodez.backendtourneecommercial.model.Coordonnees;
+import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
 import friutrodez.backendtourneecommercial.repository.mysql.AppartientRepository;
 import friutrodez.backendtourneecommercial.repository.mysql.ItineraireRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.NoSuchElementException;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -65,7 +68,7 @@ public class ClientService {
         Adresse address = clientData.getAdresse();
 
         if (!addressToolsService.validateAdresse(address.getLibelle(), address.getCodePostal(), address.getVille())) {
-            throw new DonneesInvalidesException("L'adresse du client est invalide.");
+            throw new AdresseInvalideException("L'adresse du client est invalide.");
         }
 
         Double[] coordinates = addressToolsService.geolocateAdresse(address.getLibelle(), address.getCodePostal(), address.getVille());
@@ -97,7 +100,7 @@ public class ClientService {
 
         if (!savedClient.getAdresse().equals(editData.getAdresse())) {
             if (!addressToolsService.validateAdresse(address.getLibelle(), address.getCodePostal(), address.getVille())) {
-                throw new DonneesInvalidesException("L'adresse du client est invalide.");
+                throw new AdresseInvalideException("L'adresse du client est invalide.");
             }
         }
 
@@ -137,5 +140,14 @@ public class ClientService {
                             user, i);
                     itineraireRepository.deleteByIdAndUtilisateur(i.getId(), user);
                 });
+    }
+
+    /**
+     * Méthode pour récupérer tous les prospects se trouvant dans un rayon de 1000 mètres de la position.
+     * @param point Le centre du rayon.
+     * @return Les clients dans le cercle de 1000 mètres.
+     */
+    public List<Client> getAllProspectsAround(Coordonnees point, String idUser) {
+        return clientMongoTemplate.getAllProspectsAround(point,idUser);
     }
 }

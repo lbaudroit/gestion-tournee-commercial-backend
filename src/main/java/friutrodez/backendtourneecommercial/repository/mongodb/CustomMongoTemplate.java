@@ -4,12 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.result.DeleteResult;
-import com.mongodb.client.result.UpdateResult;
 import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.BasicQuery;
-import org.springframework.data.mongodb.core.query.BasicUpdate;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.List;
@@ -75,11 +72,6 @@ public abstract class CustomMongoTemplate<T> {
         return mongoTemplate.findOne(getQuery(cle, valeur), collection);
     }
 
-
-    public List<T> getAllEntities() {
-        return mongoTemplate.findAll(collection);
-    }
-
     /*
      * Supprime tous les documents de la collection.
      */
@@ -119,7 +111,7 @@ public abstract class CustomMongoTemplate<T> {
         ObjectMapper mapper = new ObjectMapper();
         // Il est nécessaire de ne pas inclure les null sinon rien n'est trouvé
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        String entiteJson = "";
+        String entiteJson;
         try {
             entiteJson = mapper.writeValueAsString(document);
         } catch (JsonProcessingException ex) {
@@ -131,27 +123,6 @@ public abstract class CustomMongoTemplate<T> {
 
     public DeleteResult remove(T entite) {
         return mongoTemplate.remove(entite);
-    }
-
-    /**
-     * Modifie le document de la collection appartenant à l'id
-     *
-     * @param modificationsApportees les modifications apportées
-     * @param id                     l'id du document
-     * @return le résultat de la modification
-     */
-    public UpdateResult modifier(T modificationsApportees, String id) {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        String entiteJson = "";
-        try {
-            entiteJson = mapper.writeValueAsString(modificationsApportees);
-        } catch (JsonProcessingException ex) {
-            throw new DonneesInvalidesException("La conversion en json n'a pas fonctionnée. Veuillez vérifier les données.");
-        }
-        BasicUpdate basicUpdate = new BasicUpdate(entiteJson);
-        Query query = new Query(Criteria.where("_id").is(id));
-        return mongoTemplate.updateFirst(query, basicUpdate, collection);
     }
 
     /**

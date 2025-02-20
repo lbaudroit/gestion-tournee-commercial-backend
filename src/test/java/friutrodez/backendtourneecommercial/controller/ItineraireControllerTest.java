@@ -12,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -53,6 +52,7 @@ public class ItineraireControllerTest {
 
     @BeforeAll
     void Setup() throws Exception {
+        configurationSecurityContextTest.resetUser();
         headerToken = configurationSecurityContextTest.getTokenForSecurity(mockMvc);
         client = configurationSecurityContextTest.getMockClient(configurationSecurityContextTest.getUser());
         client2 = configurationSecurityContextTest.getMockClient(configurationSecurityContextTest.getUser());

@@ -19,9 +19,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * notamment ceux liés à la securité et à la vérification.
  *
  * @author Benjamin NICOL
- * Enzo CLUZEL
- * Leïla BAUDROIT
- * Ahmed BRIBACH
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
  */
 @Component
 public class ConfigurationSecurityContextTest {
@@ -63,7 +63,7 @@ public class ConfigurationSecurityContextTest {
      */
     public String getTokenForSecurity(MockMvc mockMvc) throws Exception {
         if (userFromToken == null) {
-            Utilisateur user = Utilisateur.builder()
+            userFromToken = Utilisateur.builder()
                     .nom("TestNomConfig")
                     .prenom("TestPrenom")
                     .email("te@no.fr")
@@ -74,7 +74,6 @@ public class ConfigurationSecurityContextTest {
                     .latitude(43.5775202)
                     .longitude(2.3694482)
                     .build();
-            userFromToken = user;
             String userJson = objectMapper.writeValueAsString(userFromToken);
 
             mockMvc.perform(post("/utilisateur/").contentType(MediaType.APPLICATION_JSON)
@@ -146,6 +145,15 @@ public class ConfigurationSecurityContextTest {
      */
     public Utilisateur getUser() {
         return userFromToken;
+    }
+
+    /**
+     * Méthode pour réinitialiser l'utilisateur à récupérer.
+     */
+    public void resetUser() {
+        utilisateurRepository.delete(userFromToken);
+        userFromToken = null;
+        token = null;
     }
 
 }

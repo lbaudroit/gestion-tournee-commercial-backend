@@ -15,8 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +22,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
+/**
+ * Contrôleur pour gérer les itinéraires.
+ */
 @RequestMapping(path = "/itineraire/")
 @RestController
 @AllArgsConstructor
@@ -41,6 +42,11 @@ public class ItineraireController {
 
     private final static int PAGE_SIZE = 30;
 
+    /**
+     * Récupère le nombre d'itinéraires pour l'utilisateur connecté.
+     *
+     * @return ResponseEntity contenant le nombre d'itinéraires.
+     */
     @GetMapping(path = "count")
     public ResponseEntity<Nombre> getItinerairesCount() {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -51,6 +57,12 @@ public class ItineraireController {
         return ResponseEntity.ok(nombre);
     }
 
+    /**
+     * Récupère les itinéraires de manière paginée pour l'utilisateur connecté.
+     *
+     * @param page Le numéro de la page à récupérer.
+     * @return ResponseEntity contenant la liste des itinéraires.
+     */
     @GetMapping(path = "lazy")
     public ResponseEntity<List<Itineraire>> getItinerairesLazy(@RequestParam(name = "page") int page) {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -59,6 +71,12 @@ public class ItineraireController {
         return ResponseEntity.ok(itineraireRepository.getItinerairesByUtilisateur(user, pageable));
     }
 
+    /**
+     * Récupère un itinéraire spécifique par son identifiant pour l'utilisateur connecté.
+     *
+     * @param id L'identifiant de l'itinéraire.
+     * @return ResponseEntity contenant l'itinéraire ou une réponse 404 si non trouvé.
+     */
     @GetMapping("{id}")
     public ResponseEntity<ItineraireDTO> getItineraire(@PathVariable("id") Long id) {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -83,6 +101,12 @@ public class ItineraireController {
         return ResponseEntity.ok(dto);
     }
 
+    /**
+     * Génère un itinéraire optimal basé sur une liste de clients.
+     *
+     * @param idClients La liste des identifiants des clients.
+     * @return ResponseEntity contenant le résultat de l'optimisation.
+     */
     @GetMapping(path = "generate")
     public ResponseEntity<ResultatOptimisation> generateOptimalItineraire(@RequestParam("clients") List<String> idClients) {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -96,6 +120,12 @@ public class ItineraireController {
         return ResponseEntity.ok(itineraireService.optimizeShortest(clientsCopy, user));
     }
 
+    /**
+     * Crée un nouvel itinéraire.
+     *
+     * @param dto Les données de création de l'itinéraire.
+     * @return ResponseEntity contenant un message de confirmation.
+     */
     @PostMapping
     public ResponseEntity<Message> createItineraire(@RequestBody ItineraireCreationDTO dto) {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -103,6 +133,13 @@ public class ItineraireController {
         return ResponseEntity.ok(new Message("Itinéraire créé"));
     }
 
+    /**
+     * Modifie un itinéraire existant.
+     *
+     * @param id L'identifiant de l'itinéraire à modifier.
+     * @param dto Les nouvelles données de l'itinéraire.
+     * @return ResponseEntity contenant un message de confirmation.
+     */
     @PutMapping("{id}")
     public ResponseEntity<Message> modifyItineraire(@PathVariable("id") long id, @RequestBody ItineraireCreationDTO dto) {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -111,6 +148,12 @@ public class ItineraireController {
         return ResponseEntity.ok(new Message("Itinéraire modifié"));
     }
 
+    /**
+     * Supprime un itinéraire existant.
+     *
+     * @param itineraire_id L'identifiant de l'itinéraire à supprimer.
+     * @return ResponseEntity contenant un message de confirmation ou une erreur.
+     */
     @DeleteMapping("{id}")
     public ResponseEntity<Message> deleteItineraire(@PathVariable("id") int itineraire_id) {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

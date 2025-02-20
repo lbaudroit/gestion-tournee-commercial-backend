@@ -18,8 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service de gestion des itinéraires.
@@ -154,9 +154,14 @@ public class ItineraireService {
      */
     @Transactional
     public void deleteItineraire(long itineraireId, Utilisateur user) {
-        appartientRepository.deleteAppartientByIdEmbedded_Itineraire_UtilisateurAndIdEmbedded_Itineraire(
-                user, itineraireRepository.findById(itineraireId).get());
-        itineraireRepository.deleteById(itineraireId);
+        Optional<Itineraire> itineraire = itineraireRepository.findById(itineraireId);
+        if (itineraire.isPresent()) {
+            appartientRepository.deleteAppartientByIdEmbedded_Itineraire_UtilisateurAndIdEmbedded_Itineraire(
+                    user, itineraire.get());
+            itineraireRepository.deleteById(itineraireId);
+        } else {
+            throw new DonneesInvalidesException("L'itinéraire n'existe pas.");
+        }
     }
 
     /**
@@ -171,13 +176,14 @@ public class ItineraireService {
         if (dto.idClients().length > Itineraire.MAX_CLIENTS) {
             throw new DonneesInvalidesException("Le nombre de clients ne doit pas être supérieur à "+Itineraire.MAX_CLIENTS+".");
         }
-        if (!allIdClientExists(dto.idClients())) {
-            throw new DonneesInvalidesException("Au moins un id client n'existe pas.");
-        }
 
         Query query = new Query(Criteria.where("_id").in(Arrays.stream(dto.idClients()).toList()));
-        boolean oneIsNotFromCurrentUser = clientMongoTemplate.mongoTemplate.
-                find(query, Client.class).
+        List<Client> list = clientMongoTemplate.mongoTemplate.
+                find(query, Client.class);
+        if(list.size() != dto.idClients().length) {
+            throw new DonneesInvalidesException("Un id client est invalide.");
+        }
+        boolean oneIsNotFromCurrentUser = list.
                 stream().
                 anyMatch(client -> !client.getIdUtilisateur().equals(String.valueOf(user.getId())));
         if (oneIsNotFromCurrentUser) {
@@ -190,9 +196,8 @@ public class ItineraireService {
      *
      * @param itineraire l'itinéraire à lier
      * @param ids        un tableau ordonné des identifiants des clients
-     * @return un tableau des liaisons créées
      */
-    private List<Appartient> saveAppartientsFromListIdClients(Itineraire itineraire, String[] ids) {
+    private void saveAppartientsFromListIdClients(Itineraire itineraire, String[] ids) {
         List<Appartient> appartients = new ArrayList<>(ids.length);
 
         for (int position = 0; position < ids.length; position++) {
@@ -200,24 +205,7 @@ public class ItineraireService {
             appartients.add(new Appartient(new AppartientKey(itineraire, idClient), position));
         }
 
-        return appartientRepository.saveAll(appartients);
-    }
-
-    /**
-     * Méthode pour vérifier si tous les ids en paramètre sont existants.
-     *
-     * @param idClients Les ids à vérifier.
-     * @return true si tous les ids existent sinon false.
-     */
-    private boolean allIdClientExists(String[] idClients) {
-        boolean allExists = true;
-        for (String id : idClients) {
-            if (!clientMongoTemplate.exists("_id", id)) {
-                allExists = false;
-                break;
-            }
-        }
-        return allExists;
+        appartientRepository.saveAll(appartients);
     }
 
     /**
