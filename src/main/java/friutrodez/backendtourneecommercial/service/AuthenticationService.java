@@ -119,7 +119,6 @@ public class AuthenticationService {
         user.setLatitude(coordinates[1]);
         user.setLongitude(coordinates[0]);
         return utilisateurRepository.save(user);
-
     }
 
     /**
@@ -139,14 +138,6 @@ public class AuthenticationService {
         user.setLatitude(coordinates[1]);
         user.setLongitude(coordinates[0]);
         return utilisateurRepository.save(user);
-
-        checkAddress(new Adresse(editData.getLibelleAdresse(), editData.getCodePostal(), editData.getVille()));
-
-        Double[] coordinates = addressToolsService.geolocateAdresse(editData.getLibelleAdresse(), editData.getCodePostal(), editData.getVille());
-        editData.setLatitude(coordinates[1]);
-        editData.setLongitude(coordinates[0]);
-        return utilisateurRepository.save(editData);
-
     }
 
     /**
