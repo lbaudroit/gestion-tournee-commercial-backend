@@ -5,6 +5,7 @@ import friutrodez.backendtourneecommercial.exception.AdresseInvalideException;
 import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
 import friutrodez.backendtourneecommercial.model.Adresse;
 import friutrodez.backendtourneecommercial.model.Client;
+import java.util.List;
 import friutrodez.backendtourneecommercial.model.Coordonnees;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
@@ -139,5 +140,14 @@ public class ClientService {
                             user, i);
                     itineraireRepository.deleteByIdAndUtilisateur(i.getId(), user);
                 });
+    }
+
+    /**
+     * Méthode pour récupérer tous les prospects se trouvant dans un rayon de 1000 mètres de la position.
+     * @param point Le centre du rayon.
+     * @return Les clients dans le cercle de 1000 mètres.
+     */
+    public List<Client> getAllProspectsAround(Coordonnees point, String idUser) {
+        return clientMongoTemplate.getAllProspectsAround(point,idUser);
     }
 }

@@ -148,4 +148,13 @@ public class ConfigurationSecurityContextTest {
         return userFromToken;
     }
 
+    /**
+     * Méthode pour réinitialiser l'utilisateur à récupérer.
+     */
+    public void resetUser() {
+        utilisateurRepository.delete(userFromToken);
+        userFromToken = null;
+        token = null;
+    }
+
 }
