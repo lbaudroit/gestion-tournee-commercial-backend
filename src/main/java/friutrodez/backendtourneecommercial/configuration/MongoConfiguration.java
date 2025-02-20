@@ -2,12 +2,12 @@ package friutrodez.backendtourneecommercial.configuration;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
-import io.micrometer.common.lang.NonNullApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 /**
  * Classe de configuration pour MongoDB.
@@ -21,6 +21,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
  * @author Ahmed BRIBACH
  */
 @Configuration
+@EnableMongoRepositories(basePackages = "friutrodez.backendtourneecommercial.repository")
 public class MongoConfiguration extends AbstractMongoClientConfiguration {
 
     @Value("${spring.data.mongodb.uri}")
@@ -31,8 +32,9 @@ public class MongoConfiguration extends AbstractMongoClientConfiguration {
      *
      * @return MongoClient
      */
+    @Override
     @Bean
-    public MongoClient mongo() {
+    public MongoClient mongoClient() {
         return MongoClients.create(mongoUri);
     }
 
@@ -43,7 +45,7 @@ public class MongoConfiguration extends AbstractMongoClientConfiguration {
      */
     @Bean
     public MongoTemplate mongoTemplate() {
-        return new MongoTemplate(mongo(), "mydatabase");
+        return new MongoTemplate(mongoClient(), "mydatabase");
     }
 
     @Override
@@ -51,9 +53,9 @@ public class MongoConfiguration extends AbstractMongoClientConfiguration {
         return "mydatabase";
     }
 
-    /*// Auto Index Creation
+    // Auto Index Creation
     @Override
     protected boolean autoIndexCreation() {
         return true;
-    }*/
+    }
 }
