@@ -1,8 +1,10 @@
 package friutrodez.backendtourneecommercial.service;
 
 import friutrodez.backendtourneecommercial.dto.DonneesAuthentification;
+import friutrodez.backendtourneecommercial.dto.Password;
 import friutrodez.backendtourneecommercial.exception.AdresseInvalideException;
 import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
+import friutrodez.backendtourneecommercial.model.Adresse;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mysql.UtilisateurRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,7 +17,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Rollback;
+
+import java.util.NoSuchElementException;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
 /**
@@ -35,6 +42,9 @@ public class AuthenticationServiceTest {
     AuthenticationService authenticationService;
 
     @Autowired
+    PasswordEncoder passwordEncoder;
+
+    @Autowired
     UtilisateurRepository utilisateurRepository;
 
     /**
@@ -47,7 +57,7 @@ public class AuthenticationServiceTest {
         Assertions.assertNotNull(foundUser);
 
         Assertions.assertNotNull(createdUser.getId(), "L'utilisateur n'a pas été sauvegardé dans la bd");
-        Assertions.assertNotEquals("Ab3@.az234", createdUser.getMotDePasse(), "Le mot de passe n'a pas été encrypté");
+        assertNotEquals("Ab3@.az234", createdUser.getMotDePasse(), "Le mot de passe n'a pas été encrypté");
     }
 
     /**
@@ -59,13 +69,13 @@ public class AuthenticationServiceTest {
         user.setMotDePasse("Ae@.21ersqds");
         user.setNom("nomTest");
         user.setPrenom("prenomTest");
-        Assertions.assertThrows(DonneesInvalidesException.class, () -> authenticationService.createAnAccount(user));
+        assertThrows(DonneesInvalidesException.class, () -> authenticationService.createAnAccount(user));
 
         user.setEmail("   ");
-        Assertions.assertThrows(DonneesInvalidesException.class, () -> authenticationService.createAnAccount(user));
+        assertThrows(DonneesInvalidesException.class, () -> authenticationService.createAnAccount(user));
 
         user.setEmail("Test@te.");
-        Assertions.assertThrows(DonneesInvalidesException.class, () -> authenticationService.createAnAccount(user));
+        assertThrows(DonneesInvalidesException.class, () -> authenticationService.createAnAccount(user));
 
     }
 
@@ -86,16 +96,16 @@ public class AuthenticationServiceTest {
         user.setCodePostal("12000");
         user.setVille("Rodez");
 
-        Assertions.assertThrows(DonneesInvalidesException.class, () -> authenticationService.createAnAccount(user), "Le mot de passe est invalide");
+        assertThrows(DonneesInvalidesException.class, () -> authenticationService.createAnAccount(user), "Le mot de passe est invalide");
 
         user.setMotDePasse("12345678");
-        Assertions.assertThrows(DonneesInvalidesException.class, () -> authenticationService.createAnAccount(user), "Le mot de passe est invalide");
+        assertThrows(DonneesInvalidesException.class, () -> authenticationService.createAnAccount(user), "Le mot de passe est invalide");
 
         user.setMotDePasse("123456aA");
-        Assertions.assertThrows(DonneesInvalidesException.class, () -> authenticationService.createAnAccount(user), "Le mot de passe est invalide");
+        assertThrows(DonneesInvalidesException.class, () -> authenticationService.createAnAccount(user), "Le mot de passe est invalide");
 
         user.setMotDePasse("1234aA.");
-        Assertions.assertThrows(DonneesInvalidesException.class, () -> authenticationService.createAnAccount(user), "Le mot de passe est invalide");
+        assertThrows(DonneesInvalidesException.class, () -> authenticationService.createAnAccount(user), "Le mot de passe est invalide");
     }
 
     /**
@@ -106,7 +116,7 @@ public class AuthenticationServiceTest {
         Utilisateur user = createUser();
         Assertions.assertNull(SecurityContextHolder.getContext().getAuthentication());
 
-        Assertions.assertDoesNotThrow(()->authenticationService.tryAuthenticate(new DonneesAuthentification("Email@email.com","Ab3@.az234qs")));
+        assertDoesNotThrow(()->authenticationService.tryAuthenticate(new DonneesAuthentification("Email@email.com","Ab3@.az234qs")));
         Assertions.assertEquals(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),user);
         Assertions.assertEquals(authenticationService.loadUserDetails("Email@email.com"),user);
     }
@@ -165,12 +175,62 @@ public class AuthenticationServiceTest {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Assertions.assertNotNull(authentication);
 
-        Assertions.assertNotEquals("Email@email.com",editedUser.getEmail());
+        assertNotEquals("Email@email.com",editedUser.getEmail());
 
         editUser.setLibelleAdresse("12 Avenue de Bordeaux");
-        Assertions.assertDoesNotThrow(()->authenticationService.editAnAccount(editUser));
+        assertDoesNotThrow(()->authenticationService.editAnAccount(editUser));
         editUser.setLibelleAdresse("12 Avenue de Bordeau");
-        Assertions.assertThrows(AdresseInvalideException.class,()->authenticationService.editAnAccount(editUser));
+        assertThrows(AdresseInvalideException.class,()->authenticationService.editAnAccount(editUser));
     }
 
+    @Test
+    void checkAddressWithValidAddress() {
+        Adresse validAddress = new Adresse("50 Avenue de Bordeaux", "12000", "Rodez");
+        assertDoesNotThrow(() -> authenticationService.checkAddress(validAddress));
+    }
+
+    @Test
+    void checkAddressWithInvalidAddressThrowsException() {
+        Adresse invalidAddress = new Adresse("Invalid Address", "12345", "InvalidCity");
+        assertThrows(AdresseInvalideException.class, () -> authenticationService.checkAddress(invalidAddress));
+    }
+
+    @Test
+    void checkPasswordWithValidPassword() {
+        String validPassword = "ValidPass123_";
+        assertDoesNotThrow(() -> authenticationService.checkPassword(validPassword));
+    }
+
+    @Test
+    void checkPasswordWithInvalidPasswordThrowsException() {
+        String invalidPassword = "short";
+        assertThrows(DonneesInvalidesException.class, () -> authenticationService.checkPassword(invalidPassword));
+    }
+
+    @Test
+    void editPasswordWithValidData() {
+        Utilisateur user = createUser();
+        String newPassword = "NewValidPass123_";
+
+        Utilisateur updatedUser = authenticationService.editPassword(user, newPassword);
+        assertNotEquals("Ab3@.az234qs", updatedUser.getMotDePasse());
+        assertTrue(passwordEncoder.matches(newPassword, updatedUser.getMotDePasse()));
+    }
+
+    @Test
+    void editPasswordWithInvalidDataThrowsException() {
+        Utilisateur user = createUser();
+        String invalidPassword = "short";
+
+        assertThrows(DonneesInvalidesException.class, () -> authenticationService.editPassword(user, invalidPassword));
+    }
+
+    @Test
+    void editPasswordWithNonExistentUserThrowsException() {
+        Utilisateur nonExistentUser = new Utilisateur();
+        nonExistentUser.setId(999L); // Assuming 999 is a non-existent ID
+        String newPassword = "NewValidPass123_";
+
+        assertThrows(NoSuchElementException.class, () -> authenticationService.editPassword(nonExistentUser, newPassword));
+    }
 }
