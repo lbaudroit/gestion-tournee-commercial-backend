@@ -140,17 +140,17 @@ public class AuthenticationService {
             throw new NoSuchElementException("L'utilisateur n'existe pas.");
         }
 
-        String encodedPasswordUser = passwordEncoder.encode(editData.getPassword());
+        if(!editData.getLibelleAdresse().equals(savedUser.getLibelleAdresse())
+        || !editData.getVille().equals(savedUser.getVille())
+        || !editData.getCodePostal().equals(savedUser.getCodePostal())) {
+            checkAddress(new Adresse(editData.getLibelleAdresse(), editData.getCodePostal(), editData.getVille())
+            );
 
-        if (!encodedPasswordUser.equals(savedUser.getPassword())) {
-            editData.setMotDePasse(encodedPasswordUser);
+            Double[] coordinates = addressToolsService.geolocateAdresse(editData.getLibelleAdresse(), editData.getCodePostal(), editData.getVille());
+            editData.setLatitude(coordinates[1]);
+            editData.setLongitude(coordinates[0]);
         }
 
-        checkAddress(new Adresse(editData.getLibelleAdresse(), editData.getCodePostal(), editData.getVille()));
-
-        Double[] coordinates = addressToolsService.geolocateAdresse(editData.getLibelleAdresse(), editData.getCodePostal(), editData.getVille());
-        editData.setLatitude(coordinates[1]);
-        editData.setLongitude(coordinates[0]);
         return utilisateurRepository.save(editData);
 
     }
