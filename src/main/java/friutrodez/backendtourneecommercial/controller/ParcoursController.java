@@ -1,15 +1,16 @@
 package friutrodez.backendtourneecommercial.controller;
 
-import friutrodez.backendtourneecommercial.model.Client;
-import friutrodez.backendtourneecommercial.model.Coordonnees;
+
+import friutrodez.backendtourneecommercial.dto.Message;
+import friutrodez.backendtourneecommercial.dto.ParcoursDTO;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
-import friutrodez.backendtourneecommercial.service.ClientService;
-import org.springframework.beans.factory.annotation.Autowired;
+import friutrodez.backendtourneecommercial.service.ParcoursService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Contrôleur REST pour la ressource Parcours.
@@ -23,13 +24,37 @@ import java.util.List;
 @RestController
 public class ParcoursController {
 
+    private final ParcoursService parcoursService;
     private final ClientService clientService;
-
     @Autowired
     public ParcoursController(ClientService clientService) {
 
-        this.clientService = clientService;
+    /**
+     * Contrôleur pour la gestion des clients.
+     *
+     * @param parcoursService       Service contenant la logique métier des parcours.
+     */
+    public ParcoursController(ParcoursService parcoursService) {
+        this.parcoursService = parcoursService;
     }
+
+    /**
+     * Crée un nouveau client pour l'utilisateur authentifié.
+     *
+     * @return ResponseEntity contenant le client créé ou un message d'erreur si la création échoue.
+     * @throws IllegalArgumentException si l'objet client est null ou si l'utilisateur n'est pas authentifié.
+     */
+    @PostMapping(path="")
+    public ResponseEntity<Message> createParcours(@RequestBody ParcoursDTO parcoursDTO) {
+        Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        try {
+            parcoursService.createParcours(parcoursDTO.etapes(), parcoursDTO.nom(), String.valueOf(user.getId()));
+            return ResponseEntity.ok(new Message("Parcours créé avec succès"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new Message(e.getMessage()));
+        }
+    }
+
     /**
      * Endpoint pour récupérer les prospects qui se trouvent à moins de 1000 mètres d'une position donnée.
      * @param latitude La latitude de la position.

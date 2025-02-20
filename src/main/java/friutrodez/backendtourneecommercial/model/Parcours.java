@@ -3,10 +3,12 @@ package friutrodez.backendtourneecommercial.model;
 import jakarta.persistence.Transient;
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.geo.GeoJsonLineString;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Classe représentant un parcours.
@@ -23,7 +25,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Document(collection = "Parcours")
+@Document(collection = "parcours")
 public class Parcours {
 
     /**
@@ -43,7 +45,7 @@ public class Parcours {
     /**
      * Identifiant de l'utilisateur associé au parcours.
      */
-    private long idUtilisateur;
+    private String idUtilisateur;
 
     /**
      * Nom du parcours.
@@ -53,12 +55,12 @@ public class Parcours {
     /**
      * Liste des étapes du parcours.
      */
-    private EtapesParcours[] etapes;
+    private List<EtapesParcours> etapes;
 
     /**
      * Coordonnées géographiques du parcours.
      */
-    private double[][] coordonnees;
+    private GeoJsonLineString coordonnees;
 
     /**
      * Date et heure de début du parcours.
@@ -73,4 +75,6 @@ public class Parcours {
      */
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime dateFin;
+
+
 }
