@@ -1,8 +1,7 @@
 package friutrodez.backendtourneecommercial.controller;
 
+import friutrodez.backendtourneecommercial.dto.Message;
 import friutrodez.backendtourneecommercial.dto.ParcoursDTO;
-import friutrodez.backendtourneecommercial.model.EtapesParcours;
-import friutrodez.backendtourneecommercial.model.Parcours;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.service.ParcoursService;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * Contrôleur REST pour la ressource Parcours.
@@ -26,7 +23,7 @@ import java.util.List;
 @RestController
 public class ParcoursController {
 
-    private ParcoursService parcoursService;
+    private final ParcoursService parcoursService;
 
     /**
      * Contrôleur pour la gestion des clients.
@@ -43,12 +40,15 @@ public class ParcoursController {
      * @return ResponseEntity contenant le client créé ou un message d'erreur si la création échoue.
      * @throws IllegalArgumentException si l'objet client est null ou si l'utilisateur n'est pas authentifié.
      */
-    @PostMapping(path="create")
-    public ResponseEntity<Parcours> createParcours(@RequestBody ParcoursDTO parcoursDTO) {
+    @PostMapping(path="")
+    public ResponseEntity<Message> createParcours(@RequestBody ParcoursDTO parcoursDTO) {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        return ResponseEntity.ok(parcoursService.createParcours(parcoursDTO.getEtapes(),
-                parcoursDTO.getNom(), String.valueOf(user.getId())));
+        try {
+            parcoursService.createParcours(parcoursDTO.etapes(), parcoursDTO.nom(), String.valueOf(user.getId()));
+            return ResponseEntity.ok(new Message("Parcours créé avec succès"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new Message(e.getMessage()));
+        }
     }
 
 }
