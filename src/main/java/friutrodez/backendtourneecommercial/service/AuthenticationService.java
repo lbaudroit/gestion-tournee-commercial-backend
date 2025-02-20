@@ -127,30 +127,24 @@ public class AuthenticationService {
      * Le mot de passe sera encryptée.
      * Des vérifications métiers sont effectuées.
      *
-     * @param editData Les modifications apportées à l'utilisateur.
+     * @param user Les modifications apportées à l'utilisateur.
      * @return L'utilisateur modifié.
      */
-    public Utilisateur editAnAccount(Utilisateur editData) {
-        validatorService.mustValidate(editData);
-        Optional<Utilisateur> user = utilisateurRepository.findById(editData.getId());
-        Utilisateur savedUser;
-        if (user.isPresent()) {
-            savedUser = user.get();
-        } else {
-            throw new NoSuchElementException("L'utilisateur n'existe pas.");
-        }
+    public Utilisateur editAnAccount(Utilisateur user) {
+        validatorService.mustValidate(user);
 
-        if(!editData.getLibelleAdresse().equals(savedUser.getLibelleAdresse())
-        || !editData.getVille().equals(savedUser.getVille())
-        || !editData.getCodePostal().equals(savedUser.getCodePostal())) {
-            checkAddress(new Adresse(editData.getLibelleAdresse(), editData.getCodePostal(), editData.getVille())
-            );
+        checkAddress(new Adresse(user.getLibelleAdresse(), user.getCodePostal(), user.getVille()));
 
-            Double[] coordinates = addressToolsService.geolocateAdresse(editData.getLibelleAdresse(), editData.getCodePostal(), editData.getVille());
-            editData.setLatitude(coordinates[1]);
-            editData.setLongitude(coordinates[0]);
-        }
+        Double[] coordinates = addressToolsService.geolocateAdresse(user.getLibelleAdresse(), user.getCodePostal(), user.getVille());
+        user.setLatitude(coordinates[1]);
+        user.setLongitude(coordinates[0]);
+        return utilisateurRepository.save(user);
 
+        checkAddress(new Adresse(editData.getLibelleAdresse(), editData.getCodePostal(), editData.getVille()));
+
+        Double[] coordinates = addressToolsService.geolocateAdresse(editData.getLibelleAdresse(), editData.getCodePostal(), editData.getVille());
+        editData.setLatitude(coordinates[1]);
+        editData.setLongitude(coordinates[0]);
         return utilisateurRepository.save(editData);
 
     }
