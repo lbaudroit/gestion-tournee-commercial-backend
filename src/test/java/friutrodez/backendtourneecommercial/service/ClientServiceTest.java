@@ -67,7 +67,7 @@ class ClientServiceTest {
 
         client.setAdresse(adress);
 
-        Client retrievedUser = clientService.CreateOneClient(client, "1");
+        Client retrievedUser = clientService.createOneClient(client, "1");
 
         Assertions.assertEquals(retrievedUser.getIdUtilisateur(), "1");
 
@@ -86,7 +86,7 @@ class ClientServiceTest {
 
         client.setAdresse(adress);
 
-        Assertions.assertThrows(AdresseInvalideException.class,()->clientService.CreateOneClient(client, "1"));
+        Assertions.assertThrows(AdresseInvalideException.class,()->clientService.createOneClient(client, "1"));
     }
 
 
@@ -99,13 +99,13 @@ class ClientServiceTest {
         client.setNomEntreprise("UneEntreprise");
         client.setContact(new Contact("test", "test", "0102030405"));
 
-        Adresse adress = new Adresse("6 Impasse du Suc", "81490", "Boissezon");
+        Adresse address = new Adresse("6 Impasse du Suc", "81490", "Boissezon");
 
-        client.setAdresse(adresse);
+        client.setAdresse(address);
         Client clientRecupere = clientService.createOneClient(client, "1");
-        client.setAdresse(adress);
+        client.setAdresse(address);
 
-        Client retrievedClient = clientService.CreateOneClient(client, "1");
+        Client retrievedClient = clientService.createOneClient(client, "1");
         Coordonnees savedCoordinates = retrievedClient.getCoordonnees();
         Client clientEdit = new Client();
         clientEdit.set_id(retrievedClient.get_id());
@@ -133,7 +133,7 @@ class ClientServiceTest {
 
         client.setAdresse(adress);
 
-        Client retrievedClient = clientService.CreateOneClient(client, "1");
+        Client retrievedClient = clientService.createOneClient(client, "1");
         Coordonnees savedCoordinates = retrievedClient.getCoordonnees();
         Client clientEdit = new Client();
         clientEdit.set_id(retrievedClient.get_id());

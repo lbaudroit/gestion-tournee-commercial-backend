@@ -5,7 +5,7 @@ import friutrodez.backendtourneecommercial.controller.AuthenticationController;
 import friutrodez.backendtourneecommercial.dto.DonneesAuthentification;
 import friutrodez.backendtourneecommercial.dto.JwtToken;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
-import friutrodez.backendtourneecommercial.service.UtilisateurService;
+import friutrodez.backendtourneecommercial.service.AuthenticationService;
 import friutrodez.backendtourneecommercial.service.JwtService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
@@ -45,7 +45,7 @@ public class AuthenticationControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private UtilisateurService authenticationService;
+    private AuthenticationService authenticationService;
     @MockitoBean
     private JwtService jwtService;
     @Autowired

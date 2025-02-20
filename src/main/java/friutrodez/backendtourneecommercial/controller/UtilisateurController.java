@@ -4,7 +4,7 @@ import friutrodez.backendtourneecommercial.dto.Message;
 import friutrodez.backendtourneecommercial.dto.Parametrage;
 import friutrodez.backendtourneecommercial.dto.Password;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
-import friutrodez.backendtourneecommercial.service.UtilisateurService;
+import friutrodez.backendtourneecommercial.service.AuthenticationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 public class UtilisateurController {
 
-    private UtilisateurService authenticationService;
+    private AuthenticationService authenticationService;
 
     @GetMapping
     public ResponseEntity<Parametrage> getUtilisateur() {

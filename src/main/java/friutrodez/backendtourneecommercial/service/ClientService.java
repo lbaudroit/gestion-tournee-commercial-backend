@@ -1,12 +1,20 @@
 package friutrodez.backendtourneecommercial.service;
 
+import com.mongodb.client.result.DeleteResult;
 import friutrodez.backendtourneecommercial.exception.AdresseInvalideException;
 import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
 import friutrodez.backendtourneecommercial.model.Adresse;
 import friutrodez.backendtourneecommercial.model.Client;
 import friutrodez.backendtourneecommercial.model.Coordonnees;
+import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
+import friutrodez.backendtourneecommercial.repository.mysql.AppartientRepository;
+import friutrodez.backendtourneecommercial.repository.mysql.ItineraireRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 /**
  * Service de gestion des clients.
