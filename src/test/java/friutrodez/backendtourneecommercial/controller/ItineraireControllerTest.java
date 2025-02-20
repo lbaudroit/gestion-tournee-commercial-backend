@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import friutrodez.backendtourneecommercial.helper.ConfigurationSecurityContextTest;
 import friutrodez.backendtourneecommercial.model.Client;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
+import friutrodez.backendtourneecommercial.service.AdresseToolsService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +64,8 @@ public class ItineraireControllerTest {
     void testGenerateKnownClient() throws Exception {
         String validClientId = client.get_id();
         String clientAsJson = objectMapper.writeValueAsString(client);
-        System.out.println(clientAsJson);
+        AdresseToolsService adresseToolsService = new AdresseToolsService();
+        System.out.println(adresseToolsService.validateAdresse(client.getAdresse().getLibelle(), client.getAdresse().getCodePostal(), client.getAdresse().getVille()));
         mockMvc.perform(get("/itineraire/generate")
                         .param("clients", validClientId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -85,7 +87,7 @@ public class ItineraireControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(clientAsJson).header("Authorization", "Bearer " + headerToken))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string(""));
+                .andExpect(content().string("{\"message\":\"Un id donné est invalide.\"}"));
     }
 
     @AfterAll

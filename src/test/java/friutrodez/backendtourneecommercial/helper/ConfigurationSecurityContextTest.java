@@ -3,10 +3,7 @@ package friutrodez.backendtourneecommercial.helper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import friutrodez.backendtourneecommercial.dto.DonneesAuthentification;
 import friutrodez.backendtourneecommercial.dto.JwtToken;
-import friutrodez.backendtourneecommercial.model.Adresse;
-import friutrodez.backendtourneecommercial.model.Client;
-import friutrodez.backendtourneecommercial.model.Contact;
-import friutrodez.backendtourneecommercial.model.Utilisateur;
+import friutrodez.backendtourneecommercial.model.*;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
 import friutrodez.backendtourneecommercial.repository.mysql.UtilisateurRepository;
 import org.springframework.http.MediaType;
@@ -30,11 +27,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ConfigurationSecurityContextTest {
 
     private static final Adresse CORRECT_ADRESSE = new Adresse("11 Place du Portail- Haut", "12390", "Rignac");
+    private static final Coordonnees CORRECT_COORDONNEES = new Coordonnees(44.409773, 2.288314);
 
     private static final Contact CORRECT_CONTACT = new Contact("nom", "test", "0102030405");
     private static final Client CORRECT_CLIENT = Client.builder().clientEffectif(true).nomEntreprise("TestEntreprise")
             .contact(CORRECT_CONTACT)
-            .adresse(CORRECT_ADRESSE).build();
+            .adresse(CORRECT_ADRESSE)
+            .coordonnees(CORRECT_COORDONNEES).build();
 
 
     private final ObjectMapper objectMapper;
