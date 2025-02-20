@@ -128,6 +128,9 @@ public class Node {
         ReduceReturn reduceReturn = reduceMatrix(newMatrixContent);
         newMatrixContent = reduceReturn.matrix();
         int newValue = value + reduceReturn.value();
+        if (isInfinity(newValue)) {
+            newValue = Integer.MAX_VALUE;
+        }
         left = new Node(newMatrixContent, newPointToIndexColumn, newPointToIndexRow, newValue, highestRegret.ligne(), highestRegret.colonne(), this);
     }
 

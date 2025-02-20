@@ -8,13 +8,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-
+/**
+ * Classe de test pour ClientRepository.
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
+ */
 @SpringBootTest
 public class ClientRepositoryTest {
 
     @Autowired
     ClientMongoTemplate clientMongoTemplate;
 
+    /**
+     * Teste de la sauvegarde du client en bd.
+     */
     @Test
     void testBuild() {
         Client client = new Client();
@@ -35,7 +45,6 @@ public class ClientRepositoryTest {
      */
     @Test
     void testGetSpecificClient() throws InterruptedException {
-
         Client client = new Client();
         client.setNomEntreprise("entreprise113244");
         client.setClientEffectif(true);

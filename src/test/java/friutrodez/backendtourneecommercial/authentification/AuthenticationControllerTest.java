@@ -5,7 +5,7 @@ import friutrodez.backendtourneecommercial.controller.AuthenticationController;
 import friutrodez.backendtourneecommercial.dto.DonneesAuthentification;
 import friutrodez.backendtourneecommercial.dto.JwtToken;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
-import friutrodez.backendtourneecommercial.service.UtilisateurService;
+import friutrodez.backendtourneecommercial.service.AuthenticationService;
 import friutrodez.backendtourneecommercial.service.JwtService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
@@ -27,6 +27,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * Classe de test pour authenticationController.
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
@@ -37,7 +45,7 @@ public class AuthenticationControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private UtilisateurService authenticationService;
+    private AuthenticationService authenticationService;
     @MockitoBean
     private JwtService jwtService;
     @Autowired
@@ -48,10 +56,13 @@ public class AuthenticationControllerTest {
     @Autowired
     private AuthenticationController authenticationController;
 
+    /**
+     * Teste la création du compte à partir du controlleur.
+     */
     @Transactional
     @Rollback
     @Test
-    void testUtilisateurCreationDeCompte() throws Exception {
+    void testCreationOfAnAccount() throws Exception {
         Utilisateur testUser = new Utilisateur();
         testUser.setNom("testuser");
         testUser.setPrenom("testPrenom");
@@ -72,6 +83,9 @@ public class AuthenticationControllerTest {
 
     }
 
+    /**
+     * Teste le fonctionnement du token sur une ressource.
+     */
     @Test
     void testToken() throws Exception {
         Utilisateur testUser = new Utilisateur();
@@ -91,7 +105,7 @@ public class AuthenticationControllerTest {
 
         UserDetails userDetailsMock = mock(UserDetails.class);
         when(userDetailsMock.getUsername()).thenReturn("Email@mail2.com");
-        when(userDetailsMock.getPassword()).thenReturn("password");
+        when(userDetailsMock.getPassword()).thenReturn("pA3@.AZet4");
 
         when(jwtService.generateToken(any(UserDetails.class)))
                 .thenReturn(expectedToken);

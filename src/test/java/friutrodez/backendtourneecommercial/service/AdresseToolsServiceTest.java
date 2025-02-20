@@ -4,8 +4,19 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Classe de test pour AdresseToolsServiceTest.
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
+ */
 class AdresseToolsServiceTest {
 
+    /**
+     * Teste que l'adresse est validé par l'api du gourvenement.
+     */
     @Test
     void validateAdresse() {
         AdresseToolsService adresseToolsService = new AdresseToolsService();
