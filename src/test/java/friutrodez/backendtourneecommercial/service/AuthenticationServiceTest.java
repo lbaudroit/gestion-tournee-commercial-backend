@@ -183,30 +183,44 @@ public class AuthenticationServiceTest {
         assertThrows(AdresseInvalideException.class,()->authenticationService.editAnAccount(editUser));
     }
 
+    /**
+     * Vérifie une adresse valide.
+     */
     @Test
     void checkAddressWithValidAddress() {
         Adresse validAddress = new Adresse("50 Avenue de Bordeaux", "12000", "Rodez");
         assertDoesNotThrow(() -> authenticationService.checkAddress(validAddress));
     }
-
+    /**
+     * Vérifie qu'une adresse invalide lance une exception.
+     */
     @Test
     void checkAddressWithInvalidAddressThrowsException() {
         Adresse invalidAddress = new Adresse("Invalid Address", "12345", "InvalidCity");
         assertThrows(AdresseInvalideException.class, () -> authenticationService.checkAddress(invalidAddress));
     }
 
+    /**
+     * Vérifie un mot de passe valide.
+     */
     @Test
     void checkPasswordWithValidPassword() {
         String validPassword = "ValidPass123_";
         assertDoesNotThrow(() -> authenticationService.checkPassword(validPassword));
     }
 
+    /**
+     * Vérifie qu'un mot de passe invalide lance une exception.
+     */
     @Test
     void checkPasswordWithInvalidPasswordThrowsException() {
         String invalidPassword = "short";
         assertThrows(DonneesInvalidesException.class, () -> authenticationService.checkPassword(invalidPassword));
     }
 
+    /**
+     * Modifie le mot de passe avec des données valides.
+     */
     @Test
     void editPasswordWithValidData() {
         Utilisateur user = createUser();
@@ -217,6 +231,9 @@ public class AuthenticationServiceTest {
         assertTrue(passwordEncoder.matches(newPassword, updatedUser.getMotDePasse()));
     }
 
+    /**
+     * Vérifie que la modification du mot de passe avec des données invalides lance une exception.
+     */
     @Test
     void editPasswordWithInvalidDataThrowsException() {
         Utilisateur user = createUser();
@@ -225,6 +242,9 @@ public class AuthenticationServiceTest {
         assertThrows(DonneesInvalidesException.class, () -> authenticationService.editPassword(user, invalidPassword));
     }
 
+    /**
+     * Vérifie que la modification du mot de passe pour un utilisateur inexistant lance une exception.
+     */
     @Test
     void editPasswordWithNonExistentUserThrowsException() {
         Utilisateur nonExistentUser = new Utilisateur();

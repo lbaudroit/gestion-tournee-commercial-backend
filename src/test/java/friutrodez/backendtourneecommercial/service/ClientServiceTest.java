@@ -189,6 +189,9 @@ class ClientServiceTest {
         assertThrows(DonneesInvalidesException.class, ()->clientService.editOneClient(clientEdit.get_id(),clientEdit,"1"));
     }
 
+    /**
+     * Teste la suppression d'un client avec des données valides.
+     */
     @Test
     void deleteOneClientWithValidData() {
         Utilisateur user = createUser();
@@ -202,6 +205,9 @@ class ClientServiceTest {
         assertFalse(itineraireRepository.existsById(itineraire.getId()));
     }
 
+    /**
+     * Teste la suppression d'un client avec un ID de client invalide.
+     */
     @Test
     void deleteOneClientWithInvalidClientIdThrowsException() {
         Utilisateur user = createUser();
@@ -210,15 +216,23 @@ class ClientServiceTest {
         assertThrows(NoSuchElementException.class, () -> clientService.deleteOneClient(invalidClientId, user));
     }
 
+    /**
+     * Teste la suppression d'un client avec un utilisateur non existant.
+     */
     @Test
     void deleteOneClientWithNonExistentUserThrowsException() {
         Utilisateur nonExistentUser = new Utilisateur();
-        nonExistentUser.setId(999L); // Assuming 999 is a non-existent ID
+        nonExistentUser.setId(999L); // Supposons que 999 est un ID non existant
         Client client = createClient(createUser());
 
         assertThrows(NoSuchElementException.class, () -> clientService.deleteOneClient(client.get_id(), nonExistentUser));
     }
 
+    /**
+     * Crée un utilisateur pour les tests.
+     *
+     * @return un nouvel utilisateur
+     */
     private Utilisateur createUser() {
         Utilisateur user = new Utilisateur();
         user.setMotDePasse("Ab3@.az234qs");
@@ -231,6 +245,12 @@ class ClientServiceTest {
         return authenticationService.createAnAccount(user);
     }
 
+    /**
+     * Crée un client pour les tests.
+     *
+     * @param user l'utilisateur associé au client
+     * @return un nouveau client
+     */
     private Client createClient(Utilisateur user) {
         Client client = new Client();
         client.setNomEntreprise("UneEntreprise");
@@ -240,6 +260,13 @@ class ClientServiceTest {
         return clientService.createOneClient(client, String.valueOf(user.getId()));
     }
 
+    /**
+     * Crée un itinéraire pour les tests.
+     *
+     * @param user l'utilisateur associé à l'itinéraire
+     * @param client le client associé à l'itinéraire
+     * @return un nouvel itinéraire
+     */
     private Itineraire createItineraire(Utilisateur user, Client client) {
         Itineraire itineraire = new Itineraire();
         itineraire.setUtilisateur(user);

@@ -21,5 +21,7 @@ class AdresseToolsServiceTest {
     void validateAdresse() {
         AdresseToolsService adresseToolsService = new AdresseToolsService();
         assertTrue(adresseToolsService.validateAdresse("50 Avenue de Bordeaux", "12000", "Rodez"));
+        assertFalse(adresseToolsService.validateAdresse("50 Avenue de Boaux", "12000", "Rodez"));
+        assertFalse(adresseToolsService.validateAdresse("", "1200", "Rodez"));
     }
 }
