@@ -56,7 +56,7 @@ public class Utilisateur implements UserDetails {
      * Généré automatiquement par la base de données.
      */
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

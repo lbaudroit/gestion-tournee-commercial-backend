@@ -4,14 +4,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import friutrodez.backendtourneecommercial.helper.ConfigurationSecurityContextTest;
 import friutrodez.backendtourneecommercial.model.Client;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+
+import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -20,7 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ActiveProfiles("production")
+@Transactional
+@Rollback
 public class ClientControllerTest {
 
     @Autowired
@@ -41,6 +46,7 @@ public class ClientControllerTest {
     void Setup() throws Exception {
         headerToken = configurationSecurityContextTest.getTokenForSecurity(mockMvc);
         client = configurationSecurityContextTest.getMockClient(configurationSecurityContextTest.getUser());
+
         client.setNomEntreprise("entrepriseTest");
     }
 
@@ -114,7 +120,9 @@ public class ClientControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer " + headerToken))
                 .andExpect(status().isOk());
-        Assertions.assertNull(clientMongoTemplate.getOneClient(client.get_id(), String.valueOf(configurationSecurityContextTest.getUser().getId())));
+
+        Optional<Client> client = clientMongoTemplate.getOneClient(this.client.get_id(), String.valueOf(configurationSecurityContextTest.getUser().getId()));
+        Assertions.assertTrue(client.isEmpty());
     }
 
     @Order(5)

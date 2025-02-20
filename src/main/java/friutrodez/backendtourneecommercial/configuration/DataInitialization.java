@@ -329,17 +329,16 @@ public class DataInitialization {
             Appartient appartient5 = new Appartient(new AppartientKey(itineraire2, clients.get(4).get_id()), 1);
             Appartient appartient6 = new Appartient(new AppartientKey(itineraire2, clients.get(5).get_id()), 2);
             Appartient appartient7 = new Appartient(new AppartientKey(itineraire2, clients.get(6).get_id()), 3);
+
             List<Appartient> appartients = new ArrayList<>();
-            List<Client> clientsUtilisateur1 = new ArrayList<>();
-            for (Client client : clients) {
-                if (client.getIdUtilisateur().equals("1")) {
-                    clientsUtilisateur1.add(client);
-                }
-            }
+            List<Client> clientsUtilisateur1 = clients.stream()
+                    .filter(c -> c.getIdUtilisateur().equals("1"))
+                    .toList();
+
             System.out.println(clientsUtilisateur1.size());
             for (Itineraire itineraire : itineraires) {
                 List<Client> tmp = new ArrayList<>(clientsUtilisateur1);
-                int nbAleatoire = (int) (Math.random() * tmp.size());
+                int nbAleatoire = 1 + (int) (Math.random() * (tmp.size() - 1));
                 for (int i = 0; i < nbAleatoire; i++) {
                     int choisi = (int) (Math.random() * tmp.size());
                     Appartient appartient = new Appartient(new AppartientKey(itineraire, tmp.get(choisi).get_id()), i);

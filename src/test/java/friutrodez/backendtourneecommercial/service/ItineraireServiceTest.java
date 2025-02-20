@@ -87,8 +87,9 @@ public class ItineraireServiceTest {
 
     @Test
     public void itineraireWithMoreThan8Clients() {
-        String[] idClients = new String[9];
-        for (int i = 0; i < 9; i++) {
+        final int CLIENTS_COUNT = Itineraire.MAX_CLIENTS + 1;
+        String[] idClients = new String[CLIENTS_COUNT];
+        for (int i = 0; i < CLIENTS_COUNT; i++) {
             Client c = configurationSecurityContextTest.getMockClient(user);
             idClients[i] = c.get_id();
         }
@@ -108,8 +109,8 @@ public class ItineraireServiceTest {
 
     @Test
     public void correctItineraireTest() {
-        String[] idClients = new String[8];
-        for (int i = 0; i < 8; i++) {
+        String[] idClients = new String[Itineraire.MAX_CLIENTS];
+        for (int i = 0; i < Itineraire.MAX_CLIENTS; i++) {
             Client c = configurationSecurityContextTest.getMockClient(user);
             idClients[i] = c.get_id();
         }

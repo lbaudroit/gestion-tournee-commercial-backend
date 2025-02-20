@@ -24,7 +24,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  */
 @Configuration
 @EnableWebSecurity
-@Profile("production")
 @AllArgsConstructor
 public class SecurityConfiguration {
 
