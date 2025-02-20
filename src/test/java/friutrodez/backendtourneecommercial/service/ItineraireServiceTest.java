@@ -50,8 +50,6 @@ public class ItineraireServiceTest {
 
     private static final int INCORRECT_DISTANCE = -10;
 
-    private static final String[] CORRECT_IDS = new String[]{"1", "2", "3", "4"};
-
     @Autowired
     private ConfigurationSecurityContextTest configurationSecurityContextTest;
 
@@ -84,7 +82,7 @@ public class ItineraireServiceTest {
                 CORRECT_DISTANCE);
 
 
-        Itineraire itineraire = setItineraryFromDTOAndUser(dto, user2);
+        setItineraryFromDTOAndUser(dto, user2);
         clientFromOtherUser = client;
 
     }
@@ -177,9 +175,8 @@ public class ItineraireServiceTest {
         ItineraireCreationDTO dto = new ItineraireCreationDTO(CORRECT_NAME, idClients, CORRECT_DISTANCE);
         Itineraire itinerary = setItineraryFromDTOAndUser(dto, user);
         itinerary.setNom("TestCreate");
-        final  Itineraire[] savedItinerary = new Itineraire[1];
         Assertions.assertDoesNotThrow(() -> itineraryService.check(itinerary, user, dto));
-        Assertions.assertDoesNotThrow(() -> savedItinerary[0] = itineraryService.createItineraire(dto, user));
+        Assertions.assertDoesNotThrow(() -> itineraryService.createItineraire(dto, user));
 
         Client newClient = configurationSecurityContextTest.getMockClient(user);
         dto.idClients()[dto.idClients().length-1] = newClient.get_id();

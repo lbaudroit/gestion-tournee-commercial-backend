@@ -5,7 +5,6 @@ import friutrodez.backendtourneecommercial.helper.ConfigurationSecurityContextTe
 import friutrodez.backendtourneecommercial.model.Adresse;
 import friutrodez.backendtourneecommercial.model.Client;
 import friutrodez.backendtourneecommercial.model.Contact;
-import friutrodez.backendtourneecommercial.model.Coordonnees;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +27,6 @@ public class ClientControlleurTest {
 
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    ClientController clientControlleur;
 
     @Autowired
     ObjectMapper objectMapper;
@@ -83,8 +80,6 @@ public class ClientControlleurTest {
                         .content(jsonClient).header("Authorization","Bearer " +headerToken ))
                 .andExpect(status().isBadRequest());
         client.setNomEntreprise("entrepriseTest");
-
-        jsonClient = objectMapper.writeValueAsString(client);
     }
 
     @Order(2)
@@ -101,38 +96,10 @@ public class ClientControlleurTest {
 
     }
 
-    @Order(3)
-    @Test
-    void clientModifierTest() throws Exception {
-//        clientMongoTemplate.save(client);
-//        if(client.get_id() == null || client.get_id().isEmpty()) {
-//            throw new RuntimeException("Le client n'a pas d'id");
-//        }
-//        Client clientModifier = new Client();
-//        clientModifier.setCoordonnees(new Coordonnees(0,0));
-//        clientModifier.setNomEntreprise("Test Modification");
-//        String jsonModifier = objectMapper.writeValueAsString(clientModifier);
-//
-//        MvcResult mvcResult= mockMvc.perform(post("/client/modifier/")
-//                        .param("id",client.get_id())
-//
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(jsonModifier).header("Authorization","Bearer " + headerToken ))
-//
-//                .andExpect(status().isOk()).andReturn();
-//
-//
-//        Client clientRecupere = clientMongoTemplate.findOne("nomEntreprise","Test Modification");
-//
-//        Assertions.assertEquals(clientModifier,clientRecupere,"Le client n'a pas été modifié");
-//        Assertions.assertNotEquals(clientRecupere.getNomEntreprise(),client.getNomEntreprise(),"Le client n'a pas été modifié");
-//        clientMongoTemplate.removeOne("nomEntreprise","Test Modification");
-    }
-
     @Order(6)
     @Test
     void clientSupprimerTest() throws Exception {
-        MvcResult mvcResult= mockMvc.perform(delete("/client/"+client.get_id())
+        mockMvc.perform(delete("/client/"+client.get_id())
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization","Bearer " +headerToken ))
                 .andExpect(status().isOk()).andReturn();
@@ -142,10 +109,8 @@ public class ClientControlleurTest {
     @Order(5)
     @Test
     void clientRecupererTousTest() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/client/").header("Authorization","Bearer " +headerToken ))
+        mockMvc.perform(get("/client/").header("Authorization","Bearer " +headerToken ))
                 .andExpect(status().isOk()).andReturn();
-
-
     }
 
 }

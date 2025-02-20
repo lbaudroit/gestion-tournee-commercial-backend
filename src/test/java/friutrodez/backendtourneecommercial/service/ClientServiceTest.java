@@ -9,13 +9,11 @@ import friutrodez.backendtourneecommercial.repository.mysql.AppartientRepository
 import friutrodez.backendtourneecommercial.repository.mysql.ItineraireRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -86,7 +84,7 @@ class ClientServiceTest {
 
         Client retrievedUser = clientService.createOneClient(client, "1");
 
-        Assertions.assertEquals(retrievedUser.getIdUtilisateur(), "1");
+        Assertions.assertEquals("1", retrievedUser.getIdUtilisateur());
 
         Assertions.assertNotNull(retrievedUser.getCoordonnees());
     }
@@ -119,7 +117,7 @@ class ClientServiceTest {
         Adresse address = new Adresse("6 Impasse du Suc", "81490", "Boissezon");
 
         client.setAdresse(address);
-        Client clientRecupere = clientService.createOneClient(client, "1");
+        clientService.createOneClient(client, "1");
         client.setAdresse(address);
 
         Client retrievedClient = clientService.createOneClient(client, "1");
@@ -151,7 +149,6 @@ class ClientServiceTest {
         client.setAdresse(adress);
 
         Client retrievedClient = clientService.createOneClient(client, "1");
-        Coordonnees savedCoordinates = retrievedClient.getCoordonnees();
         Client clientEdit = new Client();
         clientEdit.set_id(retrievedClient.get_id());
         clientEdit.setContact(new Contact("test", "test", "0102030405"));
@@ -190,9 +187,8 @@ class ClientServiceTest {
         client.setAdresse(adress);
         clientMongoTemplate.save(client);
 
-        Client clientEdit = client;
-        clientEdit.setNomEntreprise("Modif");
-        assertThrows(DonneesInvalidesException.class, ()->clientService.editOneClient(clientEdit.get_id(),clientEdit,"1"));
+        client.setNomEntreprise("Modif");
+        assertThrows(DonneesInvalidesException.class, ()->clientService.editOneClient(client.get_id(), client,"1"));
     }
 
     /**

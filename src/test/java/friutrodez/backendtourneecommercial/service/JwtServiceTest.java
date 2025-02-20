@@ -33,7 +33,7 @@ public class JwtServiceTest {
         userDetails.setEmail("mailTest@test.fr");
 
         String token = jwtService.generateToken(new HashMap<>(), userDetails);
-        Assertions.assertEquals(jwtService.extractEmail(token), "mailTest@test.fr"
+        Assertions.assertEquals("mailTest@test.fr", jwtService.extractEmail(token)
                 , "extraireEmail ne retourne pas l'email dans le token");
 
         Assertions.assertTrue(jwtService.isTokenValid(token, userDetails), "Le token n'est pas valide après sa création");
@@ -60,7 +60,7 @@ public class JwtServiceTest {
 
         String token = jwtService.generateToken(claims, userDetails);
         Claims claims1 = jwtService.extractAllClaims(token);
-        Assertions.assertEquals(claims1.get("id"), 1
+        Assertions.assertEquals(1, claims1.get("id")
                 , "extraireTousClaims ne renvoient pas l'id correcte");
 
         Assertions.assertEquals("testEmail@e.e",jwtService.extractEmail(token));

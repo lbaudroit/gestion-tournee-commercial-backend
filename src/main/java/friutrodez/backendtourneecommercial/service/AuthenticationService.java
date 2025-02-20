@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 /**
  * Service de gestion de l'authentification.
@@ -131,7 +132,13 @@ public class AuthenticationService {
      */
     public Utilisateur editAnAccount(Utilisateur editData) {
         validatorService.mustValidate(editData);
-        Utilisateur savedUser = utilisateurRepository.findById(editData.getId()).get();
+        Optional<Utilisateur> user = utilisateurRepository.findById(editData.getId());
+        Utilisateur savedUser;
+        if (user.isPresent()) {
+            savedUser = user.get();
+        } else {
+            throw new NoSuchElementException("L'utilisateur n'existe pas.");
+        }
 
         String encodedPasswordUser = passwordEncoder.encode(editData.getPassword());
 

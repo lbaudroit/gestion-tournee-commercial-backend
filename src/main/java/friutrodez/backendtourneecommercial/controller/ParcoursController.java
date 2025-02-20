@@ -3,14 +3,17 @@ package friutrodez.backendtourneecommercial.controller;
 
 import friutrodez.backendtourneecommercial.dto.Message;
 import friutrodez.backendtourneecommercial.dto.ParcoursDTO;
+import friutrodez.backendtourneecommercial.model.Client;
+import friutrodez.backendtourneecommercial.model.Coordonnees;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.service.ParcoursService;
+import friutrodez.backendtourneecommercial.service.ClientService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Contrôleur REST pour la ressource Parcours.
@@ -22,21 +25,12 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RequestMapping(path = "/parcours/")
 @RestController
+@AllArgsConstructor
 public class ParcoursController {
 
     private final ParcoursService parcoursService;
-    private final ClientService clientService;
-    @Autowired
-    public ParcoursController(ClientService clientService) {
 
-    /**
-     * Contrôleur pour la gestion des clients.
-     *
-     * @param parcoursService       Service contenant la logique métier des parcours.
-     */
-    public ParcoursController(ParcoursService parcoursService) {
-        this.parcoursService = parcoursService;
-    }
+    private final ClientService clientService;
 
     /**
      * Crée un nouveau client pour l'utilisateur authentifié.

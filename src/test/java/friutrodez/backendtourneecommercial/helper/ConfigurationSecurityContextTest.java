@@ -63,7 +63,7 @@ public class ConfigurationSecurityContextTest {
      */
     public String getTokenForSecurity(MockMvc mockMvc) throws Exception {
         if (userFromToken == null) {
-            Utilisateur user = Utilisateur.builder()
+            userFromToken = Utilisateur.builder()
                     .nom("TestNomConfig")
                     .prenom("TestPrenom")
                     .email("te@no.fr")
@@ -74,7 +74,6 @@ public class ConfigurationSecurityContextTest {
                     .latitude(43.5775202)
                     .longitude(2.3694482)
                     .build();
-            userFromToken = user;
             String userJson = objectMapper.writeValueAsString(userFromToken);
 
             mockMvc.perform(post("/utilisateur/").contentType(MediaType.APPLICATION_JSON)

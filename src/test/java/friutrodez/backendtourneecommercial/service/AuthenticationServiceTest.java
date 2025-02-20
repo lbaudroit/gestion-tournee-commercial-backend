@@ -1,7 +1,6 @@
 package friutrodez.backendtourneecommercial.service;
 
 import friutrodez.backendtourneecommercial.dto.DonneesAuthentification;
-import friutrodez.backendtourneecommercial.dto.Password;
 import friutrodez.backendtourneecommercial.exception.AdresseInvalideException;
 import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
 import friutrodez.backendtourneecommercial.model.Adresse;

@@ -1,11 +1,8 @@
 package friutrodez.backendtourneecommercial.authentification;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import friutrodez.backendtourneecommercial.controller.AuthenticationController;
 import friutrodez.backendtourneecommercial.dto.DonneesAuthentification;
-import friutrodez.backendtourneecommercial.dto.JwtToken;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
-import friutrodez.backendtourneecommercial.service.AuthenticationService;
 import friutrodez.backendtourneecommercial.service.JwtService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
@@ -14,9 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -43,18 +38,10 @@ public class AuthenticationControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private AuthenticationService authenticationService;
     @MockitoBean
     private JwtService jwtService;
     @Autowired
     private ObjectMapper objectMapper;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private AuthenticationController authenticationController;
 
     /**
      * Teste la création du compte à partir du controlleur.
@@ -100,8 +87,6 @@ public class AuthenticationControllerTest {
         String userAsJson = objectMapper.writeValueAsString(testUser);
 
         String expectedToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
-
-        JwtToken jwtToken = new JwtToken(expectedToken, 1800000);
 
         UserDetails userDetailsMock = mock(UserDetails.class);
         when(userDetailsMock.getUsername()).thenReturn("Email@mail2.com");

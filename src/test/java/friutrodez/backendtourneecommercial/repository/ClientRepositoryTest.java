@@ -44,7 +44,7 @@ public class ClientRepositoryTest {
      * Les tests avec clientEffectif true et false ne sont pas possible pour l'instant
      */
     @Test
-    void testGetSpecificClient() throws InterruptedException {
+    void testGetSpecificClient() {
         Client client = new Client();
         client.setNomEntreprise("entreprise113244");
         client.setClientEffectif(true);

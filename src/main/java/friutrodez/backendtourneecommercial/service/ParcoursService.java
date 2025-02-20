@@ -14,47 +14,36 @@ import java.util.List;
  * <p>
  *
  * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @version 1.0
  */
 @Service
 public class ParcoursService {
 
     private final ParcoursMongoTemplate parcoursMongoTemplate;
-    private final ValidatorService validatorService;
-
-    private Parcours parcours;
 
     /**
-     * construct ParcoursService
-     * @param parcoursMongoTemplate
-     * @param validatorService
+     * Constructeur de la classe ParcoursService.
+     *
+     * @param parcoursMongoTemplate Template MongoDB pour les parcours
      */
-    public ParcoursService(ParcoursMongoTemplate parcoursMongoTemplate, ValidatorService validatorService) {
+    public ParcoursService(ParcoursMongoTemplate parcoursMongoTemplate) {
         this.parcoursMongoTemplate = parcoursMongoTemplate;
-        this.validatorService = validatorService;
-
     }
 
     /**
-     * crée un parcours en base de données
-     * @param etapesParcoursList
-     * @param nom
-     * @param id
-     * @return parcours
+     * Crée un parcours en base de données.
+     *
+     * @param etapesParcoursList Liste des étapes du parcours
+     * @param nom Nom du parcours
+     * @param id ID de l'utilisateur
      */
-    public Parcours createParcours(List<EtapesParcours> etapesParcoursList, String nom, String id) {
+    public void createParcours(List<EtapesParcours> etapesParcoursList, String nom, String id) {
         Parcours parcours = Parcours.builder()
                 .nom(nom)
                 .etapes(etapesParcoursList)
                 .idUtilisateur(id)
                 .build();
 
-        // Sauvegarde dans MongoDB
         parcoursMongoTemplate.save(parcours);
-
-        return parcours;
     }
-
 }
