@@ -2,15 +2,18 @@ package friutrodez.backendtourneecommercial.repository.mongodb;
 
 import com.mongodb.client.result.DeleteResult;
 import friutrodez.backendtourneecommercial.model.Client;
+import friutrodez.backendtourneecommercial.model.Coordonnees;
 import friutrodez.backendtourneecommercial.service.SequenceGeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -58,6 +61,20 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
     }
 
     /**
+     * Récupère tous les clients mis dans la liste d'ids lié à l'utilisateur.
+     * @param ids Les ids des clients.
+     * @param idUser L'id de l'utilisateur.
+     * @return Les clients si trouvés.
+     */
+    public List<Client> getAllClientsIn(List<String> ids,String idUser) {
+        Query query = new Query(Criteria.where("_id")
+                .in(ids))
+                .addCriteria(Criteria.where("idUtilisateur").is(idUser));
+        return mongoTemplate.find(query, Client.class);
+
+    }
+
+    /**
      * Récupère une liste paginée de clients associés à un utilisateur donné.
      *
      * @param idUser l'identifiant de l'utilisateur dont on souhaite récupérer les clients
@@ -96,11 +113,11 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
      * @return Le client correspondant aux critères, ou null s'il n'est pas trouvé.
      * @throws IllegalArgumentException si l'un des identifiants est null ou vide.
      */
-    public Client getOneClient(String idClient, String idUser) {
+    public Optional<Client> getOneClient(String idClient, String idUser) {
         Query query = new Query().addCriteria(where("idUtilisateur").is(idUser))
                 .addCriteria(where("_id").is(idClient));
         System.out.println(query);
-        return mongoTemplate.findOne(query, collection);
+        return Optional.ofNullable(mongoTemplate.findOne(query, collection));
     }
 
     /**
@@ -129,5 +146,27 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
         long totalElements = mongoTemplate.count(query, collection);
         // Calcul du nombre total de pages
         return (int) Math.ceil((double) totalElements / PAGE_SIZE);
+    }
+
+    /**
+     * Récupère tous les prospects autour d'une coordonnées.
+     * Seulement les prospects dans un rayon de 1000 mètres autour du point sont récupérés.
+     * @param point La coordonnée servant comme point d'origine.
+     * @return Les clients trouvés.
+     */
+    public List<Client> getAllProspectsAround(Coordonnees point, String idUser) {
+        BasicQuery query = new BasicQuery(
+                "{coordonnees : {\n" +
+                "      $near : {\n" +
+                "         $geometry : {\n" +
+                "            type : \"Point\",\n" +
+                        // Longitude et latitude sont inversées dans la bd
+                "            coordinates : ["+point.latitude()+", "+point.longitude()+" ]\n" +
+                "         },\n" +
+                "         $maxDistance : 1000\n" +
+                "      }\n" +
+                "    }" +
+                ",\"idUtilisateur\": \""+idUser+"\",\"clientEffectif\": false}");
+        return mongoTemplate.find(query,collection);
     }
 }

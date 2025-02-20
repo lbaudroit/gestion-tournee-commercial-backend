@@ -8,14 +8,18 @@ import friutrodez.backendtourneecommercial.model.*;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
 import friutrodez.backendtourneecommercial.repository.mysql.AppartientRepository;
 import friutrodez.backendtourneecommercial.repository.mysql.ItineraireRepository;
+import friutrodez.backendtourneecommercial.service.itineraryGenerator.Generator;
+import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.BestRoute;
+import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Point;
+import jakarta.transaction.Transactional;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service de gestion des itinéraires.
@@ -61,23 +65,38 @@ public class ItineraireService {
      * entre eux et le nombre de kilomètres associés à cet itinéraire
      */
     public ResultatOptimisation optimizeShortest(List<Client> clients, Utilisateur user) {
-        // STUB
-        Collections.shuffle(clients);
-        int kilometres = (int) (Math.random() * 1000);
-        return new ResultatOptimisation(transformToClientId(clients), kilometres);
+        List<Point> points = getPointsFromClients(clients);
+
+        Generator generator = new Generator();
+        BestRoute bestRoute = generator.run(points, user.getLongitude(), user.getLatitude(), Generator.DEFAULT_ALGORITHM);
+
+        int kilometres = bestRoute.distance();
+        List<Point> pointsOptimized = bestRoute.points();
+        return new ResultatOptimisation(transformToClientId(pointsOptimized), kilometres);
+    }
+
+    private static List<Point> getPointsFromClients(List<Client> clients) {
+        List<Point> points = new ArrayList<>();
+        for (Client client : clients) {
+            String id = client.get_id();
+            Coordonnees coordonnees = client.getCoordonnees();
+            points.add(new Point(id, coordonnees.longitude(), coordonnees.latitude()));
+        }
+        return points;
     }
 
     /**
-     * Récupère les identifiants de clients
+     * Récupère les identifiants des clients dans une liste de points.
      *
-     * @param clients les clients dont on veut les identifiants
+     * @param points les points (avec le même ID que les clients) dont on veut les identifiants
      * @return une liste des identifiants
      */
-    private List<ClientId> transformToClientId(List<Client> clients) {
-        return clients.stream()
-                .map(Client::get_id)
-                .map(ClientId::new)
-                .toList();
+    private List<ClientId> transformToClientId(List<Point> points) {
+        List<ClientId> clientIds = new ArrayList<>();
+        for (Point point : points) {
+            clientIds.add(new ClientId(point.getId()));
+        }
+        return clientIds;
     }
 
     /**
@@ -87,6 +106,7 @@ public class ItineraireService {
      * @param user           L'utilisateur qui veut créer le client
      * @return L'itineraire sauvegardé
      */
+    @Transactional
     public Itineraire createItineraire(ItineraireCreationDTO itineraireData, Utilisateur user) {
         Itineraire aSauvegarder = Itineraire.builder()
                 .nom(itineraireData.nom())
@@ -110,6 +130,7 @@ public class ItineraireService {
      * @param id             L'id de l'itineraire à modifier.
      * @return L'itineraire modifié
      */
+    @Transactional
     public Itineraire editItineraire(ItineraireCreationDTO itineraireData, Utilisateur user, long id) {
         Itineraire aSauvegarder = Itineraire.builder()
                 .id(id)
@@ -131,10 +152,16 @@ public class ItineraireService {
      * @param itineraireId L'id de l'itineraire à supprimer.
      * @param user         L'utilisateur qui veut supprimer l'itineraire.
      */
+    @Transactional
     public void deleteItineraire(long itineraireId, Utilisateur user) {
-        appartientRepository.deleteAppartientByIdEmbedded_Itineraire_UtilisateurAndIdEmbedded_Itineraire(
-                user, itineraireRepository.findById(itineraireId).get());
-        itineraireRepository.deleteById(itineraireId);
+        Optional<Itineraire> itineraire = itineraireRepository.findById(itineraireId);
+        if (itineraire.isPresent()) {
+            appartientRepository.deleteAppartientByIdEmbedded_Itineraire_UtilisateurAndIdEmbedded_Itineraire(
+                    user, itineraire.get());
+            itineraireRepository.deleteById(itineraireId);
+        } else {
+            throw new DonneesInvalidesException("L'itinéraire n'existe pas.");
+        }
     }
 
     /**
@@ -146,16 +173,17 @@ public class ItineraireService {
      */
     public void check(Itineraire itineraire, Utilisateur user, ItineraireCreationDTO dto) {
         checkItineraire(itineraire);
-        if (dto.idClients().length > 8) {
-            throw new DonneesInvalidesException("Le nombre de client ne doit pas être supérieur.");
-        }
-        if (!allIdClientExists(dto.idClients())) {
-            throw new DonneesInvalidesException("Au moins un id client n'existe pas.");
+        if (dto.idClients().length > Itineraire.MAX_CLIENTS) {
+            throw new DonneesInvalidesException("Le nombre de clients ne doit pas être supérieur à "+Itineraire.MAX_CLIENTS+".");
         }
 
         Query query = new Query(Criteria.where("_id").in(Arrays.stream(dto.idClients()).toList()));
-        boolean oneIsNotFromCurrentUser = clientMongoTemplate.mongoTemplate.
-                find(query, Client.class).
+        List<Client> list = clientMongoTemplate.mongoTemplate.
+                find(query, Client.class);
+        if(list.size() != dto.idClients().length) {
+            throw new DonneesInvalidesException("Un id client est invalide.");
+        }
+        boolean oneIsNotFromCurrentUser = list.
                 stream().
                 anyMatch(client -> !client.getIdUtilisateur().equals(String.valueOf(user.getId())));
         if (oneIsNotFromCurrentUser) {
@@ -168,9 +196,8 @@ public class ItineraireService {
      *
      * @param itineraire l'itinéraire à lier
      * @param ids        un tableau ordonné des identifiants des clients
-     * @return un tableau des liaisons créées
      */
-    private List<Appartient> saveAppartientsFromListIdClients(Itineraire itineraire, String[] ids) {
+    private void saveAppartientsFromListIdClients(Itineraire itineraire, String[] ids) {
         List<Appartient> appartients = new ArrayList<>(ids.length);
 
         for (int position = 0; position < ids.length; position++) {
@@ -178,24 +205,7 @@ public class ItineraireService {
             appartients.add(new Appartient(new AppartientKey(itineraire, idClient), position));
         }
 
-        return appartientRepository.saveAll(appartients);
-    }
-
-    /**
-     * Méthode pour vérifier si tous les ids en paramètre sont existants.
-     *
-     * @param idClients Les ids à vérifier.
-     * @return true si tous les ids existent sinon false.
-     */
-    private boolean allIdClientExists(String[] idClients) {
-        boolean allExists = true;
-        for (String id : idClients) {
-            if (!clientMongoTemplate.exists("_id", id)) {
-                allExists = false;
-                break;
-            }
-        }
-        return allExists;
+        appartientRepository.saveAll(appartients);
     }
 
     /**

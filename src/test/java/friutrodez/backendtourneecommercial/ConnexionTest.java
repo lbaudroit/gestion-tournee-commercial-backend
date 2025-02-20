@@ -12,6 +12,14 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 
+/**
+ * Classe de test pour tester si la connexion aux bd dans le docker fonctionnent.
+ *
+ * @author Benjamin NICOL
+ * @author Enzo CLUZEL
+ * @author Leïla BAUDROIT
+ * @author Ahmed BRIBACH
+ */
 @SpringBootTest
 public class ConnexionTest {
     @Value("${spring.data.mongodb.uri}")

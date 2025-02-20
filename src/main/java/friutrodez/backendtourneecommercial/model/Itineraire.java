@@ -8,6 +8,7 @@ import lombok.*;
 
 /**
  * Classe représentant un itinéraire.
+ * Un itinéraire est un chemin entre plusieurs clients et le commercial.
  * Cette classe est utilisée pour mapper la table `Itineraire` dans la base de données.
  * Utilise Lombok pour générer les constructeurs, getters, setters et le builder.
  * <p>
@@ -27,6 +28,12 @@ import lombok.*;
 @Setter
 @Builder
 public class Itineraire {
+
+    /**
+     * Le nombre maximal de clients pouvant être contenus dans un itinéraire
+     */
+    @Transient
+    public static final int MAX_CLIENTS = 8;
 
     /**
      * Identifiant unique de l'itinéraire.

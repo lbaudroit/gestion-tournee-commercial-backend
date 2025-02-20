@@ -1,12 +1,13 @@
 package friutrodez.backendtourneecommercial.controller;
 
-import com.mongodb.client.result.DeleteResult;
 import friutrodez.backendtourneecommercial.dto.Message;
 import friutrodez.backendtourneecommercial.dto.Nombre;
 import friutrodez.backendtourneecommercial.model.Client;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
 import friutrodez.backendtourneecommercial.service.ClientService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Contrôleur REST pour la ressource client.
@@ -27,6 +29,8 @@ import java.util.List;
 @RequestMapping(path = "/client/")
 @RestController
 public class ClientController {
+
+    private static final Logger log = LoggerFactory.getLogger(ClientController.class);
 
     private final ClientMongoTemplate clientMongoTemplate;
 
@@ -94,7 +98,10 @@ public class ClientController {
     public ResponseEntity<Client> getClient(@PathVariable(name = "id") String id) {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return ResponseEntity.ok(clientMongoTemplate.getOneClient(id, String.valueOf(user.getId())));
+        Optional<Client> client = clientMongoTemplate.getOneClient(id, String.valueOf(user.getId()));
+        
+        return client.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     /**
@@ -127,6 +134,7 @@ public class ClientController {
             clientService.editOneClient(id, modifications, String.valueOf(user.getId()));
             return ResponseEntity.ok(new Message("Le client a été modifié."));
         } catch (Exception e) {
+            log.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new Message("Le client n'a pas été trouvé"));
         }
     }
@@ -142,10 +150,13 @@ public class ClientController {
     public ResponseEntity<Message> deleteClient(@PathVariable(name = "id") String id) {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        DeleteResult deleteResult = clientMongoTemplate.removeClientsWithId(id, String.valueOf(user.getId()));
-        if (!deleteResult.wasAcknowledged()) {
-            return ResponseEntity.badRequest().body(new Message("Le client n'a pas été supprimé"));
+        try {
+            clientService.deleteOneClient(id, user);
+            return ResponseEntity.ok(new Message("Le client a été supprimé."));
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(new Message("Le client n'a pas pu être supprimé."));
         }
-        return ResponseEntity.ok(new Message("Le client a été supprimé."));
     }
 }

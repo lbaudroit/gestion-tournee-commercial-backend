@@ -2,6 +2,7 @@ package friutrodez.backendtourneecommercial.controller;
 
 import friutrodez.backendtourneecommercial.dto.Message;
 import friutrodez.backendtourneecommercial.dto.Parametrage;
+import friutrodez.backendtourneecommercial.dto.Password;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.service.AuthenticationService;
 import lombok.AllArgsConstructor;
@@ -33,7 +34,6 @@ public class UtilisateurController {
 
         Parametrage parametrage = new Parametrage(user.getNom(), user.getPrenom(), user.getEmail());
         return ResponseEntity.ok().body(parametrage);
-
     }
 
     /**
@@ -62,6 +62,18 @@ public class UtilisateurController {
         try {
             authenticationService.editAnAccount(user);
             return ResponseEntity.ok().body(new Message("Utilisateur modifié"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+    }
+
+    @PutMapping("password")
+    public ResponseEntity<Message> modifyPassword(@RequestBody Password password) {
+        Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        try {
+            authenticationService.editPassword(user, password.password());
+            return ResponseEntity.ok().body(new Message("Mot de passe modifié"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }

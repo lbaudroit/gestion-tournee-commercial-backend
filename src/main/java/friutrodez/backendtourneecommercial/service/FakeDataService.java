@@ -46,7 +46,7 @@ public class FakeDataService {
     };
 
     public FakeDataService() {
-        this.faker = new Faker(new Locale("fr"));
+        this.faker = new Faker(Locale.of("fr"));
         this.random = new Random();
     }
 
@@ -62,7 +62,7 @@ public class FakeDataService {
                 .idUtilisateur("1") // ID for Enzo
                 .nomEntreprise(businessName)
                 .adresse(generateFakeAdresse())
-                .descriptif(generateFakeDescription(businessType))
+                .descriptif(generateFakeDescription())
                 .coordonnees(new Coordonnees(latitude, longitude))
                 .contact(generateFakeContact())
                 .clientEffectif(random.nextBoolean())
@@ -78,7 +78,7 @@ public class FakeDataService {
         );
     }
 
-    private String generateFakeDescription(String businessType) {
+    private String generateFakeDescription() {
         String[] descriptions = {
                 "Établissement réputé pour sa qualité de service et ses produits locaux.",
                 "Une institution locale depuis plus de " + (10 + random.nextInt(40)) + " ans.",
