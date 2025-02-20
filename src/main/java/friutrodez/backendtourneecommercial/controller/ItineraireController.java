@@ -1,6 +1,7 @@
 package friutrodez.backendtourneecommercial.controller;
 
 import friutrodez.backendtourneecommercial.dto.*;
+import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
 import friutrodez.backendtourneecommercial.model.Appartient;
 import friutrodez.backendtourneecommercial.model.Client;
 import friutrodez.backendtourneecommercial.model.Itineraire;
@@ -9,24 +10,26 @@ import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplat
 import friutrodez.backendtourneecommercial.repository.mysql.AppartientRepository;
 import friutrodez.backendtourneecommercial.repository.mysql.ItineraireRepository;
 import friutrodez.backendtourneecommercial.service.ItineraireService;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RequestMapping(path = "/itineraire/")
 @RestController
 @AllArgsConstructor
 public class ItineraireController {
+
+    private static final Logger log = LoggerFactory.getLogger(ItineraireController.class);
 
     ItineraireRepository itineraireRepository;
 
@@ -71,6 +74,8 @@ public class ItineraireController {
                 .sorted(Comparator.comparingInt(Appartient::getPosition))
                 .map(a -> a.getIdEmbedded().getClientId())
                 .map(c -> clientMongoTemplate.getOneClient(c, idUser))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .toList();
 
         ItineraireDTO dto = new ItineraireDTO(id, actualItinerary.getNom(), clients, actualItinerary.getDistance());
@@ -79,20 +84,18 @@ public class ItineraireController {
     }
 
     @GetMapping(path = "generate")
-    public ResponseEntity<ResultatOptimisation> generateOptimalItineraire(@RequestParam("clients") List<Integer> idClients) {
+    public ResponseEntity<ResultatOptimisation> generateOptimalItineraire(@RequestParam("clients") List<String> idClients) {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Client> clients = clientMongoTemplate.getAllClientsIn(idClients,String.valueOf(user.getId()));
 
-        List<Client> clients = idClients
-                .stream()
-                .map(i -> clientMongoTemplate.getOneClient(i.toString(), user.getId().toString()))
-                .toList();
-
+        if(idClients.size() != clients.size()) {
+            throw new DonneesInvalidesException("Un id donné est invalide.");
+        }
         List<Client> clientsCopy = new ArrayList<>(clients);
 
         return ResponseEntity.ok(itineraireService.optimizeShortest(clientsCopy, user));
     }
 
-    @Transactional
     @PostMapping
     public ResponseEntity<Message> createItineraire(@RequestBody ItineraireCreationDTO dto) {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -100,7 +103,6 @@ public class ItineraireController {
         return ResponseEntity.ok(new Message("Itinéraire créé"));
     }
 
-    @Transactional
     @PutMapping("{id}")
     public ResponseEntity<Message> modifyItineraire(@PathVariable("id") long id, @RequestBody ItineraireCreationDTO dto) {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -109,13 +111,13 @@ public class ItineraireController {
         return ResponseEntity.ok(new Message("Itinéraire modifié"));
     }
 
-    @Transactional
     @DeleteMapping("{id}")
     public ResponseEntity<Message> deleteItineraire(@PathVariable("id") int itineraire_id) {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         try {
             itineraireService.deleteItineraire(itineraire_id, user);
         } catch (Exception e) {
+            log.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new Message("Itinéraire non trouvé"));
         }
         return ResponseEntity.ok(new Message("Itinéraire supprimé"));

@@ -16,8 +16,9 @@ import java.util.List;
  */
 public class BenchMarkResults {
     private static final double NANO_TO_SEC = 1_000_000_000;
-    public static final int MIN_COLUMN_WIDTH = 10;
+    public static final int MIN_COLUMN_WIDTH = 11;
     public static final int MARGIN = 2;
+    public static final String DELIMITER = ";";
     private final List<String> headers;
     private final HashMap<String, List<Long>> lines;
 
@@ -91,11 +92,11 @@ public class BenchMarkResults {
      * @return Une chaîne représentant les résultats des benchmarks formatés en CSV.
      */
     public String csv() {
-        StringBuilder sb = new StringBuilder(String.join(",", headers)).append("\n");
+        StringBuilder sb = new StringBuilder(String.join(DELIMITER, headers)).append("\n");
         for (String key : lines.keySet()) {
-            sb.append(key).append(",");
+            sb.append(key).append(DELIMITER);
             for (Long value : lines.get(key)) {
-                sb.append(value != null ? String.format("%.9f", value / NANO_TO_SEC) : "").append(",");
+                sb.append(value != null ? String.format("%.9f", value / NANO_TO_SEC) : "").append(DELIMITER);
             }
             sb.deleteCharAt(sb.length() - 1).append("\n");
         }

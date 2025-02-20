@@ -11,6 +11,7 @@ import friutrodez.backendtourneecommercial.repository.mysql.ItineraireRepository
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.Generator;
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.BestRoute;
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Point;
+import jakarta.transaction.Transactional;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -106,6 +107,7 @@ public class ItineraireService {
      * @param user           L'utilisateur qui veut créer le client
      * @return L'itineraire sauvegardé
      */
+    @Transactional
     public Itineraire createItineraire(ItineraireCreationDTO itineraireData, Utilisateur user) {
         Itineraire aSauvegarder = Itineraire.builder()
                 .nom(itineraireData.nom())
@@ -129,6 +131,7 @@ public class ItineraireService {
      * @param id             L'id de l'itineraire à modifier.
      * @return L'itineraire modifié
      */
+    @Transactional
     public Itineraire editItineraire(ItineraireCreationDTO itineraireData, Utilisateur user, long id) {
         Itineraire aSauvegarder = Itineraire.builder()
                 .id(id)
@@ -150,6 +153,7 @@ public class ItineraireService {
      * @param itineraireId L'id de l'itineraire à supprimer.
      * @param user         L'utilisateur qui veut supprimer l'itineraire.
      */
+    @Transactional
     public void deleteItineraire(long itineraireId, Utilisateur user) {
         appartientRepository.deleteAppartientByIdEmbedded_Itineraire_UtilisateurAndIdEmbedded_Itineraire(
                 user, itineraireRepository.findById(itineraireId).get());
@@ -165,8 +169,8 @@ public class ItineraireService {
      */
     public void check(Itineraire itineraire, Utilisateur user, ItineraireCreationDTO dto) {
         checkItineraire(itineraire);
-        if (dto.idClients().length > 8) {
-            throw new DonneesInvalidesException("Le nombre de client ne doit pas être supérieur.");
+        if (dto.idClients().length > Itineraire.MAX_CLIENTS) {
+            throw new DonneesInvalidesException("Le nombre de clients ne doit pas être supérieur à "+Itineraire.MAX_CLIENTS+".");
         }
 
         Query query = new Query(Criteria.where("_id").in(Arrays.stream(dto.idClients()).toList()));

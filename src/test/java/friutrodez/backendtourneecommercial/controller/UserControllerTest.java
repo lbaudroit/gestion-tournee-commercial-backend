@@ -30,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 @Rollback
-@ActiveProfiles("production")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class UserControllerTest {
 

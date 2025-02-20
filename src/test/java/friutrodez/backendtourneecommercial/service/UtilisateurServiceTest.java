@@ -29,10 +29,10 @@ import org.springframework.test.annotation.Rollback;
 @Transactional
 @Rollback
 @SpringBootTest
-public class AuthenticationServiceTest {
+public class UtilisateurServiceTest {
 
     @Autowired
-    AuthenticationService authenticationService;
+    UtilisateurService authenticationService;
 
     @Autowired
     UtilisateurRepository utilisateurRepository;

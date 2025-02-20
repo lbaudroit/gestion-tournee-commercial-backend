@@ -3,7 +3,7 @@ package friutrodez.backendtourneecommercial.controller;
 import friutrodez.backendtourneecommercial.dto.DonneesAuthentification;
 import friutrodez.backendtourneecommercial.dto.JwtToken;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
-import friutrodez.backendtourneecommercial.service.AuthenticationService;
+import friutrodez.backendtourneecommercial.service.UtilisateurService;
 import friutrodez.backendtourneecommercial.service.JwtService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,7 +29,7 @@ public class AuthenticationController {
 
     private final JwtService jwtService;
 
-    private final AuthenticationService authenticationService;
+    private final UtilisateurService authenticationService;
 
     /**
      * Constructeur de la classe AuthentificationControlleur
@@ -37,7 +37,7 @@ public class AuthenticationController {
      * @param jwtService            Service pour la gestion des tokens JWT
      * @param authenticationService Service d'authentification des utilisateurs
      */
-    public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService) {
+    public AuthenticationController(JwtService jwtService, UtilisateurService authenticationService) {
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;
     }

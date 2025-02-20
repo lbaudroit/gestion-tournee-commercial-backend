@@ -45,13 +45,13 @@ class ClientServiceTest {
     void testCreateValidationClient() {
         Client client = new Client();
 
-        Assertions.assertThrows(DonneesInvalidesException.class, () -> clientService.CreateOneClient(client, "1"));
+        Assertions.assertThrows(DonneesInvalidesException.class, () -> clientService.createOneClient(client, "1"));
         client.setNomEntreprise("UneEntreprise");
-        Assertions.assertThrows(DonneesInvalidesException.class, () -> clientService.CreateOneClient(client, "1"));
+        Assertions.assertThrows(DonneesInvalidesException.class, () -> clientService.createOneClient(client, "1"));
         Adresse adresse = new Adresse("6 Impasse du c", "81490", "Boissezon");
 
         client.setAdresse(adresse);
-        Assertions.assertThrows(DonneesInvalidesException.class, () -> clientService.CreateOneClient(client, "1"));
+        Assertions.assertThrows(DonneesInvalidesException.class, () -> clientService.createOneClient(client, "1"));
     }
 
     /**
@@ -101,6 +101,8 @@ class ClientServiceTest {
 
         Adresse adress = new Adresse("6 Impasse du Suc", "81490", "Boissezon");
 
+        client.setAdresse(adresse);
+        Client clientRecupere = clientService.createOneClient(client, "1");
         client.setAdresse(adress);
 
         Client retrievedClient = clientService.CreateOneClient(client, "1");

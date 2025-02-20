@@ -5,7 +5,7 @@ import friutrodez.backendtourneecommercial.controller.AuthenticationController;
 import friutrodez.backendtourneecommercial.dto.DonneesAuthentification;
 import friutrodez.backendtourneecommercial.dto.JwtToken;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
-import friutrodez.backendtourneecommercial.service.AuthenticationService;
+import friutrodez.backendtourneecommercial.service.UtilisateurService;
 import friutrodez.backendtourneecommercial.service.JwtService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
@@ -39,14 +39,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 @Rollback
-@ActiveProfiles("production")
 public class AuthenticationControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private AuthenticationService authenticationService;
+    private UtilisateurService authenticationService;
     @MockitoBean
     private JwtService jwtService;
     @Autowired

@@ -1,6 +1,6 @@
 package friutrodez.backendtourneecommercial.service.itineraryGenerator.utils.objects;
 
-import friutrodez.backendtourneecommercial.service.itineraryGenerator.algorithms.AvaibleAlgorithm;
+import friutrodez.backendtourneecommercial.service.itineraryGenerator.algorithms.AvailableAlgorithm;
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Point;
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Settings;
 
@@ -30,8 +30,8 @@ public class Benchmark {
      */
     public static BenchMarkResults benchmark() {
         BenchMarkResults results = new BenchMarkResults(getHeaders());
-        for (AvaibleAlgorithm algorithm : AvaibleAlgorithm.values()) {
-            if (algorithm.equals(AvaibleAlgorithm.BRUTE_FORCE_BRANCH_AND_BOUND_PARALLEL)) {
+        for (AvailableAlgorithm algorithm : AvailableAlgorithm.values()) {
+            if (algorithm.equals(AvailableAlgorithm.BRUTE_FORCE_BRANCH_AND_BOUND_PARALLEL)) {
                 runParallelBenchmark(algorithm, results);
             } else {
                 results.addLine(algorithm.name(), runBenchmark(algorithm));
@@ -48,7 +48,7 @@ public class Benchmark {
      * @param algorithm L'algorithme à tester.
      * @param results Les résultats des benchmarks.
      */
-    private static void runParallelBenchmark(AvaibleAlgorithm algorithm, BenchMarkResults results) {
+    private static void runParallelBenchmark(AvailableAlgorithm algorithm, BenchMarkResults results) {
         for (int levels = MIN_PARALLEL_LEVELS; levels <= MAX_PARALLEL_LEVELS; levels++) {
             System.out.printf("Parallel levels: %d (min: %d, max: %d)%n", levels, MIN_PARALLEL_LEVELS, MAX_PARALLEL_LEVELS);
             Settings.setNumberOfParallelLevels(levels);
@@ -64,7 +64,7 @@ public class Benchmark {
      * @param algorithm L'algorithme à tester.
      * @return Une liste des durées d'exécution pour chaque taille de points.
      */
-    private static List<Long> runBenchmark(AvaibleAlgorithm algorithm) {
+    private static List<Long> runBenchmark(AvailableAlgorithm algorithm) {
         List<Long> times = new ArrayList<>();
         boolean tooLong = false;
         // On commence de points plutôt que MIN_POINTS pour éviter les temps fossé,
@@ -90,7 +90,7 @@ public class Benchmark {
      * @param points Le nombre de points.
      * @return Le temps moyen d'exécution.
      */
-    private static long getAverageTime(AvaibleAlgorithm algorithm, int points) {
+    private static long getAverageTime(AvailableAlgorithm algorithm, int points) {
         long avgTime = 0;
         for (int exec = 0; exec < EXECUTIONS; exec++) {
             System.out.printf("%s %d %d/%d%s%n", algorithm.name(), points, exec + 1, EXECUTIONS,
@@ -107,7 +107,7 @@ public class Benchmark {
      * @param points Le nombre de points.
      * @return Le temps d'exécution.
      */
-    private static long executeAlgorithm(AvaibleAlgorithm algorithm, int points) {
+    private static long executeAlgorithm(AvailableAlgorithm algorithm, int points) {
         TestData testData = new TestData();
         Point startEnd = testData.getStartEnd();
         List<Point> pointList = testData.getXRandPoints(points, startEnd);
