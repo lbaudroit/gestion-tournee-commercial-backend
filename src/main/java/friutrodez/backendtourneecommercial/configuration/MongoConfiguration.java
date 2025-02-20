@@ -21,7 +21,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
  * @author Ahmed BRIBACH
  */
 @Configuration
-public class MongoConfiguration /*extends AbstractMongoClientConfiguration*/ {
+public class MongoConfiguration extends AbstractMongoClientConfiguration {
 
     @Value("${spring.data.mongodb.uri}")
     public String mongoUri;
@@ -46,12 +46,12 @@ public class MongoConfiguration /*extends AbstractMongoClientConfiguration*/ {
         return new MongoTemplate(mongo(), "mydatabase");
     }
 
-    /*@Override
+    @Override
     protected String getDatabaseName() {
         return "mydatabase";
     }
 
-    // Auto Index Creation
+    /*// Auto Index Creation
     @Override
     protected boolean autoIndexCreation() {
         return true;
