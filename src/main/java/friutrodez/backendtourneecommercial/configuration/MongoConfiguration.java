@@ -2,6 +2,7 @@ package friutrodez.backendtourneecommercial.configuration;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import io.micrometer.common.lang.NonNullApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +21,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
  * @author Ahmed BRIBACH
  */
 @Configuration
-public class MongoConfiguration extends AbstractMongoClientConfiguration {
+public class MongoConfiguration /*extends AbstractMongoClientConfiguration*/ {
 
     @Value("${spring.data.mongodb.uri}")
     public String mongoUri;
@@ -45,8 +46,7 @@ public class MongoConfiguration extends AbstractMongoClientConfiguration {
         return new MongoTemplate(mongo(), "mydatabase");
     }
 
-
-    @Override
+    /*@Override
     protected String getDatabaseName() {
         return "mydatabase";
     }
@@ -55,7 +55,5 @@ public class MongoConfiguration extends AbstractMongoClientConfiguration {
     @Override
     protected boolean autoIndexCreation() {
         return true;
-    }
-
-
+    }*/
 }
