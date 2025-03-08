@@ -1,8 +1,11 @@
 package friutrodez.backendtourneecommercial.service;
 
+import friutrodez.backendtourneecommercial.dto.ParcoursDTO;
+import friutrodez.backendtourneecommercial.dto.ParcoursReducedDTO;
 import friutrodez.backendtourneecommercial.model.EtapesParcours;
 import friutrodez.backendtourneecommercial.model.Parcours;
 import friutrodez.backendtourneecommercial.repository.mongodb.ParcoursMongoTemplate;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,17 +36,31 @@ public class ParcoursService {
     /**
      * Crée un parcours en base de données.
      *
-     * @param etapesParcoursList Liste des étapes du parcours
-     * @param nom Nom du parcours
+     * @param dto DTO du parcours
      * @param id ID de l'utilisateur
      */
-    public void createParcours(List<EtapesParcours> etapesParcoursList, String nom, String id) {
+    public void createParcours(ParcoursDTO dto, String id) {
         Parcours parcours = Parcours.builder()
-                .nom(nom)
-                .etapes(etapesParcoursList)
+                .nom(dto.nom())
+                .etapes(dto.etapes())
+                .chemin(dto.chemin())
+                .dateDebut(dto.debut())
+                .dateFin(dto.fin())
                 .idUtilisateur(id)
                 .build();
 
         parcoursMongoTemplate.save(parcours);
+    }
+
+    /**
+     * Récupère une liste paginée de parcours réduits pour un utilisateur donné.
+     *
+     * @param idUser L'ID de l'utilisateur
+     * @param pageable Les informations de pagination
+     * @return Une liste de ParcoursReducedDTO
+     */
+    public List<ParcoursReducedDTO> getLazyReducedParcours(String idUser, Pageable pageable) {
+        List<Parcours> parcours = parcoursMongoTemplate.getParcoursByPage(idUser, pageable);
+        return ParcoursReducedDTO.fromParcours(parcours);
     }
 }

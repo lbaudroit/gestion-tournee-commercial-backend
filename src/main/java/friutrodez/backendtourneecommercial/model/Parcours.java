@@ -60,7 +60,7 @@ public class Parcours {
     /**
      * Coordonnées géographiques du parcours.
      */
-    private GeoJsonLineString coordonnees;
+    private GeoJsonLineString chemin;
 
     /**
      * Date et heure de début du parcours.
