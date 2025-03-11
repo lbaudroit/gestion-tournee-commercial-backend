@@ -100,4 +100,11 @@ public class ParcoursController {
         List<Client> foundClients = clientService.getAllProspectsAround(position,String.valueOf(user.getId()));
         return ResponseEntity.ok(foundClients);
     }
+
+
+    @GetMapping
+    public ResponseEntity<Parcours> getParcours(@RequestParam(name = "id")String id) {
+        Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok().body(parcoursMongoTemplate.find("_id",id).getFirst());
+    }
 }
