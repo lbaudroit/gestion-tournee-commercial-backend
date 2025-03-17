@@ -1,14 +1,18 @@
 package friutrodez.backendtourneecommercial.service;
 
+import com.mongodb.client.result.DeleteResult;
 import friutrodez.backendtourneecommercial.dto.ParcoursDTO;
 import friutrodez.backendtourneecommercial.dto.ParcoursReducedDTO;
 import friutrodez.backendtourneecommercial.model.EtapesParcours;
 import friutrodez.backendtourneecommercial.model.Parcours;
+import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mongodb.ParcoursMongoTemplate;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Service de gestion des parcours.
@@ -62,5 +66,20 @@ public class ParcoursService {
     public List<ParcoursReducedDTO> getLazyReducedParcours(String idUser, Pageable pageable) {
         List<Parcours> parcours = parcoursMongoTemplate.getParcoursByPage(idUser, pageable);
         return ParcoursReducedDTO.fromParcours(parcours);
+    }
+
+    /**
+     *
+     * @param idUtilisateur
+     * @param idParcours
+     */
+    @Transactional
+    public void deleteOneParcours(String idParcours,String idUtilisateur) {
+        // On supprime le client : on peut le faire en premier (pas de FK, car dans MongoDB)
+        DeleteResult deleteResult = parcoursMongoTemplate.removeParcoursWithID(idParcours,idUtilisateur);
+        if (!deleteResult.wasAcknowledged() || deleteResult.getDeletedCount() == 0) {
+            throw new NoSuchElementException("Le client n'a pas été trouvé");
+        }
+
     }
 }
