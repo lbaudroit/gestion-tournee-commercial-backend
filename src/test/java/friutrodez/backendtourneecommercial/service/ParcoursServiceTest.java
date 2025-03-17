@@ -4,9 +4,9 @@ import com.mongodb.client.model.geojson.Point;
 import com.mongodb.client.model.geojson.Position;
 import friutrodez.backendtourneecommercial.dto.ParcoursDTO;
 import friutrodez.backendtourneecommercial.dto.ParcoursReducedDTO;
-import friutrodez.backendtourneecommercial.model.EtapesParcours;
-import friutrodez.backendtourneecommercial.model.Parcours;
+import friutrodez.backendtourneecommercial.model.*;
 import friutrodez.backendtourneecommercial.repository.mongodb.ParcoursMongoTemplate;
+import friutrodez.backendtourneecommercial.service.utils.ParcoursTestUtils;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -79,4 +79,29 @@ public class ParcoursServiceTest {
         assertNotNull(result);
         assertTrue(result.isEmpty());
     }
+
+    /**
+     * Teste la suppression d'un parcours avec des données valides.
+     */
+    @Test
+    void deleteParcoursSuccessfully() {
+        String userId = "1";
+
+        // Création du parcours
+        ParcoursDTO dto = ParcoursTestUtils.createRandomParcours();
+        String parcoursId = parcoursService.createParcours(dto, userId);
+
+        // Vérification qu'il a bien été créé
+        assertNotNull(parcoursId);
+        assertFalse(parcoursMongoTemplate.mongoTemplate.findAll(Parcours.class).isEmpty());
+
+        // Suppression du parcours
+        assertDoesNotThrow(() -> parcoursService.deleteOneParcours(parcoursId, userId));
+
+        // Vérification que le parcours a bien été supprimé
+        assertNull(parcoursMongoTemplate.mongoTemplate.findById(parcoursId, Parcours.class));
+
+    }
+
+
 }
