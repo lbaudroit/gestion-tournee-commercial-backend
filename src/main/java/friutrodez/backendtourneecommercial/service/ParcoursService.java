@@ -69,13 +69,12 @@ public class ParcoursService {
     }
 
     /**
+     * suppression d'un parcours
      *
-     * @param idUtilisateur
-     * @param idParcours
+     * @param idUtilisateur L'ID de l'utilisateur
+     * @param idParcours L'ID du parcours à supprimé
      */
-    @Transactional
     public void deleteOneParcours(String idParcours,String idUtilisateur) {
-        // On supprime le client : on peut le faire en premier (pas de FK, car dans MongoDB)
         DeleteResult deleteResult = parcoursMongoTemplate.removeParcoursWithID(idParcours,idUtilisateur);
         if (!deleteResult.wasAcknowledged() || deleteResult.getDeletedCount() == 0) {
             throw new NoSuchElementException("Le client n'a pas été trouvé");
