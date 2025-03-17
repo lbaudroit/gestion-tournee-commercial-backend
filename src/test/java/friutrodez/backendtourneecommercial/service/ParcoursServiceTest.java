@@ -103,5 +103,15 @@ public class ParcoursServiceTest {
 
     }
 
+    /**
+     * Teste la suppression d'un parcours avec un ID de parcours invalide.
+     */
+    @Test
+    void deleteOneParcoursWithInvalidParcoursIDThrowsException() {
+        String userID = "1";
+        String invalidParcoursID = "invalidId";
+
+        assertThrows(NoSuchElementException.class, () -> parcoursService.deleteOneParcours(invalidParcoursID, userID));
+    }
 
 }
