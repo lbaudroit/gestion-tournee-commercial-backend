@@ -114,4 +114,19 @@ public class ParcoursServiceTest {
         assertThrows(NoSuchElementException.class, () -> parcoursService.deleteOneParcours(invalidParcoursID, userID));
     }
 
+    /**
+     * Teste la suppression d'un parcours avec un utilisateur non existant.
+     */
+    @Test
+    void deleteOneParcoursWithNonExistentUserThrowsException() {
+        String nonExistentUserID = "999L";
+        String userID = "1";
+        // Création du parcours
+        ParcoursDTO dto = ParcoursTestUtils.createRandomParcours();
+        String validParcoursId = parcoursService.createParcours(dto, userID);
+
+        assertThrows(NoSuchElementException.class, () -> parcoursService.deleteOneParcours(validParcoursId, nonExistentUserID));
+    }
+
+
 }
