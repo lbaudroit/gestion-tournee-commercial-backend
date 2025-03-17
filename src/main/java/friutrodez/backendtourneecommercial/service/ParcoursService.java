@@ -43,7 +43,7 @@ public class ParcoursService {
      * @param dto DTO du parcours
      * @param id ID de l'utilisateur
      */
-    public void createParcours(ParcoursDTO dto, String id) {
+    public String createParcours(ParcoursDTO dto, String id) {
         Parcours parcours = Parcours.builder()
                 .nom(dto.nom())
                 .etapes(dto.etapes())
@@ -54,6 +54,7 @@ public class ParcoursService {
                 .build();
 
         parcoursMongoTemplate.save(parcours);
+        return parcours.get_id();
     }
 
     /**
