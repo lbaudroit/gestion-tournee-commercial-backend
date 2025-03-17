@@ -102,6 +102,12 @@ public class ParcoursController {
     }
 
 
+    /**
+     * Récupére un Parcours précis avec tous ses détails.
+     *
+     * @param id L'id du parcours.
+     * @return   Le parcours correspondant à l'id.
+     */
     @GetMapping
     public ResponseEntity<Parcours> getParcours(@RequestParam(name = "id")String id) {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
