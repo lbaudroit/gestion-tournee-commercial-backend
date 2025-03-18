@@ -1,6 +1,7 @@
 package friutrodez.backendtourneecommercial.repository.mongodb;
 
 import com.mongodb.client.MongoClient;
+import com.mongodb.client.result.DeleteResult;
 import friutrodez.backendtourneecommercial.model.Client;
 import friutrodez.backendtourneecommercial.model.Parcours;
 import friutrodez.backendtourneecommercial.service.SequenceGeneratorService;
@@ -29,7 +30,6 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 public class ParcoursMongoTemplate extends CustomMongoTemplate<Parcours> {
 
     private final SequenceGeneratorService sequenceGeneratorService;
-    private final MongoClient mongo;
 
     /**
      * Constructeur de la classe ParcoursMongoTemplate.
@@ -43,7 +43,6 @@ public class ParcoursMongoTemplate extends CustomMongoTemplate<Parcours> {
     public ParcoursMongoTemplate(MongoTemplate mongoTemplate, SequenceGeneratorService sequenceGeneratorService, MongoClient mongo) {
         super(mongoTemplate, Parcours.class);
         this.sequenceGeneratorService = sequenceGeneratorService;
-        this.mongo = mongo;
     }
 
 
@@ -91,5 +90,18 @@ public class ParcoursMongoTemplate extends CustomMongoTemplate<Parcours> {
 
         // Récupération des clients paginés
         return mongoTemplate.find(query, collection);
+    }
+
+    /**
+     * Retire de la BD, le parcours avec l'id et l'idUtilisateur correspondants
+     *
+     * @param idParcours l'identifiant du parcours à supprimer
+     * @param idUser   l'identifiant de l'utilisateur possédant ce client
+     * @return le resultat de la suppression
+     */
+    public DeleteResult removeParcoursWithID(String idParcours, String idUser) {
+        Query query = new Query().addCriteria(where("idUtilisateur").is(idUser))
+                .addCriteria(where("_id").is(idParcours));
+        return mongoTemplate.remove(query, collection);
     }
 }
