@@ -7,10 +7,7 @@ import java.util.HashMap;
 /**
  * Représente un point avec un ID, une longitude, une latitude et un dictionnaire des distances vers d'autres points.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @Getter
 public class Point {
@@ -42,16 +39,6 @@ public class Point {
     }
 
     /**
-     * Ajoute un point à la carte des distances en calculant la distance euclidienne entre ce point et le point donné.
-     *
-     * @param point le point à ajouter
-     */
-    public void addPoint(Point point) {
-        int distance = computeHaversineFormula(point, this);
-        this.distances.put(point, distance);
-    }
-
-    /**
      * Calcule la distance entre deux points géographiques en utilisant la formule de Haversine.
      *
      * @param destination le point de destination
@@ -71,6 +58,16 @@ public class Point {
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return (int) Math.round(earthRadiusInKm * c * 1000);
+    }
+
+    /**
+     * Ajoute un point à la carte des distances en calculant la distance euclidienne entre ce point et le point donné.
+     *
+     * @param point le point à ajouter
+     */
+    public void addPoint(Point point) {
+        int distance = computeHaversineFormula(point, this);
+        this.distances.put(point, distance);
     }
 
     /**

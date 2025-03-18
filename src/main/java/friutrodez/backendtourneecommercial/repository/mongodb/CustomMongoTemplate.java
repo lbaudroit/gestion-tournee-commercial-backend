@@ -20,21 +20,18 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
  * de méthode qui utilise la classe mongoTemplate.
  *
  * @param <T> le type de la collection
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 public abstract class CustomMongoTemplate<T> {
 
     /**
-     * mongoTemplate obtenue à partir du bean qui étend cette classe par le constructeur.
-     */
-    public MongoTemplate mongoTemplate;
-    /**
      * La collection donnée par la classe fille
      */
     protected final Class<T> collection;
+    /**
+     * mongoTemplate obtenue à partir du bean qui étend cette classe par le constructeur.
+     */
+    public MongoTemplate mongoTemplate;
 
     /**
      * Constructeur de la classe CustomMongoTemplate.

@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 
+
 /**
  * Gère les exceptions venant de l'API pour envoyer une réponse personnalisée au client
  * Les exceptions doivent être personnalisées pour être efficace
+ *
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @ControllerAdvice(basePackages = "friutrodez.backendtourneecommercial.controller")
 public class ExceptionHandlerAPI {
@@ -54,15 +57,27 @@ public class ExceptionHandlerAPI {
         return ResponseEntity.badRequest().body(new Message(exception.getConstraintViolations().toString()));
     }
 
+    /**
+     * Gère l'exception d'erreur de Contrainte non respectée dans le modèle.
+     *
+     * @param exception l'exception d'origine
+     * @return une réponse
+     */
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ResponseEntity<Message> gererContrainteNonRespect
-            (SQLIntegrityConstraintViolationException exception) {
+    (SQLIntegrityConstraintViolationException exception) {
         return ResponseEntity.badRequest().body(new Message(exception.toString()));
     }
 
+    /**
+     * Gère l'exception d'adresse invalide.
+     *
+     * @param exception l'exception d'origine
+     * @return une réponse
+     */
     @ExceptionHandler(AdresseInvalideException.class)
     public ResponseEntity<Message> gererAdresseInvalideException
-            (AdresseInvalideException exception) {
+    (AdresseInvalideException exception) {
         return ResponseEntity.badRequest().body(new Message(exception.getMessage()));
     }
 }

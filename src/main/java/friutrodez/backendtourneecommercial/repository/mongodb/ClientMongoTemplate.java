@@ -23,17 +23,13 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
  * Cette classe utilise MongoTemplate pour effectuer des opérations CRUD sur les clients.
  * Utilise un générateur de séquence pour attribuer des identifiants uniques aux nouveaux clients.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @Service
 public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
 
-    private final SequenceGeneratorService sequenceGeneratorService;
-
     private static final int PAGE_SIZE = 30;
+    private final SequenceGeneratorService sequenceGeneratorService;
 
     /**
      * Constructeur de la classe ClientMongoTemplate.
@@ -62,11 +58,12 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
 
     /**
      * Récupère tous les clients mis dans la liste d'ids lié à l'utilisateur.
-     * @param ids Les ids des clients.
+     *
+     * @param ids    Les ids des clients.
      * @param idUser L'id de l'utilisateur.
      * @return Les clients si trouvés.
      */
-    public List<Client> getAllClientsIn(List<String> ids,String idUser) {
+    public List<Client> getAllClientsIn(List<String> ids, String idUser) {
         Query query = new Query(Criteria.where("_id")
                 .in(ids))
                 .addCriteria(Criteria.where("idUtilisateur").is(idUser));
@@ -120,12 +117,6 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
         return Optional.ofNullable(mongoTemplate.findOne(query, collection));
     }
 
-    /**
-     * Sauvegarde un client dans la base de données.
-     * Si l'identifiant du client est nul, un nouvel identifiant est généré.
-     *
-     * @param client le client à sauvegarder
-     */
     @Override
     public void save(Client client) {
         if (client.get_id() == null) {
@@ -151,22 +142,23 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
     /**
      * Récupère tous les prospects autour d'une coordonnées.
      * Seulement les prospects dans un rayon de 1000 mètres autour du point sont récupérés.
+     *
      * @param point La coordonnée servant comme point d'origine.
      * @return Les clients trouvés.
      */
     public List<Client> getAllProspectsAround(Coordonnees point, String idUser) {
         BasicQuery query = new BasicQuery(
                 "{coordonnees : {\n" +
-                "      $near : {\n" +
-                "         $geometry : {\n" +
-                "            type : \"Point\",\n" +
+                        "      $near : {\n" +
+                        "         $geometry : {\n" +
+                        "            type : \"Point\",\n" +
                         // Longitude et latitude sont inversées dans la bd
-                "            coordinates : ["+point.latitude()+", "+point.longitude()+" ]\n" +
-                "         },\n" +
-                "         $maxDistance : 1000\n" +
-                "      }\n" +
-                "    }" +
-                ",\"idUtilisateur\": \""+idUser+"\",\"clientEffectif\": false}");
-        return mongoTemplate.find(query,collection);
+                        "            coordinates : [" + point.latitude() + ", " + point.longitude() + " ]\n" +
+                        "         },\n" +
+                        "         $maxDistance : 1000\n" +
+                        "      }\n" +
+                        "    }" +
+                        ",\"idUtilisateur\": \"" + idUser + "\",\"clientEffectif\": false}");
+        return mongoTemplate.find(query, collection);
     }
 }

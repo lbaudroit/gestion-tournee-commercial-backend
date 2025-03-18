@@ -1,8 +1,6 @@
 package friutrodez.backendtourneecommercial.repository.mongodb;
 
-import com.mongodb.client.MongoClient;
 import com.mongodb.client.result.DeleteResult;
-import friutrodez.backendtourneecommercial.model.Client;
 import friutrodez.backendtourneecommercial.model.Parcours;
 import friutrodez.backendtourneecommercial.service.SequenceGeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +19,7 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
  * Cette classe utilise MongoTemplate pour effectuer des opérations CRUD sur les parcours.
  * Utilise un générateur de séquence pour attribuer des identifiants uniques aux nouveaux parcours.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @Service
 public class ParcoursMongoTemplate extends CustomMongoTemplate<Parcours> {
@@ -35,12 +30,11 @@ public class ParcoursMongoTemplate extends CustomMongoTemplate<Parcours> {
      * Constructeur de la classe ParcoursMongoTemplate.
      * Initialise la classe avec MongoTemplate et la classe Parcours.
      *
-     * @param mongoTemplate le template MongoDB utilisé pour les opérations
+     * @param mongoTemplate            le template MongoDB utilisé pour les opérations
      * @param sequenceGeneratorService le service de génération de séquence pour les identifiants uniques
-     * @param mongo le client MongoDB
      */
     @Autowired
-    public ParcoursMongoTemplate(MongoTemplate mongoTemplate, SequenceGeneratorService sequenceGeneratorService, MongoClient mongo) {
+    public ParcoursMongoTemplate(MongoTemplate mongoTemplate, SequenceGeneratorService sequenceGeneratorService) {
         super(mongoTemplate, Parcours.class);
         this.sequenceGeneratorService = sequenceGeneratorService;
     }
@@ -62,7 +56,7 @@ public class ParcoursMongoTemplate extends CustomMongoTemplate<Parcours> {
     /**
      * Calcule le nombre de pages pour un utilisateur donné en fonction de la taille de la page.
      *
-     * @param idUser l'identifiant de l'utilisateur
+     * @param idUser   l'identifiant de l'utilisateur
      * @param pageSize la taille de la page
      * @return le nombre de pages
      */
@@ -96,7 +90,7 @@ public class ParcoursMongoTemplate extends CustomMongoTemplate<Parcours> {
      * Retire de la BD, le parcours avec l'id et l'idUtilisateur correspondants
      *
      * @param idParcours l'identifiant du parcours à supprimer
-     * @param idUser   l'identifiant de l'utilisateur possédant ce client
+     * @param idUser     l'identifiant de l'utilisateur possédant ce client
      * @return le resultat de la suppression
      */
     public DeleteResult removeParcoursWithID(String idParcours, String idUser) {

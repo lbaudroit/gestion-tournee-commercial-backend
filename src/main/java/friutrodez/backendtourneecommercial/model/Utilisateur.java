@@ -23,10 +23,7 @@ import java.util.List;
  * 1 majuscule, 1 miniscule, 1 chiffre, 1 caractère spécial, 8 caractères
  * - Une adresse valide en france
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @Entity
 @AllArgsConstructor
@@ -44,13 +41,6 @@ public class Utilisateur implements UserDetails {
 
     @Transient
     public final static String EMAIL_PATTERN = "^[^@]+@[^@]+\\.[^@]+$";
-
-    public Utilisateur(String testNom, String testPrenom, String password) {
-        this.prenom = testPrenom;
-        nom = testNom;
-        motDePasse = password;
-    }
-
     /**
      * Identifiant unique de l'utilisateur.
      * Généré automatiquement par la base de données.
@@ -58,7 +48,6 @@ public class Utilisateur implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     /**
      * Nom de l'utilisateur.
      * Ne peut pas être nul.
@@ -66,7 +55,6 @@ public class Utilisateur implements UserDetails {
     @NotBlank(message = "Le nom ne peut pas être vide")
     @Column(nullable = false)
     private String nom;
-
     /**
      * Prénom de l'utilisateur.
      * Ne peut pas être nul.
@@ -74,7 +62,6 @@ public class Utilisateur implements UserDetails {
     @NotBlank(message = "Le prénom ne peut pas être vide")
     @Column(nullable = false)
     private String prenom;
-
     /**
      * Adresse email de l'utilisateur
      * Ne peut pas être nul
@@ -83,7 +70,6 @@ public class Utilisateur implements UserDetails {
     @NotBlank(message = "L'email ne peut pas être vide")
     @Column(nullable = false)
     private String email;
-
     /**
      * Mot de passe de l'utilisateur.
      */
@@ -91,14 +77,12 @@ public class Utilisateur implements UserDetails {
     @Pattern(regexp = PASSWORD_PATTERN, message = "Le mot de passe est invalide")
     @Column(nullable = false)
     private String motDePasse;
-
     /**
      * Libellé de l'adresse de l'utilisateur.
      */
     @NotBlank(message = "Le libellé de l'adresse ne peut pas être vide")
     @Column(nullable = false)
     private String libelleAdresse;
-
     /**
      * Code postal de l'utilisateur.
      */
@@ -106,23 +90,26 @@ public class Utilisateur implements UserDetails {
     @Pattern(regexp = "^[0-9]{5}$", message = "Le code postal doit être un code postal français valide")
     @Column(nullable = false)
     private String codePostal;
-
     /**
      * Ville de l'utilisateur.
      */
     @NotBlank(message = "La ville ne peut pas être vide")
     @Column(nullable = false)
     private String ville;
-
     /**
      * Longitude des coordonnées de l'utilisateur.
      */
     private double longitude;
-
     /**
      * Latitude des coordonnées de l'utilisateur.
      */
     private double latitude;
+
+    public Utilisateur(String testNom, String testPrenom, String password) {
+        this.prenom = testPrenom;
+        nom = testNom;
+        motDePasse = password;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

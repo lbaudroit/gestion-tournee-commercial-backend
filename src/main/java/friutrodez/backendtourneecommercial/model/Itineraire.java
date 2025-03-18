@@ -16,10 +16,7 @@ import lombok.*;
  * - Un nom non vide
  * - Une distance non vide et non négative
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @Entity
 @AllArgsConstructor

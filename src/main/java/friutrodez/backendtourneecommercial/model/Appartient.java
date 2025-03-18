@@ -12,10 +12,7 @@ import lombok.Setter;
  * Cette classe est utilisée pour mapper la table `Appartient` dans la base de données.
  * Utilise Lombok pour générer les constructeurs, getters et setters.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @AllArgsConstructor
 @NoArgsConstructor

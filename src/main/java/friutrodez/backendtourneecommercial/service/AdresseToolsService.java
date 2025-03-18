@@ -16,15 +16,13 @@ import java.io.IOException;
  * Cette classe propose des méthodes pour valider une adresse
  * et géolocaliser une adresse en donnant ces coordonnées.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @Service
 public class AdresseToolsService {
 
     private static final Logger log = LoggerFactory.getLogger(AdresseToolsService.class);
+    private static final String API_URL = "/search/";
     private final WebClient webClient;
 
     public AdresseToolsService() {
@@ -33,8 +31,6 @@ public class AdresseToolsService {
                 .build();
     }
 
-    private static final String API_URL = "/search/";
-
     /**
      * Cette méthode récupère les adresses à partir de l'API du gouvernement.
      * Puis, elle renvoie si l'adresse est correcte.
@@ -42,7 +38,7 @@ public class AdresseToolsService {
      * @param label    Le libelle de l'adresse.
      * @param postCode Le code postal de l'adresse.
      * @param city     La ville de l'adresse.
-     * @return         True si l'adresse correspond à celle donnée en paramètre, sinon false.
+     * @return True si l'adresse correspond à celle donnée en paramètre, sinon false.
      */
     public boolean validateAdresse(String label, String postCode, String city) {
         // Search with libelle and as filter codePostal
@@ -101,7 +97,7 @@ public class AdresseToolsService {
      * Convertie la première réponse en adresse.
      *
      * @param response La réponse de l'api.
-     * @return         Une adresse.
+     * @return Une adresse.
      */
     private Adresse parseGeoJsonResponse(String response) {
         try {
@@ -125,7 +121,7 @@ public class AdresseToolsService {
      * Extrait les coordonnées de l'adresse.
      *
      * @param response La réponse de l'api
-     * @return         Un tableau avec les coordonnées.
+     * @return Un tableau avec les coordonnées.
      */
     private Double[] extractCoordinates(String response) {
         try {

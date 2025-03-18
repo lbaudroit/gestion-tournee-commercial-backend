@@ -14,10 +14,7 @@ import java.util.Optional;
  * Hérite de JpaRepository pour fournir des opérations CRUD sur les entités Itineraire.
  * Annotée avec @Repository pour indiquer qu'il s'agit d'un composant Spring.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @Repository
 public interface ItineraireRepository extends JpaRepository<Itineraire, Long> {

@@ -22,10 +22,7 @@ import java.util.function.Function;
  * Le payload : contient les informations du token
  * La signature : la clé du token (utilisée pour valider le token)
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @Service
 public class JwtService {

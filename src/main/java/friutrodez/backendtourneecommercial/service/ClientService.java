@@ -5,7 +5,6 @@ import friutrodez.backendtourneecommercial.exception.AdresseInvalideException;
 import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
 import friutrodez.backendtourneecommercial.model.Adresse;
 import friutrodez.backendtourneecommercial.model.Client;
-import java.util.List;
 import friutrodez.backendtourneecommercial.model.Coordonnees;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
@@ -14,6 +13,7 @@ import friutrodez.backendtourneecommercial.repository.mysql.ItineraireRepository
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -24,10 +24,7 @@ import java.util.Optional;
  * <p>
  * Elle contient toutes les vérifications métiers.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @Service
 public class ClientService {
@@ -144,10 +141,11 @@ public class ClientService {
 
     /**
      * Méthode pour récupérer tous les prospects se trouvant dans un rayon de 1000 mètres de la position.
+     *
      * @param point Le centre du rayon.
      * @return Les clients dans le cercle de 1000 mètres.
      */
     public List<Client> getAllProspectsAround(Coordonnees point, String idUser) {
-        return clientMongoTemplate.getAllProspectsAround(point,idUser);
+        return clientMongoTemplate.getAllProspectsAround(point, idUser);
     }
 }

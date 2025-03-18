@@ -8,10 +8,7 @@ import java.util.List;
 /**
  * Enumération des algorithmes disponibles pour la génération d'itinéraires.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 public enum AvailableAlgorithm {
     BRUTE_FORCE,

@@ -9,16 +9,13 @@ import java.util.List;
 /**
  * Classe pour stocker et gérer les résultats des benchmarks.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 public class BenchMarkResults {
-    private static final double NANO_TO_SEC = 1_000_000_000;
     public static final int MIN_COLUMN_WIDTH = 11;
     public static final int MARGIN = 2;
     public static final String DELIMITER = ";";
+    private static final double NANO_TO_SEC = 1_000_000_000;
     private final List<String> headers;
     private final HashMap<String, List<Long>> lines;
 

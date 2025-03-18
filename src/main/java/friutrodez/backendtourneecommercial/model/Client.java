@@ -23,10 +23,7 @@ import java.util.Objects;
  * - Une adresse valide en france
  * - Un nom d'entreprise non vide
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @Getter
 @Setter
@@ -97,12 +94,7 @@ public class Client {
      */
     private boolean clientEffectif;
 
-    /**
-     * Vérifie si l'objet en argument est égaux à l'instance actuelle
-     *
-     * @param object à vérifier
-     * @return True si l'objet est égaux
-     */
+
     @Override
     public boolean equals(Object object) {
         if (object instanceof Client client) {

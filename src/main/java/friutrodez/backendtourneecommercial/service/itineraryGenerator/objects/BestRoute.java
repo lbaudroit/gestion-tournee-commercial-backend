@@ -5,10 +5,7 @@ import java.util.List;
 /**
  * Classe représentant le meilleur itinéraire avec une liste de points et une distance totale.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 public record BestRoute(List<Point> points, int distance) {
 
