@@ -64,7 +64,7 @@ public class ParcoursController {
      * @return Un objet ResponseEntity contenant le nombre de page ou un message d'erreur.
      */
     @GetMapping(path = "count")
-    public ResponseEntity<Nombre> getNumberOfClients() {
+    public ResponseEntity<Nombre> getNumberOfParcours() {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         int pages = parcoursMongoTemplate.getPageCountForUser(String.valueOf(user.getId()), PAGE_SIZE);
