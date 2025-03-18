@@ -15,6 +15,12 @@ import java.util.stream.IntStream;
 public class ParcoursTestUtils {
     private static final Faker faker = new Faker();
 
+    /**
+     * Génère un parcours avec des données entièrement aléatoires, y compris les étapes,
+     * le nom, le tracé géographique et les horaires.
+     *
+     * @return un objet ParcoursDTO représentant un parcours généré de manière aléatoire.
+     */
     public static ParcoursDTO createRandomParcours() {
         List<EtapesParcours> etapes = IntStream.range(0, 5).mapToObj(i ->
                 new EtapesParcours(faker.address().city(), faker.bool().bool(), new Coordonnees(
