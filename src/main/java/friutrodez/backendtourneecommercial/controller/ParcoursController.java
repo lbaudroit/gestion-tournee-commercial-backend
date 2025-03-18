@@ -15,6 +15,7 @@ import friutrodez.backendtourneecommercial.service.ClientService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -99,5 +100,36 @@ public class ParcoursController {
         Coordonnees position = new Coordonnees(latitude, longitude);
         List<Client> foundClients = clientService.getAllProspectsAround(position,String.valueOf(user.getId()));
         return ResponseEntity.ok(foundClients);
+    }
+
+
+    /**
+     * Récupére un Parcours précis avec tous ses détails.
+     *
+     * @param id L'id du parcours.
+     * @return   Le parcours correspondant à l'id.
+     */
+    @GetMapping
+    public ResponseEntity<Parcours> getParcours(@RequestParam(name = "id")String id) {
+        Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok().body(parcoursMongoTemplate.find("_id",id).getFirst());
+    }
+
+    /**
+     * Supprime un parcours spécifique en fonction de son ID.
+     *
+     * @param id L'identifiant du parcours à supprimer.
+     * @return Un ResponseEntity contenant un message de succès ou d'échec.
+     */
+    @DeleteMapping("{id}")
+    public ResponseEntity<Message> deleteParcours(@PathVariable(name = "id") String id) {
+        Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        try {
+            parcoursService.deleteOneParcours(id, String.valueOf(user.getId()));
+            return ResponseEntity.ok(new Message("Le parcours a été supprimé."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(new Message("Le parcours n'a pas pu être supprimé."));
+        }
     }
 }
