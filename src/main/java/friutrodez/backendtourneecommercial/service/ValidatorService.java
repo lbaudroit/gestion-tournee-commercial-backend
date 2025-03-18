@@ -14,10 +14,7 @@ import java.util.Set;
  * La validation se fait avec l'aide de jakarta.validation.
  * Il faut utiliser des annotations de jakarta.validation.constraint pour que le validator puisse les détecter.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @Service
 public class ValidatorService {

@@ -6,9 +6,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Parcours réduit envoyé au client de l'API
+ *
+ * @param id   Identifiant du parcours
+ * @param nom  Nom du parcours
+ * @param date Date de début du parcours
+ */
 public record ParcoursReducedDTO(String id, String nom, String date) {
     /**
      * Convertit un parcours en DTO réduit.
+     *
      * @param parcours Parcours à convertir
      * @return DTO réduit du parcours
      */
@@ -20,6 +28,7 @@ public record ParcoursReducedDTO(String id, String nom, String date) {
 
     /**
      * Convertit une liste de parcours en liste de DTO réduits.
+     *
      * @param parcours Liste de parcours à convertir
      * @return Liste de DTO réduits des parcours
      */

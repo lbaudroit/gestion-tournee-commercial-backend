@@ -3,6 +3,7 @@ package friutrodez.backendtourneecommercial.model;
 /**
  * Coordonnée d'un client et de l'utilisateur
  *
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  * @param latitude
  * @param longitude
  */

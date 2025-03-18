@@ -11,21 +11,18 @@ import java.util.concurrent.CompletableFuture;
 /**
  * Classe implémentant l'algorithme de force brute avec branchement et bornes en parallèle.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 public class BruteForceBranchAndBoundParallel implements Algorithm {
-    private static Point startEnd;
-    private static BestRoute bestRouteParallel;
     private static final int MIN_PARALLEL_LEVELS = 1;
     private static final int MAX_PARALLEL_LEVELS = 4;
+    private static Point startEnd;
+    private static BestRoute bestRouteParallel;
 
     /**
      * Génère le meilleur itinéraire en utilisant l'algorithme de force brute avec branchement et bornes en parallèle.
      *
-     * @param points Liste des points à visiter.
+     * @param points        Liste des points à visiter.
      * @param startEndGiven Point de départ et d'arrivée.
      * @return Le meilleur itinéraire trouvé.
      */
@@ -54,9 +51,9 @@ public class BruteForceBranchAndBoundParallel implements Algorithm {
     /**
      * Génère l'itinéraire en utilisant l'algorithme de branchement et bornes en parallèle.
      *
-     * @param points Liste des points à visiter.
-     * @param currentPoint Point actuel dans l'itinéraire.
-     * @param route Itinéraire actuel.
+     * @param points         Liste des points à visiter.
+     * @param currentPoint   Point actuel dans l'itinéraire.
+     * @param route          Itinéraire actuel.
      * @param branchDistance Distance actuelle de l'itinéraire.
      * @param parallelLevels Niveau de parallélisme.
      */
@@ -76,9 +73,9 @@ public class BruteForceBranchAndBoundParallel implements Algorithm {
     /**
      * Cas de fin lorsque tous les points ont été visités.
      *
-     * @param points Liste des points restants (un seul point).
-     * @param currentPoint Point actuel dans l'itinéraire.
-     * @param route Itinéraire actuel.
+     * @param points         Liste des points restants (un seul point).
+     * @param currentPoint   Point actuel dans l'itinéraire.
+     * @param route          Itinéraire actuel.
      * @param branchDistance Distance actuelle de l'itinéraire.
      */
     private static void endCase(List<Point> points, Point currentPoint, List<Point> route, int branchDistance) {
@@ -91,9 +88,9 @@ public class BruteForceBranchAndBoundParallel implements Algorithm {
     /**
      * Cas normal pour générer les branches en parallèle.
      *
-     * @param points Liste des points à visiter.
-     * @param currentPoint Point actuel dans l'itinéraire.
-     * @param route Itinéraire actuel.
+     * @param points         Liste des points à visiter.
+     * @param currentPoint   Point actuel dans l'itinéraire.
+     * @param route          Itinéraire actuel.
      * @param branchDistance Distance actuelle de l'itinéraire.
      * @param parallelLevels Niveau de parallélisme.
      */

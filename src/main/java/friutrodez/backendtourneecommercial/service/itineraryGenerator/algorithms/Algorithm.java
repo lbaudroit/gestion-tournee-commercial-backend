@@ -8,10 +8,7 @@ import java.util.List;
 /**
  * Interface pour les algorithmes de génération d'itinéraires.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  *
  */
 public interface Algorithm {

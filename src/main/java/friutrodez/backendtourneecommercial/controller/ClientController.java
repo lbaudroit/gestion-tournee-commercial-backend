@@ -6,6 +6,10 @@ import friutrodez.backendtourneecommercial.model.Client;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplate;
 import friutrodez.backendtourneecommercial.service.ClientService;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -15,28 +19,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
-
 /**
  * Contrôleur REST pour la ressource client.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @RequestMapping(path = "/client/")
 @RestController
 public class ClientController {
 
     private static final Logger log = LoggerFactory.getLogger(ClientController.class);
-
-    private final ClientMongoTemplate clientMongoTemplate;
-
-    private final ClientService clientService;
-
     private final static int PAGE_SIZE = 30;
+    private final ClientMongoTemplate clientMongoTemplate;
+    private final ClientService clientService;
 
     /**
      * Contrôleur pour la gestion des clients.
@@ -99,7 +94,7 @@ public class ClientController {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         Optional<Client> client = clientMongoTemplate.getOneClient(id, String.valueOf(user.getId()));
-        
+
         return client.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }

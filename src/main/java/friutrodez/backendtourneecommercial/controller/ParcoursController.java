@@ -10,8 +10,11 @@ import friutrodez.backendtourneecommercial.model.Coordonnees;
 import friutrodez.backendtourneecommercial.model.Parcours;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mongodb.ParcoursMongoTemplate;
-import friutrodez.backendtourneecommercial.service.ParcoursService;
 import friutrodez.backendtourneecommercial.service.ClientService;
+import friutrodez.backendtourneecommercial.service.ParcoursService;
+
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,25 +23,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 /**
  * Contrôleur REST pour la ressource Parcours.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @RequestMapping(path = "/parcours/")
 @RestController
 @AllArgsConstructor
 public class ParcoursController {
 
-    private final ParcoursService parcoursService;
-
-    private final ClientService clientService;
     private final static int PAGE_SIZE = 30;
+    private final ParcoursService parcoursService;
+    private final ClientService clientService;
     private final ParcoursMongoTemplate parcoursMongoTemplate;
 
     /**
@@ -47,7 +45,7 @@ public class ParcoursController {
      * @return ResponseEntity contenant le client créé ou un message d'erreur si la création échoue.
      * @throws IllegalArgumentException si l'objet client est null ou si l'utilisateur n'est pas authentifié.
      */
-    @PostMapping(path="")
+    @PostMapping(path = "")
     public ResponseEntity<Message> createParcours(@RequestBody ParcoursDTO parcoursDTO) {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         try {
@@ -88,7 +86,8 @@ public class ParcoursController {
 
     /**
      * Endpoint pour récupérer les prospects qui se trouvent à moins de 1000 mètres d'une position donnée.
-     * @param latitude La latitude de la position.
+     *
+     * @param latitude  La latitude de la position.
      * @param longitude La longitude de la position.
      * @return Les clients dans un rayon de 1000 mètres.
      */
@@ -98,7 +97,7 @@ public class ParcoursController {
             @RequestParam double longitude) {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Coordonnees position = new Coordonnees(latitude, longitude);
-        List<Client> foundClients = clientService.getAllProspectsAround(position,String.valueOf(user.getId()));
+        List<Client> foundClients = clientService.getAllProspectsAround(position, String.valueOf(user.getId()));
         return ResponseEntity.ok(foundClients);
     }
 
@@ -107,12 +106,11 @@ public class ParcoursController {
      * Récupére un Parcours précis avec tous ses détails.
      *
      * @param id L'id du parcours.
-     * @return   Le parcours correspondant à l'id.
+     * @return Le parcours correspondant à l'id.
      */
     @GetMapping
-    public ResponseEntity<Parcours> getParcours(@RequestParam(name = "id")String id) {
-        Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ResponseEntity.ok().body(parcoursMongoTemplate.find("_id",id).getFirst());
+    public ResponseEntity<Parcours> getParcours(@RequestParam(name = "id") String id) {
+        return ResponseEntity.ok().body(parcoursMongoTemplate.find("_id", id).getFirst());
     }
 
     /**

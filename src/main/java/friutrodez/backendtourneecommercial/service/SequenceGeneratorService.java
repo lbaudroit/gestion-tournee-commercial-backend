@@ -15,10 +15,7 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 /**
  * Service pour gérer les ids en mongoDB.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @Service
 public class SequenceGeneratorService {

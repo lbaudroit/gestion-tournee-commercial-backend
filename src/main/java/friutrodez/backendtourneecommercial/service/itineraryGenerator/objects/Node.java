@@ -10,20 +10,17 @@ import java.util.*;
  * Chaque nœud contient une matrice de distances, une valeur associée à cette matrice,
  * un point de départ et un point d'arrivée, ainsi que des références vers ses enfants et son parent.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 public class Node {
+    @Getter
+    private final int value;
     @Getter(AccessLevel.MODULE)
     private int[][] matrixContent;
     @Getter(AccessLevel.MODULE)
     private HashMap<Point, Integer> pointToIndexColumn;
     @Getter(AccessLevel.MODULE)
     private HashMap<Point, Integer> pointToIndexRow;
-    @Getter
-    private final int value;
     @Getter
     private Point start;
     @Getter
@@ -39,13 +36,13 @@ public class Node {
      * Constructeur pour initialiser un nœud avec une matrice et des points de départ et d'arrivée.
      * Cette méthode est utilisée pour créer les nœuds enfants.
      *
-     * @param matrixContent       Contenu de la matrice.
-     * @param pointToIndexColumn  Mappage des points aux indices de colonne.
-     * @param pointToIndexRow     Mappage des points aux indices de ligne.
-     * @param value               Valeur du nœud.
-     * @param start               Point de départ.
-     * @param end                 Point d'arrivée.
-     * @param parent              Noeud parent.
+     * @param matrixContent      Contenu de la matrice.
+     * @param pointToIndexColumn Mappage des points aux indices de colonne.
+     * @param pointToIndexRow    Mappage des points aux indices de ligne.
+     * @param value              Valeur du nœud.
+     * @param start              Point de départ.
+     * @param end                Point d'arrivée.
+     * @param parent             Noeud parent.
      */
     public Node(int[][] matrixContent, HashMap<Point, Integer> pointToIndexColumn, HashMap<Point, Integer> pointToIndexRow, int value, Point start, Point end, Node parent) {
         this.matrixContent = matrixContent;
@@ -68,6 +65,77 @@ public class Node {
         ReduceReturn reduceReturn = reduceMatrix(matrixContent);
         this.matrixContent = reduceReturn.matrix();
         this.value = reduceReturn.value();
+    }
+
+    /**
+     * Réduit les lignes de la matrice.
+     * Pour chaque ligne, trouve la valeur minimale et la soustrait de chaque élément de la ligne.
+     * Ajoute la valeur minimale de chaque ligne à la valeur totale de réduction.
+     *
+     * @param matrix    Matrice d'origine.
+     * @param newMatrix Nouvelle matrice.
+     * @return Valeur de réduction.
+     */
+    private static int reduceLines(int[][] matrix, int[][] newMatrix) {
+        int valeur = 0;
+        for (int line = 0; line < matrix.length; line++) {
+            int min = Arrays.stream(matrix[line]).min().orElse(Integer.MAX_VALUE);
+            if (min != Integer.MAX_VALUE) {
+                valeur += min;
+                for (int column = 0; column < matrix[line].length; column++) {
+                    newMatrix[line][column] = matrix[line][column] - min;
+                }
+            }
+        }
+        return valeur;
+    }
+
+    /**
+     * Réduit les colonnes de la matrice.
+     * Pour chaque colonne, trouve la valeur minimale et la soustrait de chaque élément de la colonne.
+     * Ajoute la valeur minimale de chaque colonne à la valeur totale de réduction.
+     *
+     * @param newMatrix Nouvelle matrice.
+     * @return Valeur de réduction.
+     */
+    private static int reduceColumns(int[][] newMatrix) {
+        int valeur = 0;
+        for (int column = 0; column < newMatrix.length; column++) {
+            int min = Integer.MAX_VALUE;
+            for (int[] line : newMatrix) {
+                if (line[column] < min) {
+                    min = line[column];
+                }
+            }
+            if (min != Integer.MAX_VALUE) {
+                valeur += min;
+                for (int line = 0; line < newMatrix.length; line++) {
+                    newMatrix[line][column] -= min;
+                }
+            }
+        }
+        return valeur;
+    }
+
+    /**
+     * Supprime un point du mappage des indices.
+     *
+     * @param toRemove             Point à supprimer.
+     * @param originalPointToIndex Mappage d'origine des points aux indices.
+     * @return Nouveau mappage des points aux indices.
+     */
+    private static HashMap<Point, Integer> removeFromPointToIndex(Point toRemove, HashMap<Point, Integer> originalPointToIndex) {
+        HashMap<Point, Integer> newPointToIndex = new HashMap<>();
+        int indexToRemove = originalPointToIndex.get(toRemove);
+        for (Map.Entry<Point, Integer> entry : originalPointToIndex.entrySet()) {
+            int index = entry.getValue();
+            if (index < indexToRemove) {
+                newPointToIndex.put(entry.getKey(), index);
+            } else if (index > indexToRemove) {
+                newPointToIndex.put(entry.getKey(), index - 1);
+            }
+        }
+        return newPointToIndex;
     }
 
     /**
@@ -167,7 +235,6 @@ public class Node {
         return value >= 1_000_000_000 || value < 0;
     }
 
-
     /**
      * Évite les circuits dans la matrice en mettant à jour les valeurs.
      * Mise en place de la règle suivante pour éviter tout circuit :
@@ -175,11 +242,11 @@ public class Node {
      * Alors ce end ne peut pas être relié à un start dans le même circuit.
      * Sinon, il y aurait un circuit.
      *
-     * @param matrix            Matrice à mettre à jour.
-     * @param pointToIndexRow   Mappage des points aux indices de ligne.
+     * @param matrix             Matrice à mettre à jour.
+     * @param pointToIndexRow    Mappage des points aux indices de ligne.
      * @param pointToIndexColumn Mappage des points aux indices de colonne.
-     * @param start             Point de départ.
-     * @param end               Point d'arrivée.
+     * @param start              Point de départ.
+     * @param end                Point d'arrivée.
      */
     private void avoidCircuits(int[][] matrix, HashMap<Point, Integer> pointToIndexRow, HashMap<Point, Integer> pointToIndexColumn, Point start, Point end) {
         List<Point> starts = new ArrayList<>(List.of(start));
@@ -316,56 +383,6 @@ public class Node {
     }
 
     /**
-     * Réduit les lignes de la matrice.
-     * Pour chaque ligne, trouve la valeur minimale et la soustrait de chaque élément de la ligne.
-     * Ajoute la valeur minimale de chaque ligne à la valeur totale de réduction.
-     *
-     * @param matrix    Matrice d'origine.
-     * @param newMatrix Nouvelle matrice.
-     * @return Valeur de réduction.
-     */
-    private static int reduceLines(int[][] matrix, int[][] newMatrix) {
-        int valeur = 0;
-        for (int line = 0; line < matrix.length; line++) {
-            int min = Arrays.stream(matrix[line]).min().orElse(Integer.MAX_VALUE);
-            if (min != Integer.MAX_VALUE) {
-                valeur += min;
-                for (int column = 0; column < matrix[line].length; column++) {
-                    newMatrix[line][column] = matrix[line][column] - min;
-                }
-            }
-        }
-        return valeur;
-    }
-
-    /**
-     * Réduit les colonnes de la matrice.
-     * Pour chaque colonne, trouve la valeur minimale et la soustrait de chaque élément de la colonne.
-     * Ajoute la valeur minimale de chaque colonne à la valeur totale de réduction.
-     *
-     * @param newMatrix Nouvelle matrice.
-     * @return Valeur de réduction.
-     */
-    private static int reduceColumns(int[][] newMatrix) {
-        int valeur = 0;
-        for (int column = 0; column < newMatrix.length; column++) {
-            int min = Integer.MAX_VALUE;
-            for (int[] line : newMatrix) {
-                if (line[column] < min) {
-                    min = line[column];
-                }
-            }
-            if (min != Integer.MAX_VALUE) {
-                valeur += min;
-                for (int line = 0; line < newMatrix.length; line++) {
-                    newMatrix[line][column] -= min;
-                }
-            }
-        }
-        return valeur;
-    }
-
-    /**
      * Calcule le plus grand regret pour un nœud.
      * Le regret est calculé en trouvant les zéros dans la matrice et en déterminant
      * la somme des plus petits éléments de la ligne et de la colonne pour chaque zéro.
@@ -418,27 +435,6 @@ public class Node {
             return Integer.MAX_VALUE;
         }
         return minLine + minColumn;
-    }
-
-    /**
-     * Supprime un point du mappage des indices.
-     *
-     * @param toRemove            Point à supprimer.
-     * @param originalPointToIndex Mappage d'origine des points aux indices.
-     * @return Nouveau mappage des points aux indices.
-     */
-    private static HashMap<Point, Integer> removeFromPointToIndex(Point toRemove, HashMap<Point, Integer> originalPointToIndex) {
-        HashMap<Point, Integer> newPointToIndex = new HashMap<>();
-        int indexToRemove = originalPointToIndex.get(toRemove);
-        for (Map.Entry<Point, Integer> entry : originalPointToIndex.entrySet()) {
-            int index = entry.getValue();
-            if (index < indexToRemove) {
-                newPointToIndex.put(entry.getKey(), index);
-            } else if (index > indexToRemove) {
-                newPointToIndex.put(entry.getKey(), index - 1);
-            }
-        }
-        return newPointToIndex;
     }
 
     /**

@@ -15,35 +15,29 @@ import java.util.Random;
 /**
  * Service pour créer des clients rapidement.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @Service
 public class FakeDataService {
-
-    private final Faker faker;
-    private final Random random;
 
     // Coordinates boundaries for Aveyron region
     private static final double MIN_LAT = 43.8;
     private static final double MAX_LAT = 44.9;
     private static final double MIN_LON = 1.8;
     private static final double MAX_LON = 3.4;
-
     // Common Aveyron postal codes
     private static final String[] AVEYRON_POSTAL_CODES = {
             "12000", "12100", "12200", "12300", "12400", "12500",
             "12700", "12800", "12850"
     };
-
     // Common business types in the region
     private static final String[] BUSINESS_TYPES = {
             "Boulangerie", "Fromagerie", "Cave à vin", "Restaurant",
             "Boucherie", "Épicerie", "Café", "Hôtel", "Ferme",
             "Artisanat"
     };
+    private final Faker faker;
+    private final Random random;
 
     public FakeDataService() {
         this.faker = new Faker(Locale.of("fr"));

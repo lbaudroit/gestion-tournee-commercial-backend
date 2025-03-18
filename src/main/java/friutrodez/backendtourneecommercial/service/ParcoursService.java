@@ -3,11 +3,8 @@ package friutrodez.backendtourneecommercial.service;
 import com.mongodb.client.result.DeleteResult;
 import friutrodez.backendtourneecommercial.dto.ParcoursDTO;
 import friutrodez.backendtourneecommercial.dto.ParcoursReducedDTO;
-import friutrodez.backendtourneecommercial.model.EtapesParcours;
 import friutrodez.backendtourneecommercial.model.Parcours;
-import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.repository.mongodb.ParcoursMongoTemplate;
-import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +17,7 @@ import java.util.NoSuchElementException;
  * Cette classe fournit des méthodes pour ajouter un parcours.
  * <p>
  *
- * @author Benjamin NICOL
- * @version 1.0
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @Service
 public class ParcoursService {
@@ -41,7 +37,7 @@ public class ParcoursService {
      * Crée un parcours en base de données.
      *
      * @param dto DTO du parcours
-     * @param id ID de l'utilisateur
+     * @param id  ID de l'utilisateur
      */
     public String createParcours(ParcoursDTO dto, String id) {
         Parcours parcours = Parcours.builder()
@@ -60,7 +56,7 @@ public class ParcoursService {
     /**
      * Récupère une liste paginée de parcours réduits pour un utilisateur donné.
      *
-     * @param idUser L'ID de l'utilisateur
+     * @param idUser   L'ID de l'utilisateur
      * @param pageable Les informations de pagination
      * @return Une liste de ParcoursReducedDTO
      */
@@ -73,10 +69,10 @@ public class ParcoursService {
      * suppression d'un parcours
      *
      * @param idUtilisateur L'ID de l'utilisateur
-     * @param idParcours L'ID du parcours à supprimé
+     * @param idParcours    L'ID du parcours à supprimé
      */
-    public void deleteOneParcours(String idParcours,String idUtilisateur) {
-        DeleteResult deleteResult = parcoursMongoTemplate.removeParcoursWithID(idParcours,idUtilisateur);
+    public void deleteOneParcours(String idParcours, String idUtilisateur) {
+        DeleteResult deleteResult = parcoursMongoTemplate.removeParcoursWithID(idParcours, idUtilisateur);
         if (!deleteResult.wasAcknowledged() || deleteResult.getDeletedCount() == 0) {
             throw new NoSuchElementException("Le client n'a pas été trouvé");
         }

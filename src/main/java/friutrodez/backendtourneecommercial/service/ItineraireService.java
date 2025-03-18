@@ -28,10 +28,7 @@ import java.util.Optional;
  * <p>
  * Elle contient toutes les vérifications métiers d'un itineraire.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @Service
 public class ItineraireService {
@@ -55,6 +52,16 @@ public class ItineraireService {
         this.appartientRepository = appartientRepository;
     }
 
+    private static List<Point> getPointsFromClients(List<Client> clients) {
+        List<Point> points = new ArrayList<>();
+        for (Client client : clients) {
+            String id = client.get_id();
+            Coordonnees coordonnees = client.getCoordonnees();
+            points.add(new Point(id, coordonnees.longitude(), coordonnees.latitude()));
+        }
+        return points;
+    }
+
     /**
      * Optimise le trajet le plus court partant du domicile de l'utilisateur, visitant
      * l'adresse de chacun des clients et revenant au domicile.
@@ -73,16 +80,6 @@ public class ItineraireService {
         int kilometres = bestRoute.distance();
         List<Point> pointsOptimized = bestRoute.points();
         return new ResultatOptimisation(transformToClientId(pointsOptimized), kilometres);
-    }
-
-    private static List<Point> getPointsFromClients(List<Client> clients) {
-        List<Point> points = new ArrayList<>();
-        for (Client client : clients) {
-            String id = client.get_id();
-            Coordonnees coordonnees = client.getCoordonnees();
-            points.add(new Point(id, coordonnees.longitude(), coordonnees.latitude()));
-        }
-        return points;
     }
 
     /**
@@ -174,13 +171,13 @@ public class ItineraireService {
     public void check(Itineraire itineraire, Utilisateur user, ItineraireCreationDTO dto) {
         checkItineraire(itineraire);
         if (dto.idClients().length > Itineraire.MAX_CLIENTS) {
-            throw new DonneesInvalidesException("Le nombre de clients ne doit pas être supérieur à "+Itineraire.MAX_CLIENTS+".");
+            throw new DonneesInvalidesException("Le nombre de clients ne doit pas être supérieur à " + Itineraire.MAX_CLIENTS + ".");
         }
 
         Query query = new Query(Criteria.where("_id").in(Arrays.stream(dto.idClients()).toList()));
         List<Client> list = clientMongoTemplate.mongoTemplate.
                 find(query, Client.class);
-        if(list.size() != dto.idClients().length) {
+        if (list.size() != dto.idClients().length) {
             throw new DonneesInvalidesException("Un id client est invalide.");
         }
         boolean oneIsNotFromCurrentUser = list.
