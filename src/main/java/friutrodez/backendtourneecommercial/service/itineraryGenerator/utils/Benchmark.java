@@ -144,11 +144,40 @@ public class Benchmark {
     }
 
     /**
+     * Génère les en-têtes pour les résultats plus précis des benchmarks.
+     *
+     * @return Une liste des en-têtes.
+     */
+    private static List<String> getSpecficHeaders(String name) {
+        List<String> headers = new ArrayList<>();
+        headers.add(name);
+        for (int i = 1; i <= executions; i++) {
+            headers.add("n°" + i);
+        }
+        return headers;
+    }
+
+    /**
      * Point d'entrée principal pour exécuter les benchmarks et écrire les résultats dans un fichier.
      *
      * @param args Les arguments de la ligne de commande.
      */
     public static void main(String[] args) {
+        for (String arg : args) {
+            if (arg.startsWith("minPoints=")) {
+                minPoints = Integer.parseInt(arg.split("=")[1]);
+            } else if (arg.startsWith("maxPoints=")) {
+                maxPoints = Integer.parseInt(arg.split("=")[1]);
+            } else if (arg.startsWith("minParallelLevels=")) {
+                minParallelLevels = Integer.parseInt(arg.split("=")[1]);
+            } else if (arg.startsWith("maxParallelLevels=")) {
+                maxParallelLevels = Integer.parseInt(arg.split("=")[1]);
+            } else if (arg.startsWith("timeout=")) {
+                timeout = Long.parseLong(arg.split("=")[1]);
+            } else if (arg.startsWith("executions=")) {
+                executions = Integer.parseInt(arg.split("=")[1]);
+            }
+        }
         BenchMarkResults results = benchmark();
         System.out.println(results);
         results.writeResultsToFile("benchmark.csv");

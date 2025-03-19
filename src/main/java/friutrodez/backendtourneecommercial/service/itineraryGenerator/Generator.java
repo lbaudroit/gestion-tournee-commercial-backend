@@ -3,7 +3,6 @@ package friutrodez.backendtourneecommercial.service.itineraryGenerator;
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.algorithms.AvailableAlgorithm;
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.BestRoute;
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Point;
-import friutrodez.backendtourneecommercial.service.itineraryGenerator.algorithms.AvaibleAlgorithm;
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.utils.ApiRequest;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
