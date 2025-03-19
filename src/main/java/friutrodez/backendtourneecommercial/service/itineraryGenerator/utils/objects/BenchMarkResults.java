@@ -12,7 +12,7 @@ import java.util.List;
  * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 public class BenchMarkResults {
-    public static final int MIN_COLUMN_WIDTH = 11;
+    public static final int MIN_COLUMN_WIDTH = 12;
     public static final int MARGIN = 2;
     public static final String DELIMITER = ";";
     private static final double NANO_TO_SEC = 1_000_000_000;

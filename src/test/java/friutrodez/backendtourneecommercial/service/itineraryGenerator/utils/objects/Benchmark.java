@@ -1,8 +1,10 @@
-package friutrodez.backendtourneecommercial.service.itineraryGenerator.utils.objects;
+package friutrodez.backendtourneecommercial.service.itineraryGenerator.utils;
 
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.algorithms.AvailableAlgorithm;
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Point;
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Settings;
+import friutrodez.backendtourneecommercial.service.itineraryGenerator.utils.objects.BenchMarkResults;
+import friutrodez.backendtourneecommercial.service.itineraryGenerator.utils.objects.TestData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +18,12 @@ import java.util.List;
  * @author Ahmed BRIBACH
  */
 public class Benchmark {
-    private static final int MIN_POINTS = 3;
-    private static final int MAX_POINTS = 25;
-    private static final int MIN_PARALLEL_LEVELS = 1;
-    private static final int MAX_PARALLEL_LEVELS = 4;
-    private static final long TIMEOUT = 10_000_000_000L; // 10 secondes
-    private static final int EXECUTIONS = 100;
+    private static int minPoints = 3;
+    private static int maxPoints = 25;
+    private static int minParallelLevels = 1;
+    private static int maxParallelLevels = 4;
+    private static long timeout = 5_000_000_000L; // 5 secondes
+    private static int executions = 100;
 
     /**
      * Exécute les benchmarks pour tous les algorithmes de voyageur de commerce.
@@ -34,7 +36,7 @@ public class Benchmark {
             if (algorithm.equals(AvailableAlgorithm.BRUTE_FORCE_BRANCH_AND_BOUND_PARALLEL)) {
                 runParallelBenchmark(algorithm, results);
             } else {
-                results.addLine(algorithm.name(), runBenchmark(algorithm));
+                results.addLine(algorithm.name(), runBenchmark(algorithm, algorithm.name()));
             }
         }
         return results;
@@ -49,10 +51,10 @@ public class Benchmark {
      * @param results Les résultats des benchmarks.
      */
     private static void runParallelBenchmark(AvailableAlgorithm algorithm, BenchMarkResults results) {
-        for (int levels = MIN_PARALLEL_LEVELS; levels <= MAX_PARALLEL_LEVELS; levels++) {
-            System.out.printf("Parallel levels: %d (min: %d, max: %d)%n", levels, MIN_PARALLEL_LEVELS, MAX_PARALLEL_LEVELS);
+        for (int levels = minParallelLevels; levels <= maxParallelLevels; levels++) {
+            System.out.printf("Parallel levels: %d (min: %d, max: %d)%n", levels, minParallelLevels, maxParallelLevels);
             Settings.setNumberOfParallelLevels(levels);
-            results.addLine(algorithm.name() + " " + levels, runBenchmark(algorithm));
+            results.addLine(algorithm.name() + " " + levels, runBenchmark(algorithm, algorithm.name() + "_WITH_DEPTH_" + levels));
         }
     }
 
@@ -64,22 +66,27 @@ public class Benchmark {
      * @param algorithm L'algorithme à tester.
      * @return Une liste des durées d'exécution pour chaque taille de points.
      */
-    private static List<Long> runBenchmark(AvailableAlgorithm algorithm) {
+    private static List<Long> runBenchmark(AvailableAlgorithm algorithm, String name) {
         List<Long> times = new ArrayList<>();
         boolean tooLong = false;
         // On commence de points plutôt que MIN_POINTS pour éviter les temps fossé,
         // autrement le premier temps pour le premier algorithme est incorrecte. Due à la compilation JIT.
-        for (int points = MIN_POINTS - 2; points <= MAX_POINTS && !tooLong; points++) {
-            long avgTime = getAverageTime(algorithm, points);
-            if (points >= MIN_POINTS) {
-                avgTime /= EXECUTIONS;
-                if (avgTime >= TIMEOUT / 8) {
-                    System.out.println("Next levels will be too long, skipping the rest");
+        BenchMarkResults algorithmSpecificResults = new BenchMarkResults(getSpecficHeaders(name));
+        for (int points = minPoints - 2; points <= maxPoints && !tooLong; points++) {
+            List<Long> values = new ArrayList<>();
+            long avgTime = getAverageTime(algorithm, points, values);
+            if (points >= minPoints) {
+                algorithmSpecificResults.addLine(String.valueOf(points), values);
+                avgTime /= executions;
+                if (avgTime >= timeout) {
+                    System.out.println("Next levels will be too long to compute. Stopping there for this algorithm.");
                     tooLong = true;
                 }
                 times.add(avgTime);
             }
         }
+        System.out.println(algorithmSpecificResults.display());
+        algorithmSpecificResults.writeResultsToFile(name + ".csv");
         return times;
     }
 
@@ -90,12 +97,14 @@ public class Benchmark {
      * @param points Le nombre de points.
      * @return Le temps moyen d'exécution.
      */
-    private static long getAverageTime(AvailableAlgorithm algorithm, int points) {
+    private static long getAverageTime(AvailableAlgorithm algorithm, int points, List<Long> values) {
         long avgTime = 0;
-        for (int exec = 0; exec < EXECUTIONS; exec++) {
-            System.out.printf("%s %d %d/%d%s%n", algorithm.name(), points, exec + 1, EXECUTIONS,
-                    exec != 0 ? String.format(" Estimated remaining time: %.2f seconds", (float) (avgTime / exec) / TIMEOUT * (EXECUTIONS - exec)) : "");
-            avgTime += executeAlgorithm(algorithm, points);
+        for (int exec = 0; exec < executions; exec++) {
+            System.out.printf("%s %d %d/%d%s%n", algorithm.name(), points, exec + 1, executions,
+                    exec != 0 ? String.format(" Estimated remaining time: %.2f seconds", (float) (avgTime / exec) / 1_000_000_000 * (executions - exec)) : "");
+            long time = executeAlgorithm(algorithm, points);
+            values.add(time);
+            avgTime += time;
         }
         return avgTime;
     }
@@ -128,7 +137,7 @@ public class Benchmark {
     private static List<String> getHeaders() {
         List<String> headers = new ArrayList<>();
         headers.add("Algorithm");
-        for (int i = MIN_POINTS; i <= MAX_POINTS; i++) {
+        for (int i = minPoints; i <= maxPoints; i++) {
             headers.add(i + " Nodes");
         }
         return headers;
