@@ -9,6 +9,7 @@ public class DonneesInvalidesException extends RuntimeException {
 
     /**
      * Constructeur
+     *
      * @param message le message d'erreur
      */
     public DonneesInvalidesException(String message) {

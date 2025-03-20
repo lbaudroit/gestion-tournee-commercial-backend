@@ -9,6 +9,7 @@ public class AdresseInvalideException extends RuntimeException {
 
     /**
      * Constructeur
+     *
      * @param message le message d'erreur
      */
     public AdresseInvalideException(String message) {

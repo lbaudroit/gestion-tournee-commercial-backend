@@ -15,10 +15,7 @@ import java.sql.SQLException;
 /**
  * Classe de test pour tester si la connexion aux bd dans le docker fonctionnent.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @SpringBootTest
 public class ConnexionTest {

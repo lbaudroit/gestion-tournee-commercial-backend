@@ -22,10 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Classe de test pour ClientController.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -68,10 +65,7 @@ public class ClientControllerTest {
     void testBuildClient() throws Exception {
         String clientAsJson = objectMapper.writeValueAsString(client);
         System.out.println(clientAsJson);
-        mockMvc.perform(post("/client/")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(clientAsJson).header("Authorization", "Bearer " + headerToken))
-                .andExpect(status().isOk());
+        mockMvc.perform(post("/client/").contentType(MediaType.APPLICATION_JSON).content(clientAsJson).header("Authorization", "Bearer " + headerToken)).andExpect(status().isOk());
         Client clientFound = clientMongoTemplate.findOne("nomEntreprise", "entrepriseTest");
         Assertions.assertEquals(client, clientFound, "Le client n'a pas été créé");
         Assertions.assertEquals(clientFound.getIdUtilisateur(), "" + configurationSecurityContextTest.getUser().getId());
@@ -88,19 +82,14 @@ public class ClientControllerTest {
 
         String clientAsJson = objectMapper.writeValueAsString(client);
 
-        mockMvc.perform(post("/client/")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(clientAsJson).header("Authorization", "Bearer " + headerToken))
-                .andExpect(status().isBadRequest());
+        mockMvc.perform(post("/client/").contentType(MediaType.APPLICATION_JSON).content(clientAsJson).header("Authorization", "Bearer " + headerToken)).andExpect(status().isBadRequest());
         client.setNomEntreprise("entrepriseTest");
     }
 
     @Order(2)
     @Test
     void testGetClient() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/client/" + client.get_id())
-                        .header("Authorization", "Bearer " + headerToken))
-                .andExpect(status().isOk()).andReturn();
+        MvcResult mvcResult = mockMvc.perform(get("/client/" + client.get_id()).header("Authorization", "Bearer " + headerToken)).andExpect(status().isOk()).andReturn();
 
         Assertions.assertDoesNotThrow(() -> objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Client.class), "Aucune donnée a été récupéré");
         Client clientRecupere = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Client.class);
@@ -121,8 +110,7 @@ public class ClientControllerTest {
 
         mockMvc.perform(put("/client/" + client.get_id())
 
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonModifier).header("Authorization", "Bearer " + headerToken))
+                        .contentType(MediaType.APPLICATION_JSON).content(jsonModifier).header("Authorization", "Bearer " + headerToken))
 
                 .andExpect(status().isOk());
 
@@ -138,10 +126,7 @@ public class ClientControllerTest {
     @Order(6)
     @Test
     void testDeleteClient() throws Exception {
-        mockMvc.perform(delete("/client/" + client.get_id())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("Authorization", "Bearer " + headerToken))
-                .andExpect(status().isOk());
+        mockMvc.perform(delete("/client/" + client.get_id()).contentType(MediaType.APPLICATION_JSON).header("Authorization", "Bearer " + headerToken)).andExpect(status().isOk());
 
         Optional<Client> client = clientMongoTemplate.getOneClient(this.client.get_id(), String.valueOf(configurationSecurityContextTest.getUser().getId()));
         Assertions.assertTrue(client.isEmpty());
@@ -156,10 +141,7 @@ public class ClientControllerTest {
         client = configurationSecurityContextTest.getMockClient(configurationSecurityContextTest.getUser());
         client = configurationSecurityContextTest.getMockClient(configurationSecurityContextTest.getUser());
 
-        MvcResult mvcResult = mockMvc.perform(
-                get("/client/")
-                        .header("Authorization", "Bearer " + headerToken))
-                .andExpect(status().isOk()).andReturn();
+        MvcResult mvcResult = mockMvc.perform(get("/client/").header("Authorization", "Bearer " + headerToken)).andExpect(status().isOk()).andReturn();
         Assertions.assertEquals(3, mvcResult.getResponse().getContentAsString().split("},\\{").length);
     }
 

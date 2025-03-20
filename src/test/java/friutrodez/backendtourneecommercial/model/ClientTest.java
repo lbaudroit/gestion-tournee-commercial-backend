@@ -7,10 +7,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Classe de test pour Client.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 public class ClientTest {
 

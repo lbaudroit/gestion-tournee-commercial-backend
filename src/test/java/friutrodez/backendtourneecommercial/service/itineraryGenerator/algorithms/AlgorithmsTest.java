@@ -16,10 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * Classe de test pour les algorithmes de génération d'itinéraires.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 class AlgorithmsTest {
 
@@ -181,7 +178,7 @@ class AlgorithmsTest {
     /**
      * Exécute l'algorithme spécifié avec un nombre donné de points.
      *
-     * @param algorithm L'algorithme à exécuter.
+     * @param algorithm       L'algorithme à exécuter.
      * @param ammountOfPoints Le nombre de points à utiliser.
      * @return La meilleure route trouvée par l'algorithme.
      */

@@ -21,10 +21,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Configuration
 public class ApplicationConfiguration {
 
-    UtilisateurRepository utilisateurRepository;
+    final UtilisateurRepository utilisateurRepository;
 
     /**
      * Constructeur de la classe ApplicationConfiguration
+     *
      * @param utilisateurRepository Le repository des utilisateurs
      */
     @Autowired
@@ -34,6 +35,7 @@ public class ApplicationConfiguration {
 
     /**
      * Récupère un utilisateur par son email
+     *
      * @return Un utilisateur par son email
      */
     @Bean
@@ -44,6 +46,7 @@ public class ApplicationConfiguration {
 
     /**
      * Récupère un gestionnaire d'authentification
+     *
      * @param config La configuration de l'authentification
      * @return Un gestionnaire d'authentification
      * @throws Exception si une erreur survient lors de la récupération du gestionnaire d'authentification
@@ -55,6 +58,7 @@ public class ApplicationConfiguration {
 
     /**
      * Récupère un encodeur de mot de passe
+     *
      * @return Un encodeur de mot de passe
      */
     @Bean
@@ -64,6 +68,7 @@ public class ApplicationConfiguration {
 
     /**
      * Récupère un fournisseur d'authentification
+     *
      * @return Un fournisseur d'authentification
      */
     @Bean

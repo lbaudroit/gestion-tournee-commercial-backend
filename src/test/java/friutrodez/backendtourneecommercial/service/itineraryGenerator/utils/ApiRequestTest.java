@@ -13,10 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Classe de test pour ApiRequest.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 class ApiRequestTest {
     ApiRequest apiRequest;

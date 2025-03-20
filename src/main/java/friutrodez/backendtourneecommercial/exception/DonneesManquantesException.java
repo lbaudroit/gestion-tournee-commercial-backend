@@ -9,6 +9,7 @@ public class DonneesManquantesException extends RuntimeException {
 
     /**
      * Constructeur
+     *
      * @param message le message d'erreur
      */
     public DonneesManquantesException(String message) {

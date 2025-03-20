@@ -23,6 +23,11 @@ import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Classe de test pour ParcoursServiceTest.
+ *
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
+ */
 @SpringBootTest
 @Transactional
 @Rollback

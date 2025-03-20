@@ -12,10 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Classe de test pour BenchMarkResults.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 class BenchMarkResultsTest {
 

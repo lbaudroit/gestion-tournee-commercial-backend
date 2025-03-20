@@ -28,6 +28,7 @@ public class UtilisateurController {
 
     /**
      * Récupère les informations de l'utilisateur connecté.
+     *
      * @return ResponseEntity contenant les informations de l'utilisateur connecté
      */
     @GetMapping
@@ -56,6 +57,7 @@ public class UtilisateurController {
 
     /**
      * Modifie les informations de l'utilisateur connecté.
+     *
      * @param parametrage Objet contenant les nouvelles informations de l'utilisateur
      * @return ResponseEntity contenant un message de confirmation ou un message d'erreur si la modification échoue
      */
@@ -76,6 +78,7 @@ public class UtilisateurController {
 
     /**
      * Modifie le mot de passe de l'utilisateur connecté.
+     *
      * @param password Objet contenant le nouveau mot de passe
      * @return ResponseEntity contenant un message de confirmation ou un message d'erreur si la modification échoue
      */

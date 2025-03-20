@@ -12,6 +12,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+/**
+ * Classe utilitaire pour la génération de parcours de manière aléatoire.
+ *
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
+ */
 public class ParcoursTestUtils {
     private static final Faker faker = new Faker();
 
@@ -24,8 +29,8 @@ public class ParcoursTestUtils {
     public static ParcoursDTO createRandomParcours() {
         List<EtapesParcours> etapes = IntStream.range(0, 5).mapToObj(i ->
                 new EtapesParcours(faker.address().city(), faker.bool().bool(), new Coordonnees(
-                        Double.parseDouble(faker.address().latitude().replace(',','.'))
-                        , Double.parseDouble(faker.address().longitude().replace(',','.'))))
+                        Double.parseDouble(faker.address().latitude().replace(',', '.'))
+                        , Double.parseDouble(faker.address().longitude().replace(',', '.'))))
         ).collect(Collectors.toList());
 
         return new ParcoursDTO(

@@ -9,10 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Classe de test pour la classe BestRoute.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 class BestRouteTest {
 

@@ -48,7 +48,7 @@ public class Benchmark {
      * Comme configuré dans les constantes MIN_PARALLEL_LEVELS et MAX_PARALLEL_LEVELS.
      *
      * @param algorithm L'algorithme à tester.
-     * @param results Les résultats des benchmarks.
+     * @param results   Les résultats des benchmarks.
      */
     private static void runParallelBenchmark(AvailableAlgorithm algorithm, BenchMarkResults results) {
         for (int levels = minParallelLevels; levels <= maxParallelLevels; levels++) {
@@ -94,7 +94,7 @@ public class Benchmark {
      * Calcule le temps moyen d'exécution pour un algorithme et une taille de points donnée.
      *
      * @param algorithm L'algorithme à tester.
-     * @param points Le nombre de points.
+     * @param points    Le nombre de points.
      * @return Le temps moyen d'exécution.
      */
     private static long getAverageTime(AvailableAlgorithm algorithm, int points, List<Long> values) {
@@ -113,7 +113,7 @@ public class Benchmark {
      * Exécute un algorithme pour une taille de points donnée.
      *
      * @param algorithm L'algorithme à tester.
-     * @param points Le nombre de points.
+     * @param points    Le nombre de points.
      * @return Le temps d'exécution.
      */
     private static long executeAlgorithm(AvailableAlgorithm algorithm, int points) {

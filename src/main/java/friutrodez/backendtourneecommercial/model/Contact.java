@@ -24,7 +24,7 @@ public class Contact {
 
     @Transient
     public static final String PHONE_NUMBER_PATTERN = "[0-9]{10}";
-    
+
     /**
      * Le nom du contact.
      */
