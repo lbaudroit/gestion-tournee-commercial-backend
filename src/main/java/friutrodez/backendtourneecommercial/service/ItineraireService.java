@@ -164,7 +164,7 @@ public class ItineraireService {
     /**
      * Méthode pour vérifier les données d'un itinéraire.
      *
-     * @param itineraire L'itinéraire à vérifier.
+     * @param itineraire L'itinéraire a vérifié.
      * @param user       L'utilisateur lié à l'itinéraire.
      * @param dto        Les informations de l'itinéraire.
      */

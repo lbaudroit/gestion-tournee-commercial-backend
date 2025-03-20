@@ -53,7 +53,7 @@ public class ItineraireController {
     public ResponseEntity<Nombre> getItinerairesCount() {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        // Récupérer le nombre d'itinéraire
+        // Récupérer le nombre d'itinéraires
         long counted = itineraireRepository.countItineraireByUtilisateur(user);
         Nombre nombre = new Nombre((int) Math.ceil(counted / (double) PAGE_SIZE));
         return ResponseEntity.ok(nombre);
@@ -77,7 +77,7 @@ public class ItineraireController {
      * Récupère un itinéraire spécifique par son identifiant pour l'utilisateur connecté.
      *
      * @param id L'identifiant de l'itinéraire.
-     * @return ResponseEntity contenant l'itinéraire ou une réponse 404 si non trouvé.
+     * @return ResponseEntity contenant l'itinéraire ou une réponse 404 si non trouvée.
      */
     @GetMapping("{id}")
     public ResponseEntity<ItineraireDTO> getItineraire(@PathVariable("id") Long id) {

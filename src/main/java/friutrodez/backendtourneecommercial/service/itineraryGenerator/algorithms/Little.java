@@ -54,9 +54,9 @@ public class Little implements Algorithm {
     }
 
     /**
-     * Récupère le résultat final de l'itinéraire à partir du meilleur noeud trouvé.
+     * Récupère le résultat final de l'itinéraire à partir du meilleur nœud trouvé.
      *
-     * @param bestRoute le meilleur noeud trouvé
+     * @param bestRoute le meilleur nœud trouvé
      * @param startEnd  le point de départ et d'arrivée
      * @return le meilleur itinéraire sous forme d'objet BestRoute
      */

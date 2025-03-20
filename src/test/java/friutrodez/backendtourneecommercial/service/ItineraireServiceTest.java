@@ -53,12 +53,12 @@ public class ItineraireServiceTest {
     private Client clientFromOtherUser;
 
     /*
-       plan de test:
-            Itineraire avec client qui n'appartient pas au client       => throw error
-            Itineraire avec plus de 8 client                            => throw error
-            Itineraire avec pas de nom                                  => throw error
-            Itineraire avec distance négative                           => throw error
-            Itineraire avec client qui appartient au client et existe   => valide
+       plan de test :
+            Itineraire avec client qui n'appartient pas au client → throw error
+            Itineraire avec plus de 8 clients → throw error
+            Itineraire avec pas de nom → throw error
+            Itineraire avec distance négative → throw error
+            Itineraire avec client qui appartient au client et existe → valide
     */
 
     /**
@@ -105,7 +105,7 @@ public class ItineraireServiceTest {
     }
 
     /**
-     * Teste la création d'un itinéraire avec plus de 8 clients.
+     * Teste la création d'un itinéraire avec plus de huit clients.
      */
     @Test
     public void itineraireWithMoreThan8Clients() {
@@ -202,7 +202,7 @@ public class ItineraireServiceTest {
         Client[] clients = new Client[8];
         for (int i = 0; i < 8; i++) {
             Client c = configurationSecurityContextTest.getMockClient(user);
-            // STUB Mettre en place de vrai coordonnées et vérifié avec le meilleur résultat
+            // STUB Mettre en place de vraies coordonnées et vérifié avec le meilleur résultat
             c.setCoordonnees(new Coordonnees(0, 0));
             clients[i] = c;
         }

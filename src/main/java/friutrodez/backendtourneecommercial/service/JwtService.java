@@ -17,10 +17,10 @@ import java.util.function.Function;
 
 /**
  * Service pour gérer les tokens.
- * Un JWT Token est composé de 3 parties.
- * Le header : le type d'algo d'encryption et le type du token
+ * Un JWT Token est composé de trois parties.
+ * Le header : le type d'algo encryption et le type du token
  * Le payload : contient les informations du token
- * La signature : la clé du token (utilisée pour valider le token)
+ * La signature : la clé du token (utilisée pour valider le token).
  *
  * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
@@ -30,18 +30,18 @@ public class JwtService {
     public static final int EXPIRATION_TOKEN = 1800000;
     /**
      * Clé d'encryption encrypté en HMAC-SHA256.
-     * On peut utiliser ce site <a href="https://www.devglan.com/online-tools/hmac-sha256-online?ref=blog.tericcabrel.com">...</a>
-     * pour créer la clé
+     * On peut utiliser ce site…<a href="https://www.devglan.com/online-tools/hmac-sha256-online?ref=blog.tericcabrel.com"></a>
+     * Pour créer la clé
      **/
     private static final String ENCRYPTION_KEY = "gd5kn1HM/aj36IU7VsRRwrPuYiFvOYQdB8yIdA4UIaU=";
 
     /**
-     * durée en minutes du token
+     * Durée en minutes du token
      **/
     private final int MINUTES = 30;
 
     /**
-     * durée totale du token
+     * Durée totale du token
      **/
     public final int JWT_EXPIRATION = MINUTES * 60 * 1000;
 
@@ -72,7 +72,7 @@ public class JwtService {
 
 
     /**
-     * Construit un token avec les informations suivantes:
+     * Construit un token avec les informations suivantes
      * - clé encryption
      * - claims donnés
      * - date d'expiration
@@ -101,7 +101,7 @@ public class JwtService {
     }
 
     /**
-     * Vérifie si le token est valide par rapport à son temps d'expiration et le username dans le token.
+     * Vérifie si le token est valide par rapport à son temps d'expiration et username dans le token.
      *
      * @param token       reçu
      * @param userDetails reçu
@@ -148,9 +148,9 @@ public class JwtService {
 
     /**
      * Génération de sel pour varier les tokens par utilisateur. <br>
-     * A utiliser pour éviter des tokens similaires lors d'une nouvelle connexion par un même utilisateur
+     * À utiliser pour éviter des tokens similaires lors d'une nouvelle connexion par un même utilisateur
      *
-     * @return une string encodé en base64
+     * @return un string encodé en base64
      */
     private String generateSalt() {
         SecureRandom random = new SecureRandom();

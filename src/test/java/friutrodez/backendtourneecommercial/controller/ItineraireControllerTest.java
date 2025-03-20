@@ -22,9 +22,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * <p>
  * Endpoint GET `/itineraire/generate` - nécessitant authentification
  * <p>
- * | ID | Cas               | Données attendues dans le body                 | Code HTTP attendu |
- * |  1 | Un client connu   | Nombre de km non null, identifiant du client   | 200 (OK)          |
- * |  2 | Un client inconnu | ∅                                              | 400 (Bad Request) |
+ * | ID | Cas | Données attendues dans le body | Code HTTP attendu |
+ * | 1 | Un client connu | Nombre de km non null, identifiant du client | 200 (OK) |
+ * | 2 | Un client inconnu | ∅ | 400 (Bad Request) |
  *
  * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */

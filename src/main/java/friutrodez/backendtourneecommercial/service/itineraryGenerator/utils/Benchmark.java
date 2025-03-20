@@ -18,12 +18,13 @@ import java.util.List;
  * @author Ahmed BRIBACH
  */
 public class Benchmark {
+    public static final int NANO_TO_SEC = 1_000_000_000;
     private static int minPoints = 3;
     private static int maxPoints = 25;
     private static int minParallelLevels = 1;
     private static int maxParallelLevels = 4;
-    private static long timeout = 5_000_000_000L; // 5 secondes
-    private static int executions = 100;
+    private static long timeout = 10_000_000_000L; // 10 secondes
+    private static int executions = 500;
 
     /**
      * Exécute les benchmarks pour tous les algorithmes de voyageur de commerce.
@@ -47,7 +48,7 @@ public class Benchmark {
      * Les benchmarks sont exécutés pour différents niveaux de parallélisme.
      * Comme configuré dans les constantes MIN_PARALLEL_LEVELS et MAX_PARALLEL_LEVELS.
      *
-     * @param algorithm L'algorithme à tester.
+     * @param algorithm L'algorithme a tester.
      * @param results   Les résultats des benchmarks.
      */
     private static void runParallelBenchmark(AvailableAlgorithm algorithm, BenchMarkResults results) {
@@ -63,25 +64,20 @@ public class Benchmark {
      * Les benchmarks sont exécutés pour différentes tailles de points.
      * Comme configuré dans les constantes MIN_POINTS et MAX_POINTS.
      *
-     * @param algorithm L'algorithme à tester.
+     * @param algorithm L'algorithme a tester.
      * @return Une liste des durées d'exécution pour chaque taille de points.
      */
     private static List<Long> runBenchmark(AvailableAlgorithm algorithm, String name) {
         List<Long> times = new ArrayList<>();
-        boolean tooLong = false;
+        long avgTime = 0;
         // On commence de points plutôt que MIN_POINTS pour éviter les temps fossé,
         // autrement le premier temps pour le premier algorithme est incorrecte. Due à la compilation JIT.
         BenchMarkResults algorithmSpecificResults = new BenchMarkResults(getSpecficHeaders(name));
-        for (int points = minPoints - 2; points <= maxPoints && !tooLong; points++) {
+        for (int points = minPoints - 2; points <= maxPoints && avgTime < timeout; points++) {
             List<Long> values = new ArrayList<>();
-            long avgTime = getAverageTime(algorithm, points, values);
+            avgTime = runAlgorithmAndGetTotalTime(algorithm, points, values, name);
             if (points >= minPoints) {
                 algorithmSpecificResults.addLine(String.valueOf(points), values);
-                avgTime /= executions;
-                if (avgTime >= timeout) {
-                    System.out.println("Next levels will be too long to compute. Stopping there for this algorithm.");
-                    tooLong = true;
-                }
                 times.add(avgTime);
             }
         }
@@ -93,26 +89,33 @@ public class Benchmark {
     /**
      * Calcule le temps moyen d'exécution pour un algorithme et une taille de points donnée.
      *
-     * @param algorithm L'algorithme à tester.
+     * @param algorithm L'algorithme a tester.
      * @param points    Le nombre de points.
      * @return Le temps moyen d'exécution.
      */
-    private static long getAverageTime(AvailableAlgorithm algorithm, int points, List<Long> values) {
-        long avgTime = 0;
-        for (int exec = 0; exec < executions; exec++) {
-            System.out.printf("%s %d %d/%d%s%n", algorithm.name(), points, exec + 1, executions,
-                    exec != 0 ? String.format(" Estimated remaining time: %.2f seconds", (float) (avgTime / exec) / 1_000_000_000 * (executions - exec)) : "");
+    private static long runAlgorithmAndGetTotalTime(AvailableAlgorithm algorithm, int points, List<Long> values, String name) {
+        long averageTime = 0;
+        boolean ok = true;
+        int numberOfActualExecutions = executions;
+        for (int exec = 0; exec < executions && ok; exec++) {
+            System.out.printf("%s_SIZE_%d %d/%d%s%n", name, points, exec + 1, executions,
+                    exec != 0 ? String.format(" Estimated remaining time: %.2f seconds", (float) (averageTime / exec) / NANO_TO_SEC * (executions - exec)) : "");
             long time = executeAlgorithm(algorithm, points);
+            if (exec >= 19 && averageTime / exec > timeout) {
+                System.out.println("The algorithm is way too slow. Stopping there. " + averageTime / exec + ", " + exec);
+                numberOfActualExecutions = exec;
+                ok = false;
+            }
             values.add(time);
-            avgTime += time;
+            averageTime += time;
         }
-        return avgTime;
+        return averageTime / numberOfActualExecutions;
     }
 
     /**
      * Exécute un algorithme pour une taille de points donnée.
      *
-     * @param algorithm L'algorithme à tester.
+     * @param algorithm L'algorithme a tester.
      * @param points    Le nombre de points.
      * @return Le temps d'exécution.
      */

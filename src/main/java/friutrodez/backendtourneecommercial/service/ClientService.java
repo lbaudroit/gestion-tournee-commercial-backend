@@ -55,7 +55,7 @@ public class ClientService {
      * Des vérifications sont faites au préalable.
      *
      * @param clientData Les données du client a créé.
-     * @param idUser     L'id de l'utilisateur qui veut créé le client.
+     * @param idUser     L'id de l'utilisateur qui veut créer le client.
      * @return le client créé.
      */
     public Client createOneClient(Client clientData, String idUser) {
@@ -79,7 +79,7 @@ public class ClientService {
     /**
      * Méthode pour modifier un client de la BD.
      *
-     * @param idClient L'id du client a modifié.
+     * @param idClient L'id du client a modifié
      * @param editData Les modifications apportées au client.
      * @param idUser   L'id de l'utilisateur qui veut modifier le client.
      */

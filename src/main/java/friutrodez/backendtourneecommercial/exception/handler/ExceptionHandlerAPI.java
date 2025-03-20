@@ -34,7 +34,7 @@ public class ExceptionHandlerAPI {
     }
 
     /**
-     * Gère les exceptions (Donnees Manquantes Exception)
+     * Gère les exceptions (Donnees Manquante Exception)
      *
      * @param exception l'exception d'origine
      * @return une réponse

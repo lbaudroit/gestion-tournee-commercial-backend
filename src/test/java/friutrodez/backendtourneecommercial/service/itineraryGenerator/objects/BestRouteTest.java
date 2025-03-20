@@ -36,7 +36,7 @@ class BestRouteTest {
     }
 
     /**
-     * Teste si deux instances de BestRoute avec des distances différentes ne sont pas égales.
+     * Teste si deux instances de BestRoute avec différentes distances ne sont pas égales.
      */
     @Test
     void bestRouteNotEqualsDifferentDistance() {
@@ -59,7 +59,7 @@ class BestRouteTest {
     }
 
     /**
-     * Teste si deux instances de BestRoute avec les mêmes points mais dans un ordre différent ne sont pas égales.
+     * Teste si deux instances de BestRoute avec les mêmes points, mais dans un ordre différent ne sont pas égales.
      */
     @Test
     void bestRouteEqualsReversedPoints() {

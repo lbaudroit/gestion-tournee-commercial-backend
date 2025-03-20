@@ -1,7 +1,5 @@
 package friutrodez.backendtourneecommercial.service;
 
-import com.mongodb.client.model.geojson.Point;
-import com.mongodb.client.model.geojson.Position;
 import friutrodez.backendtourneecommercial.dto.ParcoursDTO;
 import friutrodez.backendtourneecommercial.dto.ParcoursReducedDTO;
 import friutrodez.backendtourneecommercial.model.*;
@@ -52,7 +50,7 @@ public class ParcoursServiceTest {
         assertDoesNotThrow(() -> parcoursService.createParcours(dto, userId));
         List<Parcours> savedParcours = parcoursMongoTemplate.mongoTemplate.findAll(Parcours.class);
         assertFalse(savedParcours.isEmpty());
-        assertEquals("Parcours Test", savedParcours.get(0).getNom());
+        assertEquals("Parcours Test", savedParcours.getFirst().getNom());
     }
 
     @Test
@@ -72,7 +70,7 @@ public class ParcoursServiceTest {
         List<ParcoursReducedDTO> result = parcoursService.getLazyReducedParcours(userId, pageable);
         assertNotNull(result);
         assertFalse(result.isEmpty());
-        assertEquals("Parcours Test", result.get(0).nom());
+        assertEquals("Parcours Test", result.getFirst().nom());
     }
 
     @Test

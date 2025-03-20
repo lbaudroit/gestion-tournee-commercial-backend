@@ -19,9 +19,9 @@ import java.util.Objects;
  * Cette classe est utilisée pour mapper la collection `client` dans la base de données MongoDB.
  * Utilise Lombok pour générer les constructeurs, getters, setters et le builder.
  * <p>
- * Le client doit avoir :
- * - Une adresse valide en france
- * - Un nom d'entreprise non vide
+ * Le client doit avoir
+ * – Une adresse valide en france
+ * – Un nom d'entreprise non vide
  *
  * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */

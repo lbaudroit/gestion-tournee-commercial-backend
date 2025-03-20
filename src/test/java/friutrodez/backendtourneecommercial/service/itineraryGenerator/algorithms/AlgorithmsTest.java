@@ -178,7 +178,7 @@ class AlgorithmsTest {
     /**
      * Exécute l'algorithme spécifié avec un nombre donné de points.
      *
-     * @param algorithm       L'algorithme à exécuter.
+     * @param algorithm       L'algorithme a exécuter.
      * @param ammountOfPoints Le nombre de points à utiliser.
      * @return La meilleure route trouvée par l'algorithme.
      */

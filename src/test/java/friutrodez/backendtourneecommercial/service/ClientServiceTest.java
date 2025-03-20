@@ -134,7 +134,7 @@ class ClientServiceTest {
     }
 
     /**
-     * Teste la modification du client avec une adresse mauvaise.
+     * Teste la modification du client avec une mauvaise adresse.
      */
     @Test
     void testEditClientWrong() {

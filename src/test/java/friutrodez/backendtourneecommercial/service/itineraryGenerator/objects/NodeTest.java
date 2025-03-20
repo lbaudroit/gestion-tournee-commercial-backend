@@ -123,7 +123,7 @@ class NodeTest {
                 " [0, 1117, 2147452904, 2343, 2147466197], [935, 0, 19793, 2147482206, 834], " +
                 "[1053, 0, 0, 834, 2147392726]]";
         assertEquals(matrixRightExpected, Arrays.deepToString(racine1.getRight().getMatrixContent()));
-        // Vérifications que les même points sont présents
+        // Vérifications que les mêmes points sont présents
         assertEquals(racine1.getPointToIndexRow(), racine1.getRight().getPointToIndexRow());
         assertEquals(racine1.getPointToIndexColumn(), racine1.getRight().getPointToIndexColumn());
         // Vérification de la valeur du nœud

@@ -57,7 +57,7 @@ class AvaibleAlgorithmTest {
     void getAlgorithmThrowsRuntimeExceptionForInvalidMethod() {
         AvailableAlgorithm invalidAlgorithm = AvailableAlgorithm.BRUTE_FORCE;
         assertThrows(NoSuchMethodException.class, () -> {
-            Method method = invalidAlgorithm.getClass().getMethod("nonExistentMethod");
+            @SuppressWarnings("JavaReflectionMemberAccess") Method method = invalidAlgorithm.getClass().getMethod("nonExistentMethod");
             method.invoke(invalidAlgorithm);
         });
     }

@@ -113,6 +113,6 @@ class BenchMarkResultsTest {
         benchMarkResults.writeResultsToFile("test.csv");
         File file = new File("test.csv");
         assertTrue(file.exists());
-        file.delete();
+        System.out.println(file.delete() ? "File deteled" : "File not deleted");
     }
 }

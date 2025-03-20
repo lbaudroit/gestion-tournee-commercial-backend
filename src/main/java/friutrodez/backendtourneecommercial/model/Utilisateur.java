@@ -17,7 +17,7 @@ import java.util.List;
  * Cette classe est utilisée pour mapper la table `Utilisateur` dans la base de données.
  * Utilise Lombok pour générer les constructeurs, getters, setters et le builder.
  * <p>
- * L'utilisateur doit avoir :
+ * L'utilisateur doit avoir
  * - Un email avec un format correcte
  * - Un mot de passe contenant au moins :
  * 1 majuscule, 1 miniscule, 1 chiffre, 1 caractère spécial, 8 caractères

@@ -66,10 +66,10 @@ public class ParcoursService {
     }
 
     /**
-     * suppression d'un parcours
+     * Suppression d'un parcours
      *
      * @param idUtilisateur L'ID de l'utilisateur
-     * @param idParcours    L'ID du parcours à supprimé
+     * @param idParcours    L'ID du parcours a supprimé
      */
     public void deleteOneParcours(String idParcours, String idUtilisateur) {
         DeleteResult deleteResult = parcoursMongoTemplate.removeParcoursWithID(idParcours, idUtilisateur);

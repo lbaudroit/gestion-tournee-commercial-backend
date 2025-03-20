@@ -59,7 +59,7 @@ public class ParcoursController {
     /**
      * Récupère le nombre de pages
      *
-     * @return Un objet ResponseEntity contenant le nombre de page ou un message d'erreur.
+     * @return Un objet ResponseEntity contenant le nombre de pages ou un message d'erreur.
      */
     @GetMapping(path = "count")
     public ResponseEntity<Nombre> getNumberOfParcours() {

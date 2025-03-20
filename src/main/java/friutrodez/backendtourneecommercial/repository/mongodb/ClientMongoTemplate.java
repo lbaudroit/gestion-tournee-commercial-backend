@@ -140,7 +140,7 @@ public class ClientMongoTemplate extends CustomMongoTemplate<Client> {
     }
 
     /**
-     * Récupère tous les prospects autour d'une coordonnées.
+     * Récupère tous les prospects autour d'une coordonnée.
      * Seulement les prospects dans un rayon de 1000 mètres autour du point sont récupérés.
      *
      * @param point La coordonnée servant comme point d'origine.

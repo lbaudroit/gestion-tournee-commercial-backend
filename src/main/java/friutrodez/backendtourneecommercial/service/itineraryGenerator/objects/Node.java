@@ -184,7 +184,7 @@ public class Node {
      * La matrice est ensuite réduite et la nouvelle valeur est calculée.
      * Si la nouvelle valeur est infinie, elle est définie à Integer.MAX_VALUE.
      *
-     * @param highestRegret Objet HighestRegret contenant les informations sur le plus grand regret.
+     * @param highestRegret Objet HighestRegret contenant les information sur le plus grand regret.
      */
     private void generateLeft(HighestRegret highestRegret) {
         HashMap<Point, Integer> newPointToIndexColumn = removeFromPointToIndex(highestRegret.colonne(), pointToIndexColumn);
@@ -208,7 +208,7 @@ public class Node {
      * La matrice est ensuite réduite et la nouvelle valeur est calculée.
      * Si la nouvelle valeur est infinie, elle est définie à Integer.MAX_VALUE.
      *
-     * @param highestRegret Objet HighestRegret contenant les informations sur le plus grand regret.
+     * @param highestRegret Objet HighestRegret contenant les information sur le plus grand regret.
      */
     private void generateRight(HighestRegret highestRegret) {
         int[][] newMatrix = copyMatrix(matrixContent);

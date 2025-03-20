@@ -69,7 +69,7 @@ class PointTest {
     }
 
     /**
-     * Test de la méthode equals pour vérifier l'égalité avec un objet différent mais ayant le même identifiant.
+     * Test de la méthode equals pour vérifier l'égalité avec un objet différent, mais ayant le même identifiant.
      */
     @Test
     void equals_differentObjectSameId() {

@@ -24,7 +24,7 @@ public class ValidatorService {
 
     /**
      * Cette méthode vérifie l'objet en paramètre.
-     * Cette objet doit être valide sinon une exception sera envoyée.
+     * Cet objet doit être valide sinon une exception sera envoyée.
      *
      * @param object L'objet à valider.
      * @param <T>    Le type de l'objet en paramètre.
