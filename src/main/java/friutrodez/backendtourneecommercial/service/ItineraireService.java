@@ -77,7 +77,7 @@ public class ItineraireService {
         Generator generator = new Generator();
         BestRoute bestRoute = generator.run(points, user.getLongitude(), user.getLatitude(), Generator.DEFAULT_ALGORITHM);
 
-        int kilometres = bestRoute.distance();
+        int kilometres = bestRoute.distance() / 1000;
         List<Point> pointsOptimized = bestRoute.points();
         return new ResultatOptimisation(transformToClientId(pointsOptimized), kilometres);
     }
