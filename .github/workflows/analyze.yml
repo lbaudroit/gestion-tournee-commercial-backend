@@ -1,4 +1,5 @@
 # Workflow ayant pour objectif de lancer une analyse SonarQube du code créé sur GitHub.
+# Docker est nécessaire pour faire une analyse des tests correctes car les tests utilisent des bases de données.
 name: SonarQube
 
 # Le workflow sera lancé seulement lors de push ou de pull request.
@@ -7,7 +8,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
-# job qui s'occupe de l'analyse.
+# job qui s'occupe de l'analyse du code.
   analyze:
     name: Build and Analyze
     runs-on: ubuntu-latest
@@ -33,21 +34,23 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
           
-      # Cache les fichiers pour Maven
+      # Cache les fichiers pour Maven.
       - name: Cache Maven packages
         uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      
+          
+      # Installe et configure docker sur le runner.
       - name: Set up Docker
         uses: docker/setup-buildx-action@v2
-
+        
+      # Lance le compose.yaml pour activer les conteneurs de bases de données.
       - name: Start Docker Compose
         run: docker compose -f compose.yaml up -d
         
-      
+      # Lance l'analyse sur SonarQube.
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
