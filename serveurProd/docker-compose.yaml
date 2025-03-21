@@ -10,6 +10,7 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
       - SPRING_MONGODB=mongodb://dev:123P.1@mongodb:27017/mydatabase?authSource=admin
       - SQL_USERNAME=dev
+      - GENERATE_DATA=false
       - SQL_PASSWORD=123P.A
       - MONGODB_USERNAME=dev
       - MONGODB_PASSWORD=123P.1
