@@ -24,6 +24,7 @@ class AvaibleAlgorithmTest {
         assertEquals("Brute force branch and bound", AvailableAlgorithm.BRUTE_FORCE_BRANCH_AND_BOUND.toString());
         assertEquals("Brute force branch and bound parallel", AvailableAlgorithm.BRUTE_FORCE_BRANCH_AND_BOUND_PARALLEL.toString());
         assertEquals("Little", AvailableAlgorithm.LITTLE.toString());
+        assertEquals("Little v2", AvailableAlgorithm.LITTLEV2.toString());
     }
 
     /**
@@ -48,6 +49,10 @@ class AvaibleAlgorithmTest {
         Method littleMethod = AvailableAlgorithm.LITTLE.getAlgorithm();
         assertEquals("generate", littleMethod.getName());
         assertArrayEquals(new Class[]{List.class, Point.class}, littleMethod.getParameterTypes());
+
+        Method littleV2Method = AvailableAlgorithm.LITTLEV2.getAlgorithm();
+        assertEquals("generate", littleV2Method.getName());
+        assertArrayEquals(new Class[]{List.class, Point.class}, littleV2Method.getParameterTypes());
     }
 
     /**

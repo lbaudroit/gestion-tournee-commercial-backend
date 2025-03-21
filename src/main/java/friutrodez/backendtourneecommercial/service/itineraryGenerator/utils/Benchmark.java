@@ -20,7 +20,7 @@ import java.util.List;
 public class Benchmark {
     public static final int NANO_TO_SEC = 1_000_000_000;
     private static int minPoints = 3;
-    private static int maxPoints = 25;
+    private static int maxPoints = 20;
     private static int minParallelLevels = 1;
     private static int maxParallelLevels = 4;
     private static long timeout = 10_000_000_000L; // 10 secondes

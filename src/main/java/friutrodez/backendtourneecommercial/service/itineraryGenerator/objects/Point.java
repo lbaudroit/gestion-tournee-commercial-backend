@@ -93,7 +93,18 @@ public class Point {
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
-        Point point = (Point) obj;
-        return id.equals(point.id);
+        Point other = (Point) obj;
+        return id.equals(other.id) &&
+                Double.compare(longitude, other.longitude) == 0 &&
+                Double.compare(latitude, other.latitude) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + id.hashCode();
+        result = 31 * result + Double.hashCode(longitude);
+        result = 31 * result + Double.hashCode(latitude);
+        return result;
     }
 }

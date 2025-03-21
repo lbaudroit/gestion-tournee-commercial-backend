@@ -14,7 +14,8 @@ public enum AvailableAlgorithm {
     BRUTE_FORCE,
     BRUTE_FORCE_BRANCH_AND_BOUND,
     BRUTE_FORCE_BRANCH_AND_BOUND_PARALLEL,
-    LITTLE;
+    LITTLE,
+    LITTLEV2;
 
     @Override
     public String toString() {
@@ -23,6 +24,7 @@ public enum AvailableAlgorithm {
             case BRUTE_FORCE_BRANCH_AND_BOUND -> "Brute force branch and bound";
             case BRUTE_FORCE_BRANCH_AND_BOUND_PARALLEL -> "Brute force branch and bound parallel";
             case LITTLE -> "Little";
+            case LITTLEV2 -> "Little v2";
         };
     }
 
@@ -38,6 +40,7 @@ public enum AvailableAlgorithm {
             case BRUTE_FORCE_BRANCH_AND_BOUND -> new BruteForceBranchAndBound();
             case BRUTE_FORCE_BRANCH_AND_BOUND_PARALLEL -> new BruteForceBranchAndBoundParallel();
             case LITTLE -> new Little();
+            case LITTLEV2 -> new LittleV2();
         };
         return algorithm.getClass().getMethod("generate", List.class, Point.class);
     }

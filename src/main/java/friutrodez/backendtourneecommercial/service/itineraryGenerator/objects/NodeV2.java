@@ -13,7 +13,7 @@ import java.util.*;
  * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @SuppressWarnings("DuplicatedCode")
-public class Node {
+public class NodeV2 {
     @Getter
     private final int value;
     @Getter(AccessLevel.MODULE)
@@ -26,12 +26,12 @@ public class Node {
     private Point start;
     @Getter
     private Point end;
+    @Getter
+    private NodeV2 left;
+    @Getter
+    private NodeV2 right;
     @Getter(AccessLevel.MODULE)
-    private Node left;
-    @Getter(AccessLevel.MODULE)
-    private Node right;
-    @Getter(AccessLevel.MODULE)
-    private Node parent;
+    private NodeV2 parent;
 
     /**
      * Constructeur pour initialiser un nœud avec une matrice et des points de départ et d'arrivée.
@@ -45,7 +45,7 @@ public class Node {
      * @param end                Point d'arrivée.
      * @param parent             Noeud parent.
      */
-    public Node(int[][] matrixContent, HashMap<Point, Integer> pointToIndexColumn, HashMap<Point, Integer> pointToIndexRow, int value, Point start, Point end, Node parent) {
+    public NodeV2(int[][] matrixContent, HashMap<Point, Integer> pointToIndexColumn, HashMap<Point, Integer> pointToIndexRow, int value, Point start, Point end, NodeV2 parent) {
         this.matrixContent = matrixContent;
         this.pointToIndexColumn = pointToIndexColumn;
         this.pointToIndexRow = pointToIndexRow;
@@ -61,61 +61,11 @@ public class Node {
      *
      * @param pointList Liste des points.
      */
-    public Node(List<Point> pointList) {
+    public NodeV2(List<Point> pointList) {
         createMatrixWithPointList(pointList);
         ReduceReturn reduceReturn = reduceMatrix(matrixContent);
         this.matrixContent = reduceReturn.matrix();
         this.value = reduceReturn.value();
-    }
-
-    /**
-     * Réduit les lignes de la matrice.
-     * Pour chaque ligne, trouve la valeur minimale et la soustrait de chaque élément de la ligne.
-     * Ajoute la valeur minimale de chaque ligne à la valeur totale de réduction.
-     *
-     * @param matrix    Matrice d'origine.
-     * @param newMatrix Nouvelle matrice.
-     * @return Valeur de réduction.
-     */
-    private static int reduceLines(int[][] matrix, int[][] newMatrix) {
-        int valeur = 0;
-        for (int line = 0; line < matrix.length; line++) {
-            int min = Arrays.stream(matrix[line]).min().orElse(Integer.MAX_VALUE);
-            if (min != Integer.MAX_VALUE) {
-                valeur += min;
-                for (int column = 0; column < matrix[line].length; column++) {
-                    newMatrix[line][column] = matrix[line][column] - min;
-                }
-            }
-        }
-        return valeur;
-    }
-
-    /**
-     * Réduit les colonnes de la matrice.
-     * Pour chaque colonne, trouve la valeur minimale et la soustrait de chaque élément de la colonne.
-     * Ajoute la valeur minimale de chaque colonne à la valeur totale de réduction.
-     *
-     * @param newMatrix Nouvelle matrice.
-     * @return Valeur de réduction.
-     */
-    private static int reduceColumns(int[][] newMatrix) {
-        int valeur = 0;
-        for (int column = 0; column < newMatrix.length; column++) {
-            int min = Integer.MAX_VALUE;
-            for (int[] line : newMatrix) {
-                if (line[column] < min) {
-                    min = line[column];
-                }
-            }
-            if (min != Integer.MAX_VALUE) {
-                valeur += min;
-                for (int line = 0; line < newMatrix.length; line++) {
-                    newMatrix[line][column] -= min;
-                }
-            }
-        }
-        return valeur;
     }
 
     /**
@@ -149,24 +99,6 @@ public class Node {
     }
 
     /**
-     * Retourne le nœud avec la plus petite valeur.
-     * Si le nœud actuel n'a pas d'enfants, il est retourné.
-     * Sinon, les nœuds enfants sont explorés récursivement pour trouver le nœud avec la plus petite valeur.
-     * Si les deux nœuds enfants ont la même valeur, le nœud de gauche est retourné.
-     * Sinon le nœud avec la plus petite valeur est retourné.
-     *
-     * @return Nœud avec la plus petite valeur.
-     */
-    public Node getLowestValueNode() {
-        if (left == null || right == null) {
-            return this;
-        }
-        Node leftNode = left.getLowestValueNode();
-        Node rightNode = right.getLowestValueNode();
-        return leftNode.getValue() <= rightNode.getValue() ? leftNode : rightNode;
-    }
-
-    /**
      * Développe le nœud en créant des nœuds enfants gauche et droit.
      * Le nœud de droite est créé en mettant à jour la direction inverse que celle avec le plus grand regret à l'infini.
      * Le nœud de gauche est créé en mettant à jour la matrice en supprimant la ligne et la colonne avec le plus grand regret.
@@ -177,6 +109,11 @@ public class Node {
         HighestRegret highestRegret = regret();
         generateRight(highestRegret);
         generateLeft(highestRegret);
+
+        // Libère de la mémoire
+        matrixContent = null;
+        pointToIndexColumn = null;
+        pointToIndexRow = null;
     }
 
     /**
@@ -200,7 +137,7 @@ public class Node {
         if (isInfinity(newValue)) {
             newValue = Integer.MAX_VALUE;
         }
-        left = new Node(newMatrixContent, newPointToIndexColumn, newPointToIndexRow, newValue, highestRegret.ligne(), highestRegret.colonne(), this);
+        left = new NodeV2(newMatrixContent, newPointToIndexColumn, newPointToIndexRow, newValue, highestRegret.ligne(), highestRegret.colonne(), this);
     }
 
     /**
@@ -219,7 +156,7 @@ public class Node {
         if (isInfinity(newValue)) {
             newValue = Integer.MAX_VALUE;
         }
-        right = new Node(newMatrix, pointToIndexColumn, pointToIndexRow, newValue, null, null, this);
+        right = new NodeV2(newMatrix, pointToIndexColumn, pointToIndexRow, newValue, null, null, this);
     }
 
     /**
@@ -249,15 +186,39 @@ public class Node {
      * @param start              Point de départ.
      * @param end                Point d'arrivée.
      */
-    private void avoidCircuits(int[][] matrix, HashMap<Point, Integer> pointToIndexRow, HashMap<Point, Integer> pointToIndexColumn, Point start, Point end) {
-        List<Point> starts = new ArrayList<>(List.of(start));
-        List<Point> ends = new ArrayList<>(List.of(end));
+    private void avoidCircuits(int[][] matrix, HashMap<Point, Integer> pointToIndexRow,
+                               HashMap<Point, Integer> pointToIndexColumn, Point start, Point end) {
+        List<Point> starts = new ArrayList<>();
+        List<Point> ends = new ArrayList<>();
+        starts.add(start);
+        ends.add(end);
+
         completeStartsEndsWithCircuit(starts, ends);
-        for (Point endGiven : ends) {
-            if (!starts.contains(endGiven)) {
-                for (Point startGiven : starts) {
-                    if (pointToIndexRow.containsKey(endGiven) && pointToIndexColumn.containsKey(startGiven)) {
-                        matrix[pointToIndexRow.get(endGiven)][pointToIndexColumn.get(startGiven)] = Integer.MAX_VALUE;
+        updateMatrixToAvoidCircuits(matrix, pointToIndexRow, pointToIndexColumn, starts, ends);
+    }
+
+    /**
+     * Met à jour la matrice pour éviter les circuits en définissant les valeurs appropriées à Integer.MAX_VALUE.
+     *
+     * @param matrix             Matrice à mettre à jour.
+     * @param pointToIndexRow    Mappage des points aux indices de ligne.
+     * @param pointToIndexColumn Mappage des points aux indices de colonne.
+     * @param starts             Liste des points de départ.
+     * @param ends               Liste des points d'arrivée.
+     */
+    private void updateMatrixToAvoidCircuits(int[][] matrix, HashMap<Point, Integer> pointToIndexRow,
+                                             HashMap<Point, Integer> pointToIndexColumn, List<Point> starts, List<Point> ends) {
+        Set<Point> startsSet = new HashSet<>(starts);
+
+        for (Point endPoint : ends) {
+            if (!startsSet.contains(endPoint)) {
+                Integer endRowIndex = pointToIndexRow.get(endPoint);
+                if (endRowIndex != null) {
+                    for (Point startPoint : starts) {
+                        Integer startColIndex = pointToIndexColumn.get(startPoint);
+                        if (startColIndex != null) {
+                            matrix[endRowIndex][startColIndex] = Integer.MAX_VALUE;
+                        }
                     }
                 }
             }
@@ -273,21 +234,56 @@ public class Node {
      * @param ends   Liste des points d'arrivée.
      */
     private void completeStartsEndsWithCircuit(List<Point> starts, List<Point> ends) {
-        List<Node> allNodesOnRoute = getAllNodesOnRoute();
-        boolean added;
+        Set<Point> startSet = new HashSet<>(starts);
+        Set<Point> endSet = new HashSet<>(ends);
+
+        List<NodeV2> allNodesOnRoute = getAllNodesOnRoute();
+        boolean hasNewPoints;
         do {
-            added = false;
-            Iterator<Node> iterator = allNodesOnRoute.iterator();
-            while (iterator.hasNext()) {
-                Node node = iterator.next();
-                if (starts.contains(node.getEnd()) || ends.contains(node.getStart())) {
-                    starts.add(node.getStart());
-                    ends.add(node.getEnd());
-                    iterator.remove();
-                    added = true;
+            hasNewPoints = false;
+            hasNewPoints = processNodesForCircuits(allNodesOnRoute, startSet, endSet, hasNewPoints);
+        } while (hasNewPoints);
+
+        updateOriginalLists(starts, ends, startSet, endSet);
+    }
+
+    /**
+     * Traite les nœuds pour trouver les circuits et met à jour les ensembles de départ et d'arrivée.
+     *
+     * @param allNodesOnRoute Liste de tous les nœuds sur la route.
+     * @param startSet        Ensemble des points de départ.
+     * @param endSet          Ensemble des points d'arrivée.
+     * @param hasNewPoints    Indicateur de nouveaux points ajoutés.
+     * @return True si de nouveaux points ont été ajoutés, sinon False.
+     */
+    private boolean processNodesForCircuits(List<NodeV2> allNodesOnRoute, Set<Point> startSet, Set<Point> endSet, boolean hasNewPoints) {
+        for (NodeV2 node : allNodesOnRoute) {
+            Point nodeStart = node.getStart();
+            Point nodeEnd = node.getEnd();
+
+            if (nodeStart != null && nodeEnd != null) {
+                if (startSet.contains(nodeEnd) || endSet.contains(nodeStart)) {
+                    if (startSet.add(nodeStart)) hasNewPoints = true;
+                    if (endSet.add(nodeEnd)) hasNewPoints = true;
                 }
             }
-        } while (added);
+        }
+        return hasNewPoints;
+    }
+
+    /**
+     * Met à jour les listes originales de points de départ et d'arrivée avec les ensembles mis à jour.
+     *
+     * @param starts   Liste des points de départ.
+     * @param ends     Liste des points d'arrivée.
+     * @param startSet Ensemble des points de départ mis à jour.
+     * @param endSet   Ensemble des points d'arrivée mis à jour.
+     */
+    private void updateOriginalLists(List<Point> starts, List<Point> ends, Set<Point> startSet, Set<Point> endSet) {
+        starts.clear();
+        ends.clear();
+        starts.addAll(startSet);
+        ends.addAll(endSet);
     }
 
     /**
@@ -377,10 +373,79 @@ public class Node {
      * @return Objet ReduceReturn contenant la nouvelle matrice et la valeur de réduction.
      */
     private ReduceReturn reduceMatrix(int[][] matrix) {
-        int[][] newMatrix = new int[matrix.length][matrix.length];
-        int valeur = reduceLines(matrix, newMatrix);
-        valeur += reduceColumns(newMatrix);
-        return new ReduceReturn(newMatrix, valeur);
+        int size = matrix.length;
+        int[][] newMatrix = new int[size][size];
+        int totalReduction = 0;
+
+        totalReduction += reduceRows(matrix, newMatrix);
+
+        totalReduction += reduceColumns(newMatrix);
+
+        return new ReduceReturn(newMatrix, totalReduction);
+    }
+
+    /**
+     * Réduit les lignes de la matrice en soustrayant les valeurs minimales de chaque ligne.
+     *
+     * @param matrix Matrice d'origine.
+     * @param newMatrix Nouvelle matrice avec les lignes réduites.
+     * @return Valeur totale de la réduction des lignes.
+     */
+    private int reduceRows(int[][] matrix, int[][] newMatrix) {
+        int size = matrix.length;
+        int totalReduction = 0;
+
+        for (int i = 0; i < size; i++) {
+            int min = Integer.MAX_VALUE;
+            for (int j = 0; j < size; j++) {
+                if (matrix[i][j] < min) {
+                    min = matrix[i][j];
+                }
+            }
+
+            if (min != Integer.MAX_VALUE) {
+                totalReduction += min;
+                for (int j = 0; j < size; j++) {
+                    newMatrix[i][j] = matrix[i][j] - min;
+                }
+            } else {
+                System.arraycopy(matrix[i], 0, newMatrix[i], 0, size);
+            }
+        }
+
+        return totalReduction;
+    }
+
+    /**
+     * Réduit les colonnes de la matrice en soustrayant les valeurs minimales de chaque colonne.
+     *
+     * @param matrix Matrice avec les lignes réduites.
+     * @return Valeur totale de la réduction des colonnes.
+     */
+    private int reduceColumns(int[][] matrix) {
+        int size = matrix.length;
+        int totalReduction = 0;
+        int[] colMins = new int[size];
+        Arrays.fill(colMins, Integer.MAX_VALUE);
+
+        for (int[] ints : matrix) {
+            for (int j = 0; j < size; j++) {
+                if (ints[j] < colMins[j]) {
+                    colMins[j] = ints[j];
+                }
+            }
+        }
+
+        for (int j = 0; j < size; j++) {
+            if (colMins[j] != Integer.MAX_VALUE) {
+                totalReduction += colMins[j];
+                for (int i = 0; i < size; i++) {
+                    matrix[i][j] -= colMins[j];
+                }
+            }
+        }
+
+        return totalReduction;
     }
 
     /**
@@ -422,20 +487,51 @@ public class Node {
      * @return Objet HighestRegret contenant la ligne, la colonne et la valeur du regret.
      */
     private int calculateRegret(Point ligne, Point colonne) {
-        int minColumn = Integer.MAX_VALUE;
-        int minLine = Integer.MAX_VALUE;
-        for (int i = 0; i < matrixContent.length; i++) {
-            if (pointToIndexColumn.get(colonne) != i && matrixContent[pointToIndexRow.get(ligne)][i] < minColumn) {
-                minColumn = matrixContent[pointToIndexRow.get(ligne)][i];
-            }
-            if (pointToIndexRow.get(ligne) != i && matrixContent[i][pointToIndexColumn.get(colonne)] < minLine) {
-                minLine = matrixContent[i][pointToIndexColumn.get(colonne)];
-            }
-        }
-        if (isInfinity(minColumn) || isInfinity(minLine)) {
+        int indexLigne = pointToIndexRow.get(ligne);
+        int indexColonne = pointToIndexColumn.get(colonne);
+
+        int minColonne = findMinInRow(indexLigne, indexColonne);
+        int minLigne = findMinInColumn(indexColonne, indexLigne);
+
+        if (isInfinity(minColonne) || isInfinity(minLigne)) {
             return Integer.MAX_VALUE;
         }
-        return minLine + minColumn;
+
+        return minLigne + minColonne;
+    }
+
+    /**
+     * Trouve le minimum dans la ligne donnée en excluant la colonne actuelle.
+     *
+     * @param indexLigne Index de la ligne.
+     * @param indexColonne Index de la colonne à exclure.
+     * @return Valeur minimale dans la ligne.
+     */
+    private int findMinInRow(int indexLigne, int indexColonne) {
+        int minColonne = Integer.MAX_VALUE;
+        for (int i = 0; i < matrixContent.length; i++) {
+            if (i != indexColonne && matrixContent[indexLigne][i] < minColonne) {
+                minColonne = matrixContent[indexLigne][i];
+            }
+        }
+        return minColonne;
+    }
+
+    /**
+     * Trouve le minimum dans la colonne donnée en excluant la ligne actuelle.
+     *
+     * @param indexColonne Index de la colonne.
+     * @param indexLigne Index de la ligne à exclure.
+     * @return Valeur minimale dans la colonne.
+     */
+    private int findMinInColumn(int indexColonne, int indexLigne) {
+        int minLigne = Integer.MAX_VALUE;
+        for (int i = 0; i < matrixContent.length; i++) {
+            if (i != indexLigne && matrixContent[i][indexColonne] < minLigne) {
+                minLigne = matrixContent[i][indexColonne];
+            }
+        }
+        return minLigne;
     }
 
     /**
@@ -445,16 +541,21 @@ public class Node {
      *
      * @return Liste des nœuds sur la route.
      */
-    public List<Node> getAllNodesOnRoute() {
-        if (parent == null) {
-            return new ArrayList<>();
-        } else {
-            List<Node> allNodes = parent.getAllNodesOnRoute();
-            if (start != null && end != null) {
-                allNodes.add(this);
+    public List<NodeV2> getAllNodesOnRoute() {
+        // Utilisation d'une LinkedList pour une opération addFirst efficace (O(1))
+        LinkedList<NodeV2> allNodes = new LinkedList<>();
+
+        // Commence à partir du nœud actuel et remonte jusqu'à la racine
+        NodeV2 current = this;
+        while (current != null) {
+            if (current.getStart() != null && current.getEnd() != null) {
+                // Ajoute au début pour maintenir l'ordre original (le plus ancien en premier)
+                allNodes.addFirst(current);
             }
-            return allNodes;
+            current = current.getParent();
         }
+
+        return allNodes;
     }
 
     /**
