@@ -1,4 +1,4 @@
-# Gestion de tournée de commercial test
+# Gestion de tournée de commercial
 
 Ce projet est réalisé dans le cadre de notre BUT3 Informatique à l'IUT de Rodez.
 L'objectif est de développer une application permettant à des commerciaux itinérants d'effectuer des visites optimisées de leurs clients et prospects, en réduisant la distance totale parcourue.
