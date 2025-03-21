@@ -19,7 +19,7 @@ services:
           condition: service_healthy
 
     networks:
-      - mon-reseau
+      - reseau-interne
     restart: unless-stopped
 
   mongodb:
@@ -33,7 +33,7 @@ services:
     volumes:
       - ./mongoInits:/docker-entrypoint-initdb.d
     networks:
-      - mon-reseau
+      - reseau-interne
     restart: unless-stopped
 
   mysql:
@@ -48,7 +48,7 @@ services:
     volumes:
       - ./mysqlInits:/docker-entrypoint-initdb.d
     networks:
-      - mon-reseau
+      - reseau-interne
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 10s
@@ -56,5 +56,5 @@ services:
     restart: unless-stopped
 
 networks:
-  mon-reseau:
+  reseau-interne:
     driver: bridge
