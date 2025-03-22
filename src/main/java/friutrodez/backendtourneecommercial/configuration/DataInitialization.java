@@ -6,6 +6,8 @@ import friutrodez.backendtourneecommercial.repository.mysql.AppartientRepository
 import friutrodez.backendtourneecommercial.repository.mysql.ItineraireRepository;
 import friutrodez.backendtourneecommercial.repository.mysql.UtilisateurRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +25,6 @@ import java.util.List;
  * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @Configuration
-@AllArgsConstructor
 public class DataInitialization {
 
     private UtilisateurRepository utilisateurRepository;
@@ -36,6 +37,19 @@ public class DataInitialization {
 
     private PasswordEncoder passwordEncoder;
 
+    @Value("${dev.data.generate}")
+    private String dataGenerate;
+
+    @Autowired
+    public DataInitialization(PasswordEncoder passwordEncoder,ClientMongoTemplate clientMongoTemplate, AppartientRepository appartientRepository, ItineraireRepository itineraireRepository,UtilisateurRepository utilisateurRepository) {
+        this.passwordEncoder = passwordEncoder;
+        this.clientMongoTemplate = clientMongoTemplate;
+        this.utilisateurRepository = utilisateurRepository;
+        this.itineraireRepository = itineraireRepository;
+        this.appartientRepository = appartientRepository;
+    }
+
+
 
     /**
      * Méthode d'initialisation des données.
@@ -47,6 +61,11 @@ public class DataInitialization {
     @Bean
     public CommandLineRunner init() {
         return _ -> {
+
+            if(dataGenerate == null || !dataGenerate.equals("true")) {
+
+                return;
+            }
 
             // Initialisation des utilisateurs
             Utilisateur utilisateur1 = Utilisateur.builder()
