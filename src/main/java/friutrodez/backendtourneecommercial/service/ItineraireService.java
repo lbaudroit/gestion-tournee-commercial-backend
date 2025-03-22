@@ -28,10 +28,7 @@ import java.util.Optional;
  * <p>
  * Elle contient toutes les vérifications métiers d'un itineraire.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @Service
 public class ItineraireService {
@@ -55,6 +52,16 @@ public class ItineraireService {
         this.appartientRepository = appartientRepository;
     }
 
+    private static List<Point> getPointsFromClients(List<Client> clients) {
+        List<Point> points = new ArrayList<>();
+        for (Client client : clients) {
+            String id = client.get_id();
+            Coordonnees coordonnees = client.getCoordonnees();
+            points.add(new Point(id, coordonnees.longitude(), coordonnees.latitude()));
+        }
+        return points;
+    }
+
     /**
      * Optimise le trajet le plus court partant du domicile de l'utilisateur, visitant
      * l'adresse de chacun des clients et revenant au domicile.
@@ -70,19 +77,9 @@ public class ItineraireService {
         Generator generator = new Generator();
         BestRoute bestRoute = generator.run(points, user.getLongitude(), user.getLatitude(), Generator.DEFAULT_ALGORITHM);
 
-        int kilometres = bestRoute.distance();
+        int kilometres = bestRoute.distance() / 1000;
         List<Point> pointsOptimized = bestRoute.points();
         return new ResultatOptimisation(transformToClientId(pointsOptimized), kilometres);
-    }
-
-    private static List<Point> getPointsFromClients(List<Client> clients) {
-        List<Point> points = new ArrayList<>();
-        for (Client client : clients) {
-            String id = client.get_id();
-            Coordonnees coordonnees = client.getCoordonnees();
-            points.add(new Point(id, coordonnees.longitude(), coordonnees.latitude()));
-        }
-        return points;
     }
 
     /**
@@ -167,20 +164,20 @@ public class ItineraireService {
     /**
      * Méthode pour vérifier les données d'un itinéraire.
      *
-     * @param itineraire L'itinéraire à vérifier.
+     * @param itineraire L'itinéraire a vérifié.
      * @param user       L'utilisateur lié à l'itinéraire.
      * @param dto        Les informations de l'itinéraire.
      */
     public void check(Itineraire itineraire, Utilisateur user, ItineraireCreationDTO dto) {
         checkItineraire(itineraire);
         if (dto.idClients().length > Itineraire.MAX_CLIENTS) {
-            throw new DonneesInvalidesException("Le nombre de clients ne doit pas être supérieur à "+Itineraire.MAX_CLIENTS+".");
+            throw new DonneesInvalidesException("Le nombre de clients ne doit pas être supérieur à " + Itineraire.MAX_CLIENTS + ".");
         }
 
         Query query = new Query(Criteria.where("_id").in(Arrays.stream(dto.idClients()).toList()));
         List<Client> list = clientMongoTemplate.mongoTemplate.
                 find(query, Client.class);
-        if(list.size() != dto.idClients().length) {
+        if (list.size() != dto.idClients().length) {
             throw new DonneesInvalidesException("Un id client est invalide.");
         }
         boolean oneIsNotFromCurrentUser = list.

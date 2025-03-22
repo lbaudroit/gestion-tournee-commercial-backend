@@ -23,10 +23,7 @@ import java.util.List;
 /**
  * Classe de test pour ItineraireServiceTest.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
@@ -56,12 +53,12 @@ public class ItineraireServiceTest {
     private Client clientFromOtherUser;
 
     /*
-       plan de test:
-            Itineraire avec client qui n'appartient pas au client       => throw error
-            Itineraire avec plus de 8 client                            => throw error
-            Itineraire avec pas de nom                                  => throw error
-            Itineraire avec distance négative                           => throw error
-            Itineraire avec client qui appartient au client et existe   => valide
+       plan de test :
+            Itineraire avec client qui n'appartient pas au client → throw error
+            Itineraire avec plus de 8 clients → throw error
+            Itineraire avec pas de nom → throw error
+            Itineraire avec distance négative → throw error
+            Itineraire avec client qui appartient au client et existe → valide
     */
 
     /**
@@ -108,7 +105,7 @@ public class ItineraireServiceTest {
     }
 
     /**
-     * Teste la création d'un itinéraire avec plus de 8 clients.
+     * Teste la création d'un itinéraire avec plus de huit clients.
      */
     @Test
     public void itineraireWithMoreThan8Clients() {
@@ -123,6 +120,7 @@ public class ItineraireServiceTest {
         Assertions.assertThrows(DonneesInvalidesException.class, () -> itineraryService.check(itineraire, user, dto));
 
     }
+
     /**
      * Teste la création d'un itinéraire avec un mauvais id client.
      */
@@ -132,7 +130,7 @@ public class ItineraireServiceTest {
         Itineraire itineraire = setItineraryFromDTOAndUser(dto, user);
         Assertions.assertThrows(DonneesInvalidesException.class, () -> itineraryService.check(itineraire, user, dto));
 
-        ItineraireCreationDTO dto2 = new ItineraireCreationDTO(CORRECT_NAME, new String[]{"-1","-5",String.valueOf(Integer.MAX_VALUE)}, CORRECT_DISTANCE);
+        ItineraireCreationDTO dto2 = new ItineraireCreationDTO(CORRECT_NAME, new String[]{"-1", "-5", String.valueOf(Integer.MAX_VALUE)}, CORRECT_DISTANCE);
         Itineraire itineraire2 = setItineraryFromDTOAndUser(dto2, user);
         Assertions.assertThrows(DonneesInvalidesException.class, () -> itineraryService.check(itineraire2, user, dto2));
 
@@ -154,11 +152,11 @@ public class ItineraireServiceTest {
         }
         ItineraireCreationDTO dto = new ItineraireCreationDTO(CORRECT_NAME, idClients, CORRECT_DISTANCE);
         Itineraire itinerary = setItineraryFromDTOAndUser(dto, user);
-        final  Itineraire[] savedItinerary = new Itineraire[1];
+        final Itineraire[] savedItinerary = new Itineraire[1];
         Assertions.assertDoesNotThrow(() -> itineraryService.check(itinerary, user, dto));
         Assertions.assertDoesNotThrow(() -> savedItinerary[0] = itineraryService.createItineraire(dto, user));
         Assertions.assertTrue(itineraryRepository.existsById(savedItinerary[0].getId()));
-        itineraryService.deleteItineraire(savedItinerary[0].getId(),user);
+        itineraryService.deleteItineraire(savedItinerary[0].getId(), user);
         Assertions.assertFalse(itineraryRepository.existsById(savedItinerary[0].getId()));
     }
 
@@ -179,14 +177,14 @@ public class ItineraireServiceTest {
         Assertions.assertDoesNotThrow(() -> itineraryService.createItineraire(dto, user));
 
         Client newClient = configurationSecurityContextTest.getMockClient(user);
-        dto.idClients()[dto.idClients().length-1] = newClient.get_id();
+        dto.idClients()[dto.idClients().length - 1] = newClient.get_id();
         Itineraire itineraryEdit = setItineraryFromDTOAndUser(dto, user);
         itineraryEdit.setNom("Test");
-        final  Itineraire[] savedEditItinerary = new Itineraire[1];
+        final Itineraire[] savedEditItinerary = new Itineraire[1];
         Assertions.assertDoesNotThrow(() -> itineraryService.check(itineraryEdit, user, dto));
-        Assertions.assertDoesNotThrow(() -> savedEditItinerary[0] = itineraryService.editItineraire(dto,user,itinerary.getId()));
+        Assertions.assertDoesNotThrow(() -> savedEditItinerary[0] = itineraryService.editItineraire(dto, user, itinerary.getId()));
 
-        Assertions.assertNotEquals("TestCreate",savedEditItinerary[0].getNom());
+        Assertions.assertNotEquals("TestCreate", savedEditItinerary[0].getNom());
     }
 
     /**
@@ -204,12 +202,12 @@ public class ItineraireServiceTest {
         Client[] clients = new Client[8];
         for (int i = 0; i < 8; i++) {
             Client c = configurationSecurityContextTest.getMockClient(user);
-            // STUB Mettre en place de vrai coordonnées et vérifié avec le meilleur résultat
-            c.setCoordonnees(new Coordonnees(0,0));
+            // STUB Mettre en place de vraies coordonnées et vérifié avec le meilleur résultat
+            c.setCoordonnees(new Coordonnees(0, 0));
             clients[i] = c;
         }
 
-        ResultatOptimisation optimizedResult = itineraryService.optimizeShortest(List.of(clients),user);
+        ResultatOptimisation optimizedResult = itineraryService.optimizeShortest(List.of(clients), user);
         Assertions.assertTrue(optimizedResult.clients().stream().allMatch(clientId -> doClientsContainsId(List.of(clients), clientId._id())));
         Assertions.assertTrue(optimizedResult.kilometres() >= 0);
         // TODO ajouter des vérifications plus intéressantes
@@ -217,14 +215,15 @@ public class ItineraireServiceTest {
 
     /**
      * Métbode pour vérifier si au moins un client d'une liste contient l'id donné.
+     *
      * @param clientList La liste de client à utiliser lors de la vérification.
      * @param id         L'id à vérifier la présence.
-     * @return           True si l'id a été trouvé, sinon false.
+     * @return True si l'id a été trouvé, sinon false.
      */
-    private boolean doClientsContainsId(List<Client> clientList,String id) {
-        boolean contains =false;
-        for(Client client : clientList) {
-            if(client.get_id().equals(id)) {
+    private boolean doClientsContainsId(List<Client> clientList, String id) {
+        boolean contains = false;
+        for (Client client : clientList) {
+            if (client.get_id().equals(id)) {
                 contains = true;
                 break;
             }

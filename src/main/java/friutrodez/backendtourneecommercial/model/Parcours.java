@@ -15,10 +15,7 @@ import java.util.List;
  * Cette classe est utilisée pour mapper la collection `Parcours` dans la base de données MongoDB.
  * Utilise Lombok pour générer les constructeurs, getters, setters et le builder.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @Getter
 @Setter
@@ -60,7 +57,7 @@ public class Parcours {
     /**
      * Coordonnées géographiques du parcours.
      */
-    private GeoJsonLineString coordonnees;
+    private GeoJsonLineString chemin;
 
     /**
      * Date et heure de début du parcours.

@@ -11,10 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Classe de test pour AvaibleAlgorithm.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 class AvaibleAlgorithmTest {
 
@@ -27,6 +24,7 @@ class AvaibleAlgorithmTest {
         assertEquals("Brute force branch and bound", AvailableAlgorithm.BRUTE_FORCE_BRANCH_AND_BOUND.toString());
         assertEquals("Brute force branch and bound parallel", AvailableAlgorithm.BRUTE_FORCE_BRANCH_AND_BOUND_PARALLEL.toString());
         assertEquals("Little", AvailableAlgorithm.LITTLE.toString());
+        assertEquals("Little v2", AvailableAlgorithm.LITTLEV2.toString());
     }
 
     /**
@@ -51,6 +49,10 @@ class AvaibleAlgorithmTest {
         Method littleMethod = AvailableAlgorithm.LITTLE.getAlgorithm();
         assertEquals("generate", littleMethod.getName());
         assertArrayEquals(new Class[]{List.class, Point.class}, littleMethod.getParameterTypes());
+
+        Method littleV2Method = AvailableAlgorithm.LITTLEV2.getAlgorithm();
+        assertEquals("generate", littleV2Method.getName());
+        assertArrayEquals(new Class[]{List.class, Point.class}, littleV2Method.getParameterTypes());
     }
 
     /**
@@ -60,7 +62,7 @@ class AvaibleAlgorithmTest {
     void getAlgorithmThrowsRuntimeExceptionForInvalidMethod() {
         AvailableAlgorithm invalidAlgorithm = AvailableAlgorithm.BRUTE_FORCE;
         assertThrows(NoSuchMethodException.class, () -> {
-            Method method = invalidAlgorithm.getClass().getMethod("nonExistentMethod");
+            @SuppressWarnings("JavaReflectionMemberAccess") Method method = invalidAlgorithm.getClass().getMethod("nonExistentMethod");
             method.invoke(invalidAlgorithm);
         });
     }

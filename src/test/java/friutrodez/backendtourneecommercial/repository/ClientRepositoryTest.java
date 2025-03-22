@@ -8,13 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+
 /**
  * Classe de test pour ClientRepository.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @SpringBootTest
 public class ClientRepositoryTest {

@@ -18,10 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Classe utilitaire pour aider à la configuration des tests
  * notamment ceux liés à la securité et à la vérification.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @Component
 public class ConfigurationSecurityContextTest {

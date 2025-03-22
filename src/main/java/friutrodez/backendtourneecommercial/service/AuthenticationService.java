@@ -18,17 +18,13 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 /**
  * Service de gestion de l'authentification.
  * <p>
  * Cette classe fournit des méthodes pour authentifier ou créer le compte d'un utilisateur.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @Service
 public class AuthenticationService {
@@ -61,7 +57,7 @@ public class AuthenticationService {
      * @return l'utilisateur authentifié.
      */
     public Utilisateur tryAuthenticate(DonneesAuthentification donneeAuthentification) {
-        Authentication authentication =authenticationManager.authenticate(
+        Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         donneeAuthentification.email(),
                         donneeAuthentification.motDePasse()
@@ -78,13 +74,14 @@ public class AuthenticationService {
 
     /**
      * Méthode pour authentifier un utilisateur dans l' "authenticationManager". Ajoute les informations de la requête en cours.
+     *
      * @param userDetails Les détails utilisateur.
-     * @param request La requête en cours.
+     * @param request     La requête en cours.
      * @return L'utilisateur authentifié.
      */
     public Utilisateur tryAuthenticateWithRequest(UserDetails userDetails, HttpServletRequest request) {
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-            userDetails,null,userDetails.getAuthorities()
+                userDetails, null, userDetails.getAuthorities()
         );
 
         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

@@ -20,10 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Classe de test pour UtilisateurController.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -47,6 +44,7 @@ public class UserControllerTest {
 
     /**
      * Setup nécessaire pour faire fonctionner les tests.
+     *
      * @throws Exception si le token n'a pas été récupéré.
      */
     @BeforeAll

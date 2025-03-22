@@ -8,10 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Cette classe initialise et lance l'application Spring Boot.
  * Elle configure également les connexions à MongoDB et MySQL.
  *
- * @author Benjamin NICOL
- * Enzo CLUZEL
- * Leïla BAUDROIT
- * Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @SpringBootApplication
 public class BackendtourneecommercialApplication {

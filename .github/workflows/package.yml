@@ -1,5 +1,8 @@
+# Workflow ayant pour objectif de créer un jar à partir du code créé sur GitHub et de créer une image docker à partir d'un DockerFile pour ajouter le jar dans l'image.
+# Une fois l'apk et l'image créés, ils seront partagés sur github. 
 name: Build JAR and Docker Image
 
+# Le workflow sera lancé seulement lors de push ou de pull request sur la branche main.
 on:
   push:
   pull_request:
@@ -7,23 +10,28 @@ on:
       - main
 
 jobs:
+  # Job qui s'occupe du build du jar
   build:
     name: Build JAR
     runs-on: ubuntu-latest
 
     steps:
+      # Clone le dépôt sur le runner.
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Installe et configure la version 23 de java de la distribution 'temurin' sur le runner.
       - name: Set up JDK 23
         uses: actions/setup-java@v4
         with:
           java-version: 23
           distribution: 'temurin'
-          
+      # Installe et configure docker compose sur le runner.
       - name: Docker Setup Compose
         uses: docker/setup-compose-action@v1.0.0
 
+      # Cache les fichiers de Maven afin de rendre le workflow plus rapide 
+      # et d'éviter de télécharger plusieurs fois les fichiers.
       - name: Cache Maven packages
         uses: actions/cache@v4
         with:
@@ -31,21 +39,27 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
+      # Lance Docker Compose.
       - name: Start Docker Compose
         run: docker compose -f compose.yaml up -d
 
+      # Build le jar de l'application à partir des fichiers dans le runner.
       - name: Build with Maven
-        run: mvn clean package -Dskiptest
+        run: mvn clean package
 
+      # Renomme le jar pour enlever la version du nom du jar qui n'est pas pertinent dans notre application car non utilisée.
       - name: Rename JAR file
         run: mv /home/runner/work/gestion-tournee-commercial-backend/gestion-tournee-commercial-backend/target/backendtourneecommercial-0.0.1-SNAPSHOT.jar /home/runner/work/gestion-tournee-commercial-backend/gestion-tournee-commercial-backend/target/backendtourneecommercial.jar
 
+      # Partage le jar sur GitHub en le nommant 'tournee-commecial-jar'.
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
         with:
           name: tournee-commercial-jar
           path: /home/runner/work/gestion-tournee-commercial-backend/gestion-tournee-commercial-backend/target/backendtourneecommercial.jar
 
+  # Job qui s'occupe du build de l'image. L'image va être construite à partir d'un DockerFile situé dans le dossier 'déployment/'.
+  # Le jar va être mis en tant que point d'entrée de cette image.
   dockerize:
     name: Build Docker Image
     runs-on: ubuntu-latest
@@ -55,25 +69,32 @@ jobs:
         platform: [amd64, arm64]
 
     steps:
+      # Installe et configure la version 23 de java de la distribution 'temurin' sur le runner.
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Télécharge le jar partagé pour le mettre dans le runner. Le jar sera à la racine du projet.  
       - name: Download a Build Artifact
         uses: actions/download-artifact@v4.1.8
         with:
           name: tournee-commercial-jar
 
+      # Installe et configure Docker sur le runner.
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
         with:
           driver-opts: image=moby/buildkit:v0.11.2-rootless
 
+      # Lance une commande qui va build une image à partir du docker file dans 'deployment/'.
+      # L'image sera load. 
       - name: Build and load Docker image # Combined build and load
         run: docker buildx build --platform linux/${{ matrix.platform }} --tag tournee-commercial:${{ matrix.platform }}-0.0.1 --file deployment/Dockerfile --load .
 
+      # L'image sera sauvegardée dans fichier .tar pour être partagée sur github.      
       - name: Save Docker image to a tar file
         run: docker save -o tournee-commercial-${{ matrix.platform }}.tar tournee-commercial:${{ matrix.platform }}-0.0.1
 
+      # Partage le ficher .tar.
       - name: Upload Docker artifact
         uses: actions/upload-artifact@v4
         with:

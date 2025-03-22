@@ -5,6 +5,7 @@ import friutrodez.backendtourneecommercial.dto.Parametrage;
 import friutrodez.backendtourneecommercial.dto.Password;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.service.AuthenticationService;
+
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +16,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * Rest Controlleur de la ressource Utilisateur
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @AllArgsConstructor
 @RequestMapping(path = "/utilisateur/")
@@ -28,6 +26,11 @@ public class UtilisateurController {
 
     private AuthenticationService authenticationService;
 
+    /**
+     * Récupère les informations de l'utilisateur connecté.
+     *
+     * @return ResponseEntity contenant les informations de l'utilisateur connecté
+     */
     @GetMapping
     public ResponseEntity<Parametrage> getUtilisateur() {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -52,6 +55,12 @@ public class UtilisateurController {
         return ResponseEntity.ok(new Message("L'utilisateur a été créé"));
     }
 
+    /**
+     * Modifie les informations de l'utilisateur connecté.
+     *
+     * @param parametrage Objet contenant les nouvelles informations de l'utilisateur
+     * @return ResponseEntity contenant un message de confirmation ou un message d'erreur si la modification échoue
+     */
     @PutMapping
     public ResponseEntity<Message> modifyUtilisateur(@RequestBody Parametrage parametrage) {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -67,6 +76,12 @@ public class UtilisateurController {
         }
     }
 
+    /**
+     * Modifie le mot de passe de l'utilisateur connecté.
+     *
+     * @param password Objet contenant le nouveau mot de passe
+     * @return ResponseEntity contenant un message de confirmation ou un message d'erreur si la modification échoue
+     */
     @PutMapping("password")
     public ResponseEntity<Message> modifyPassword(@RequestBody Password password) {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

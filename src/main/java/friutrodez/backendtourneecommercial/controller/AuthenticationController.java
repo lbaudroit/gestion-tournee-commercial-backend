@@ -5,6 +5,7 @@ import friutrodez.backendtourneecommercial.dto.JwtToken;
 import friutrodez.backendtourneecommercial.model.Utilisateur;
 import friutrodez.backendtourneecommercial.service.AuthenticationService;
 import friutrodez.backendtourneecommercial.service.JwtService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,10 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Contrôleur pour gérer les requêtes d'authentification et de gestion de compte
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @RequestMapping(path = "/auth/")
 @RestController
@@ -43,9 +41,10 @@ public class AuthenticationController {
 
     /**
      * Endpoint d'API pour authentifier l'utilisateur avec son email et mot de passe.
+     *
      * @param authData Les données d'authentifications.
-     * @return         Un JWTToken pour permettre à l'utilisateur d'accéder aux autres ressources.
-     *                 Le temps d'expiration est donné aussi.
+     * @return Un JWTToken pour permettre à l'utilisateur d'accéder aux autres ressources.
+     * Le temps d'expiration est donné aussi.
      */
     @PostMapping
     public ResponseEntity<JwtToken> authenticate(@RequestBody DonneesAuthentification authData) {

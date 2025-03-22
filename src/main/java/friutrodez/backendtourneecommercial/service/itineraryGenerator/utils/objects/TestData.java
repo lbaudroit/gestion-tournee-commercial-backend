@@ -8,10 +8,7 @@ import java.util.List;
 /**
  * Classe utilitaire pour générer des données de test pour les itinéraires.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 public class TestData {
 

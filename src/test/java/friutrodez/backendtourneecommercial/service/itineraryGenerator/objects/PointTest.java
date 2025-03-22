@@ -6,10 +6,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Classe de test pour la classe Point.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 class PointTest {
 
@@ -72,7 +69,7 @@ class PointTest {
     }
 
     /**
-     * Test de la méthode equals pour vérifier l'égalité avec un objet différent mais ayant le même identifiant.
+     * Test de la méthode equals pour vérifier l'égalité avec un objet différent, mais ayant le même identifiant.
      */
     @Test
     void equals_differentObjectSameId() {

@@ -13,10 +13,7 @@ import java.util.HashMap;
 /**
  * Classe de test pour JwtServiceTests.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 public class JwtServiceTest {
 
@@ -63,9 +60,10 @@ public class JwtServiceTest {
         Assertions.assertEquals(1, claims1.get("id")
                 , "extraireTousClaims ne renvoient pas l'id correcte");
 
-        Assertions.assertEquals("testEmail@e.e",jwtService.extractEmail(token));
+        Assertions.assertEquals("testEmail@e.e", jwtService.extractEmail(token));
 
     }
+
     /**
      * Teste l'extraction de l'email dans le token'.
      */
@@ -80,7 +78,7 @@ public class JwtServiceTest {
 
         String token = jwtService.generateToken(userDetails);
 
-        Assertions.assertEquals("testEmail@e.e",jwtService.extractEmail(token));
+        Assertions.assertEquals("testEmail@e.e", jwtService.extractEmail(token));
     }
 
     /**
@@ -97,8 +95,9 @@ public class JwtServiceTest {
 
         String token = jwtService.generateToken(userDetails);
 
-        Assertions.assertEquals(Date.from(Instant.now().plus(30, ChronoUnit.MINUTES)).toString(),jwtService.extractExpiration(token).toString());
+        Assertions.assertEquals(Date.from(Instant.now().plus(30, ChronoUnit.MINUTES)).toString(), jwtService.extractExpiration(token).toString());
     }
+
     /**
      * Teste l'expiration du token.
      */
@@ -130,12 +129,12 @@ public class JwtServiceTest {
         userDetails.setEmail("testEmail@e.e");
 
         String token = jwtService.generateToken(userDetails);
-        Assertions.assertTrue(jwtService.isTokenValid(token,userDetails));
-        Assertions.assertFalse(jwtService.isTokenValid(token,null));
+        Assertions.assertTrue(jwtService.isTokenValid(token, userDetails));
+        Assertions.assertFalse(jwtService.isTokenValid(token, null));
 
         Utilisateur userDetails2 = new Utilisateur();
         userDetails2.setMotDePasse("ersgfh");
         userDetails2.setEmail("sdfghj");
-        Assertions.assertFalse(jwtService.isTokenValid(token,userDetails2));
+        Assertions.assertFalse(jwtService.isTokenValid(token, userDetails2));
     }
 }

@@ -1,43 +1,56 @@
+# Workflow ayant pour objectif de lancer une analyse SonarQube du code créé sur GitHub.
+# Docker est nécessaire pour faire une analyse des tests corrects car les tests utilisent des bases de données.
 name: SonarQube
+
+# Le workflow sera lancé seulement lors de push ou de pull request.
 on:
   push:
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
+# job qui s'occupe de l'analyse du code.
   analyze:
     name: Build and Analyze
     runs-on: ubuntu-latest
     steps:
+      # Clone le dépôt sur le runner.
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
+      # Installe et configure la version 23 de java de la distribution 'temurin' sur le runner.
       - name: Set up JDK 23
         uses: actions/setup-java@v4
         with:
           java-version: 23
           distribution: 'temurin' # Alternative distribution options are available.
 
+      # Cache les fichiers pour l'exécution de SonarQube afin de rendre le workflow plus rapide 
+      # et d'éviter de télécharger plusieurs fois les fichiers.
       - name: Cache SonarQube packages
         uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
-
+          
+      # Cache les fichiers pour Maven.
       - name: Cache Maven packages
         uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-
+          
+      # Installe et configure docker sur le runner.
       - name: Set up Docker
         uses: docker/setup-buildx-action@v2
-
+        
+      # Lance le compose.yaml pour activer les conteneurs de bases de données.
       - name: Start Docker Compose
         run: docker compose -f compose.yaml up -d
-
+        
+      # Lance l'analyse sur SonarQube.
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any

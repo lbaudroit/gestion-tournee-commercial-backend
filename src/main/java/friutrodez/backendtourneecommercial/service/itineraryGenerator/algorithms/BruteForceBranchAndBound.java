@@ -10,17 +10,14 @@ import java.util.List;
  * Classe BruteForceBranchAndBound implémentant l'interface Algorithm.
  * Utilise une approche de force brute avec élagage pour générer le meilleur itinéraire.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 public class BruteForceBranchAndBound implements Algorithm {
 
     /**
      * Génère le meilleur itinéraire.
      *
-     * @param points liste de points sans startEnd
+     * @param points        liste de points sans startEnd
      * @param startEndGiven point de départ et d'arrivée
      * @return le meilleur itinéraire généré
      */
@@ -37,10 +34,11 @@ public class BruteForceBranchAndBound implements Algorithm {
      * Méthode permettant de définir le point de départ et d'arrivée.
      * (Utilisé dans le cas de BruteForceBranchAndBoundParallel)
      * Car on n'utilise pas la méthode generate pour générer l'itinéraire dans ce cas.
+     *
      * @param startEnd point de départ et d'arrivée
      */
     public static BestRoute generateForParallel(List<Point> points, Point currentPoint, List<Point> route,
-                                           int distanceOfBranch, int lowerBound, Point startEnd) {
+                                                int distanceOfBranch, int lowerBound, Point startEnd) {
         if (points.size() == 1) {
             route.add(points.getFirst());
             distanceOfBranch += currentPoint.getDistance(points.getFirst());
@@ -52,12 +50,12 @@ public class BruteForceBranchAndBound implements Algorithm {
     /**
      * Génère récursivement le meilleur itinéraire en utilisant l'algorithme de force brute avec élagage.
      *
-     * @param points liste de points à visiter
-     * @param currentPoint point actuel dans l'itinéraire
-     * @param route itinéraire actuel
+     * @param points           liste de points à visiter
+     * @param currentPoint     point actuel dans l'itinéraire
+     * @param route            itinéraire actuel
      * @param distanceOfBranch distance actuelle de l'itinéraire
-     * @param lowerBound borne inférieure de la distance pour l'élagage
-     * @param startEnd point de départ et d'arrivée
+     * @param lowerBound       borne inférieure de la distance pour l'élagage
+     * @param startEnd         point de départ et d'arrivée
      * @return le meilleur itinéraire trouvé
      */
     protected static BestRoute generateBranchAndBoundRecursively(List<Point> points, Point currentPoint, List<Point> route, int distanceOfBranch, int lowerBound, Point startEnd) {

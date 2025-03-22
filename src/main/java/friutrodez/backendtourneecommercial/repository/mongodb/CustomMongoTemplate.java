@@ -3,7 +3,6 @@ package friutrodez.backendtourneecommercial.repository.mongodb;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.client.result.DeleteResult;
 import friutrodez.backendtourneecommercial.exception.DonneesInvalidesException;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.BasicQuery;
@@ -20,21 +19,18 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
  * de méthode qui utilise la classe mongoTemplate.
  *
  * @param <T> le type de la collection
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 public abstract class CustomMongoTemplate<T> {
 
     /**
-     * mongoTemplate obtenue à partir du bean qui étend cette classe par le constructeur.
-     */
-    public MongoTemplate mongoTemplate;
-    /**
      * La collection donnée par la classe fille
      */
     protected final Class<T> collection;
+    /**
+     * mongoTemplate obtenue à partir du bean qui étend cette classe par le constructeur.
+     */
+    public final MongoTemplate mongoTemplate;
 
     /**
      * Constructeur de la classe CustomMongoTemplate.
@@ -121,8 +117,8 @@ public abstract class CustomMongoTemplate<T> {
         return mongoTemplate.find(basicQuery, collection);
     }
 
-    public DeleteResult remove(T entite) {
-        return mongoTemplate.remove(entite);
+    public void remove(T entite) {
+        mongoTemplate.remove(entite);
     }
 
     /**

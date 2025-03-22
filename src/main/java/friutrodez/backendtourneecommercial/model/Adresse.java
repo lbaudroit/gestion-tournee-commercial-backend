@@ -10,10 +10,7 @@ import lombok.Setter;
  * Cette classe contient les informations de base d'une adresse telles que le libellé, le code postal et la ville.
  * Utilise Lombok pour générer les constructeurs, getters et setters.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @AllArgsConstructor
 @NoArgsConstructor
@@ -41,7 +38,6 @@ public class Adresse {
             return libelle.equals(adresse.getLibelle())
                     && codePostal.equals(adresse.getCodePostal())
                     && ville.equals(adresse.getVille());
-
         }
         return false;
     }

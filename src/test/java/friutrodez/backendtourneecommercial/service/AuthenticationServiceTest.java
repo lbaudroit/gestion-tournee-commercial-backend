@@ -27,10 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Classe de test pour AuthenticationServiceTest.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @Transactional
 @Rollback
@@ -115,9 +112,9 @@ public class AuthenticationServiceTest {
         Utilisateur user = createUser();
         Assertions.assertNull(SecurityContextHolder.getContext().getAuthentication());
 
-        assertDoesNotThrow(()->authenticationService.tryAuthenticate(new DonneesAuthentification("Email@email.com","Ab3@.az234qs")));
-        Assertions.assertEquals(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),user);
-        Assertions.assertEquals(authenticationService.loadUserDetails("Email@email.com"),user);
+        assertDoesNotThrow(() -> authenticationService.tryAuthenticate(new DonneesAuthentification("Email@email.com", "Ab3@.az234qs")));
+        Assertions.assertEquals(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), user);
+        Assertions.assertEquals(authenticationService.loadUserDetails("Email@email.com"), user);
     }
 
     /**
@@ -126,15 +123,15 @@ public class AuthenticationServiceTest {
     @Test
     void testTryAuthenticateWithRequest() {
         Utilisateur user = createUser();
-        Assertions.assertEquals(authenticationService.loadUserDetails("Email@email.com"),user);
+        Assertions.assertEquals(authenticationService.loadUserDetails("Email@email.com"), user);
         UserDetails userDetails = authenticationService.loadUserDetails("Email@email.com");
 
         HttpServletRequest mockRequest = Mockito.mock(HttpServletRequest.class);
         Mockito.when(mockRequest.getRemoteAddr()).thenReturn("127.0.0.1");
 
         Assertions.assertNull(SecurityContextHolder.getContext().getAuthentication());
-        Assertions.assertEquals(authenticationService.tryAuthenticateWithRequest(userDetails,mockRequest),user);
-        Assertions.assertEquals(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),user);
+        Assertions.assertEquals(authenticationService.tryAuthenticateWithRequest(userDetails, mockRequest), user);
+        Assertions.assertEquals(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), user);
     }
 
     /**
@@ -160,7 +157,7 @@ public class AuthenticationServiceTest {
     @Test
     void testEditAccount() {
         Utilisateur user = createUser();
-        authenticationService.tryAuthenticate(new DonneesAuthentification(user.getEmail(),"Ab3@.az234qs"));
+        authenticationService.tryAuthenticate(new DonneesAuthentification(user.getEmail(), "Ab3@.az234qs"));
         Utilisateur editUser = Utilisateur.builder().nom(user.getNom())
                 .email("NewEmail@email.com").libelleAdresse(user.getLibelleAdresse())
                 .ville(user.getVille()).prenom("UnPrenom").nom("UnNom")
@@ -174,12 +171,12 @@ public class AuthenticationServiceTest {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Assertions.assertNotNull(authentication);
 
-        assertNotEquals("Email@email.com",editedUser.getEmail());
+        assertNotEquals("Email@email.com", editedUser.getEmail());
 
         editUser.setLibelleAdresse("12 Avenue de Bordeaux");
-        assertDoesNotThrow(()->authenticationService.editAnAccount(editUser));
+        assertDoesNotThrow(() -> authenticationService.editAnAccount(editUser));
         editUser.setLibelleAdresse("12 Avenue de Bordeau");
-        assertThrows(AdresseInvalideException.class,()->authenticationService.editAnAccount(editUser));
+        assertThrows(AdresseInvalideException.class, () -> authenticationService.editAnAccount(editUser));
     }
 
     /**
@@ -190,6 +187,7 @@ public class AuthenticationServiceTest {
         Adresse validAddress = new Adresse("50 Avenue de Bordeaux", "12000", "Rodez");
         assertDoesNotThrow(() -> authenticationService.checkAddress(validAddress));
     }
+
     /**
      * Vérifie qu'une adresse invalide lance une exception.
      */

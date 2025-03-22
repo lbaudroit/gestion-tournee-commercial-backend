@@ -10,14 +10,11 @@ import java.util.List;
 /**
  * Classe pour effectuer des requêtes API pour générer des matrices de distances.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 public class ApiRequest {
-    private final WebClient webClient;
     private static final String API_URL = "/v2/matrix/driving-car";
+    private final WebClient webClient;
 
     /**
      * Constructeur qui initialise le client Web avec les en-têtes nécessaires.

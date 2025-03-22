@@ -2,23 +2,22 @@ package friutrodez.backendtourneecommercial.configuration;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.lang.NonNull;
 
 /**
  * Classe de configuration pour MongoDB.
  * Cette classe configure la connexion à la base de données MongoDB et crée un bean MongoTemplate.
- *
  * Lorsque cette classe étend la classe AbstractMongoClientConfiguration
  * les index sur les documents mongoDB sont créés automatiquement
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ *
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @Configuration
 @EnableMongoRepositories(basePackages = "friutrodez.backendtourneecommercial.repository")
@@ -34,6 +33,7 @@ public class MongoConfiguration extends AbstractMongoClientConfiguration {
      */
     @Override
     @Bean
+    @NonNull
     public MongoClient mongoClient() {
         return MongoClients.create(mongoUri);
     }
@@ -48,12 +48,22 @@ public class MongoConfiguration extends AbstractMongoClientConfiguration {
         return new MongoTemplate(mongoClient(), "mydatabase");
     }
 
+    /**
+     * Récupère le nom de la base de données.
+     *
+     * @return Le nom de la base de données.
+     */
     @Override
+    @NonNull
     protected String getDatabaseName() {
         return "mydatabase";
     }
 
-    // Auto Index Creation
+    /**
+     * Active la création automatique des index sur les documents MongoDB.
+     *
+     * @return true
+     */
     @Override
     protected boolean autoIndexCreation() {
         return true;

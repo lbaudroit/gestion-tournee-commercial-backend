@@ -22,10 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Classe de test pour ClientServiceTest.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @Transactional
 @Rollback
@@ -88,6 +85,7 @@ class ClientServiceTest {
 
         Assertions.assertNotNull(retrievedUser.getCoordonnees());
     }
+
     /**
      * Teste la création du client avec des erreurs.
      */
@@ -101,7 +99,7 @@ class ClientServiceTest {
 
         client.setAdresse(adress);
 
-        assertThrows(AdresseInvalideException.class,()->clientService.createOneClient(client, "1"));
+        assertThrows(AdresseInvalideException.class, () -> clientService.createOneClient(client, "1"));
     }
 
 
@@ -129,14 +127,14 @@ class ClientServiceTest {
         clientEdit.setNomEntreprise("ModifieClient");
         Adresse adress2 = new Adresse("64 Avenue de Bordeaux", "12000", "Rodez");
         clientEdit.setAdresse(adress2);
-        clientService.editOneClient(clientEdit.get_id(),clientEdit,"1");
+        clientService.editOneClient(clientEdit.get_id(), clientEdit, "1");
 
-        Assertions.assertNotEquals(savedCoordinates,clientEdit.getCoordonnees());
-        Assertions.assertNotEquals(retrievedClient.getNomEntreprise(),clientEdit.getNomEntreprise());
+        Assertions.assertNotEquals(savedCoordinates, clientEdit.getCoordonnees());
+        Assertions.assertNotEquals(retrievedClient.getNomEntreprise(), clientEdit.getNomEntreprise());
     }
 
     /**
-     * Teste la modification du client avec une adresse mauvaise.
+     * Teste la modification du client avec une mauvaise adresse.
      */
     @Test
     void testEditClientWrong() {
@@ -156,7 +154,7 @@ class ClientServiceTest {
         clientEdit.setNomEntreprise("ModifieClient");
         Adresse adress2 = new Adresse("64 Avenue de Borde", "12000", "Rodez");
         clientEdit.setAdresse(adress2);
-        assertThrows(AdresseInvalideException.class, ()->clientService.editOneClient(clientEdit.get_id(),clientEdit,"1"));
+        assertThrows(AdresseInvalideException.class, () -> clientService.editOneClient(clientEdit.get_id(), clientEdit, "1"));
     }
 
     /**
@@ -188,7 +186,7 @@ class ClientServiceTest {
         clientMongoTemplate.save(client);
 
         client.setNomEntreprise("Modif");
-        assertThrows(DonneesInvalidesException.class, ()->clientService.editOneClient(client.get_id(), client,"1"));
+        assertThrows(DonneesInvalidesException.class, () -> clientService.editOneClient(client.get_id(), client, "1"));
     }
 
     /**
@@ -269,15 +267,15 @@ class ClientServiceTest {
 
         farAdressClient.setAdresse(paris);
 
-        clientService.createOneClient(client,String.valueOf(user.getId()));
-        clientService.createOneClient(client2,String.valueOf(user.getId()));
-        clientService.createOneClient(client3,String.valueOf(user.getId()));
-        clientService.createOneClient(notProspectClient,String.valueOf(user.getId()));
-        clientService.createOneClient(farAdressClient,String.valueOf(user.getId()));
+        clientService.createOneClient(client, String.valueOf(user.getId()));
+        clientService.createOneClient(client2, String.valueOf(user.getId()));
+        clientService.createOneClient(client3, String.valueOf(user.getId()));
+        clientService.createOneClient(notProspectClient, String.valueOf(user.getId()));
+        clientService.createOneClient(farAdressClient, String.valueOf(user.getId()));
 
         // Point est un point proche de la gare de rodez
-        Coordonnees point = new Coordonnees(44.36208,2.580071);
-        Assertions.assertEquals(3,clientService.getAllProspectsAround(point, String.valueOf(user.getId())).size());
+        Coordonnees point = new Coordonnees(44.36208, 2.580071);
+        Assertions.assertEquals(3, clientService.getAllProspectsAround(point, String.valueOf(user.getId())).size());
         clientMongoTemplate.mongoTemplate.remove(client3);
         clientMongoTemplate.mongoTemplate.remove(client2);
         clientMongoTemplate.mongoTemplate.remove(client);
@@ -286,8 +284,8 @@ class ClientServiceTest {
     @Test
     void testNoProspectsAround() {
         Utilisateur user = configurationSecurityContextTest.getMockUser();
-        Coordonnees point2 = new Coordonnees(0,0);
-        Assertions.assertEquals(0,clientService.getAllProspectsAround(point2, String.valueOf(user.getId())).size());
+        Coordonnees point2 = new Coordonnees(0, 0);
+        Assertions.assertEquals(0, clientService.getAllProspectsAround(point2, String.valueOf(user.getId())).size());
 
 
     }
@@ -327,7 +325,7 @@ class ClientServiceTest {
     /**
      * Crée un itinéraire pour les tests.
      *
-     * @param user l'utilisateur associé à l'itinéraire
+     * @param user   l'utilisateur associé à l'itinéraire
      * @param client le client associé à l'itinéraire
      * @return un nouvel itinéraire
      */

@@ -19,14 +19,11 @@ import java.util.Objects;
  * Cette classe est utilisée pour mapper la collection `client` dans la base de données MongoDB.
  * Utilise Lombok pour générer les constructeurs, getters, setters et le builder.
  * <p>
- * Le client doit avoir :
- * - Une adresse valide en france
- * - Un nom d'entreprise non vide
+ * Le client doit avoir
+ * – Une adresse valide en france
+ * – Un nom d'entreprise non vide
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @Getter
 @Setter
@@ -97,12 +94,7 @@ public class Client {
      */
     private boolean clientEffectif;
 
-    /**
-     * Vérifie si l'objet en argument est égaux à l'instance actuelle
-     *
-     * @param object à vérifier
-     * @return True si l'objet est égaux
-     */
+
     @Override
     public boolean equals(Object object) {
         if (object instanceof Client client) {
