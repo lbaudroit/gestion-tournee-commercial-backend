@@ -53,7 +53,7 @@ class AlgorithmsTest {
      */
     @Test
     void testAllMethodsReturnTheSameDistance() {
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 100; i++) {
             for (int sizeOfProblem = 2; sizeOfProblem < 10; sizeOfProblem++) {
                 Point startEnd = testData.getStartEnd();
                 List<Point> points = new ArrayList<>(testData.getXRandPoints(sizeOfProblem, startEnd));
@@ -61,9 +61,11 @@ class AlgorithmsTest {
                 BestRoute bestRouteBruteForceBranchAndBound = BruteForceBranchAndBound.generate(new ArrayList<>(points), startEnd);
                 BestRoute bestRouteBruteForceBranchAndBoundParallel = BruteForceBranchAndBoundParallel.generate(new ArrayList<>(points), startEnd);
                 BestRoute bestRouteLittle = Little.generate(new ArrayList<>(points), startEnd);
+                BestRoute bestRouteLittleV2 = LittleV2.generate(new ArrayList<>(points), startEnd);
                 assertEquals(bestRouteBruteForce.distance(), bestRouteBruteForceBranchAndBound.distance());
                 assertEquals(bestRouteBruteForce.distance(), bestRouteLittle.distance());
                 assertEquals(bestRouteBruteForce.distance(), bestRouteBruteForceBranchAndBoundParallel.distance());
+                assertEquals(bestRouteBruteForce.distance(), bestRouteLittleV2.distance());
             }
         }
     }

@@ -1,5 +1,6 @@
 package friutrodez.backendtourneecommercial.service.itineraryGenerator.utils;
 
+import friutrodez.backendtourneecommercial.service.itineraryGenerator.algorithms.Algorithm;
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.algorithms.AvailableAlgorithm;
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Point;
 import friutrodez.backendtourneecommercial.service.itineraryGenerator.objects.Settings;
@@ -8,6 +9,7 @@ import friutrodez.backendtourneecommercial.service.itineraryGenerator.utils.obje
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Classe pour exécuter des benchmarks sur différents algorithmes de voyageur de commerce.
@@ -20,7 +22,7 @@ import java.util.List;
 public class Benchmark {
     public static final int NANO_TO_SEC = 1_000_000_000;
     private static int minPoints = 3;
-    private static int maxPoints = 25;
+    private static int maxPoints = 20;
     private static int minParallelLevels = 1;
     private static int maxParallelLevels = 4;
     private static long timeout = 10_000_000_000L; // 10 secondes
@@ -100,14 +102,15 @@ public class Benchmark {
         for (int exec = 0; exec < executions && ok; exec++) {
             System.out.printf("%s_SIZE_%d %d/%d%s%n", name, points, exec + 1, executions,
                     exec != 0 ? String.format(" Estimated remaining time: %.2f seconds", (float) (averageTime / exec) / NANO_TO_SEC * (executions - exec)) : "");
-            long time = executeAlgorithm(algorithm, points);
+            Long time = executeAlgorithm(algorithm, points);
             if (exec >= 19 && averageTime / exec > timeout) {
                 System.out.println("The algorithm is way too slow. Stopping there. " + averageTime / exec + ", " + exec);
                 numberOfActualExecutions = exec;
                 ok = false;
             }
+            System.gc();
             values.add(time);
-            averageTime += time;
+            averageTime += Objects.requireNonNullElse(time, 200_123_456_789L);
         }
         return averageTime / numberOfActualExecutions;
     }
@@ -119,7 +122,7 @@ public class Benchmark {
      * @param points    Le nombre de points.
      * @return Le temps d'exécution.
      */
-    private static long executeAlgorithm(AvailableAlgorithm algorithm, int points) {
+    private static Long executeAlgorithm(AvailableAlgorithm algorithm, int points) {
         TestData testData = new TestData();
         Point startEnd = testData.getStartEnd();
         List<Point> pointList = testData.getXRandPoints(points, startEnd);
@@ -127,7 +130,7 @@ public class Benchmark {
         try {
             algorithm.getAlgorithm().invoke(null, pointList, startEnd);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return null;
         }
         return System.nanoTime() - startTime;
     }
@@ -181,7 +184,9 @@ public class Benchmark {
                 executions = Integer.parseInt(arg.split("=")[1]);
             }
         }
-        BenchMarkResults results = benchmark();
+        BenchMarkResults results = new BenchMarkResults(getHeaders());
+        AvailableAlgorithm algorithm = AvailableAlgorithm.LITTLEV2;
+        results.addLine(algorithm.name(), runBenchmark(algorithm, algorithm.name()));//benchmark();
         System.out.println(results);
         results.writeResultsToFile("benchmark.csv");
     }
