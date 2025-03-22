@@ -90,15 +90,6 @@ public class NodeV2 {
     }
 
     /**
-     * Retourne la taille de la matrice.
-     *
-     * @return Taille de la matrice.
-     */
-    public int getSizeMatrix() {
-        return matrixContent.length;
-    }
-
-    /**
      * Développe le nœud en créant des nœuds enfants gauche et droit.
      * Le nœud de droite est créé en mettant à jour la direction inverse que celle avec le plus grand regret à l'infini.
      * Le nœud de gauche est créé en mettant à jour la matrice en supprimant la ligne et la colonne avec le plus grand regret.
@@ -114,6 +105,39 @@ public class NodeV2 {
         matrixContent = null;
         pointToIndexColumn = null;
         pointToIndexRow = null;
+    }
+
+    /**
+     * Retourne la taille de la matrice.
+     *
+     * @return Taille de la matrice.
+     */
+    public int getSizeMatrix() {
+        return matrixContent.length;
+    }
+
+    /**
+     * Retourne tous les nœuds sur la route.
+     * Cette méthode est utilisée pour obtenir la liste de tous les nœuds
+     * depuis le nœud courant jusqu'à la racine de l'arbre.
+     *
+     * @return Liste des nœuds sur la route.
+     */
+    public List<NodeV2> getAllNodesOnRoute() {
+        // Utilisation d'une LinkedList pour une opération addFirst efficace (O(1))
+        LinkedList<NodeV2> allNodes = new LinkedList<>();
+
+        // Commence à partir du nœud actuel et remonte jusqu'à la racine
+        NodeV2 current = this;
+        while (current != null) {
+            if (current.getStart() != null && current.getEnd() != null) {
+                // Ajoute au début pour maintenir l'ordre original (le plus ancien en premier)
+                allNodes.addFirst(current);
+            }
+            current = current.getParent();
+        }
+
+        return allNodes;
     }
 
     /**
@@ -290,18 +314,18 @@ public class NodeV2 {
      * Supprime une ligne et une colonne de la matrice.
      * Attention, cette méthode ne modifie pas les PointToIndex. Unique la matrice des valeurs est modifiée.
      *
-     * @param matrix  Matrice d'origine.
-     * @param ligne   Ligne à supprimer.
-     * @param colonne Colonne à supprimer.
+     * @param matrix Matrice d'origine.
+     * @param line   Ligne à supprimer.
+     * @param column Colonne à supprimer.
      * @return Nouvelle matrice avec la ligne et la colonne supprimées.
      */
-    private int[][] removeLineAndColumn(int[][] matrix, Point ligne, Point colonne) {
+    private int[][] removeLineAndColumn(int[][] matrix, Point line, Point column) {
         int size = matrix.length - 1;
         int[][] newMatrix = new int[size][size];
         int newLine = 0;
-        for (int line = 0; line < matrix.length; line++) {
-            if (pointToIndexRow.get(ligne) != line) {
-                copyRow(matrix, newMatrix, line, newLine++, colonne);
+        for (int analysedLine = 0; analysedLine < matrix.length; analysedLine++) {
+            if (pointToIndexRow.get(line) != analysedLine) {
+                copyRow(matrix, newMatrix, analysedLine, newLine++, column);
             }
         }
         return newMatrix;
@@ -316,13 +340,13 @@ public class NodeV2 {
      * @param newMatrix Nouvelle matrice.
      * @param line      Ligne à copier.
      * @param newLine   Nouvelle ligne dans la nouvelle matrice.
-     * @param colonne   Colonne à exclure.
+     * @param column    Colonne à exclure.
      */
-    private void copyRow(int[][] matrix, int[][] newMatrix, int line, int newLine, Point colonne) {
+    private void copyRow(int[][] matrix, int[][] newMatrix, int line, int newLine, Point column) {
         int newColumn = 0;
-        for (int column = 0; column < matrix.length; column++) {
-            if (pointToIndexColumn.get(colonne) != column) {
-                newMatrix[newLine][newColumn++] = matrix[line][column];
+        for (int analyzedColumn = 0; analyzedColumn < matrix.length; analyzedColumn++) {
+            if (pointToIndexColumn.get(column) != analyzedColumn) {
+                newMatrix[newLine][newColumn++] = matrix[line][analyzedColumn];
             }
         }
     }
@@ -387,7 +411,7 @@ public class NodeV2 {
     /**
      * Réduit les lignes de la matrice en soustrayant les valeurs minimales de chaque ligne.
      *
-     * @param matrix Matrice d'origine.
+     * @param matrix    Matrice d'origine.
      * @param newMatrix Nouvelle matrice avec les lignes réduites.
      * @return Valeur totale de la réduction des lignes.
      */
@@ -486,76 +510,52 @@ public class NodeV2 {
      *
      * @return Objet HighestRegret contenant la ligne, la colonne et la valeur du regret.
      */
-    private int calculateRegret(Point ligne, Point colonne) {
-        int indexLigne = pointToIndexRow.get(ligne);
-        int indexColonne = pointToIndexColumn.get(colonne);
+    private int calculateRegret(Point line, Point column) {
+        int indexLine = pointToIndexRow.get(line);
+        int indexColumn = pointToIndexColumn.get(column);
 
-        int minColonne = findMinInRow(indexLigne, indexColonne);
-        int minLigne = findMinInColumn(indexColonne, indexLigne);
+        int minColumn = findMinInRow(indexLine, indexColumn);
+        int minLine = findMinInColumn(indexColumn, indexLine);
 
-        if (isInfinity(minColonne) || isInfinity(minLigne)) {
+        if (isInfinity(minColumn) || isInfinity(minLine)) {
             return Integer.MAX_VALUE;
         }
 
-        return minLigne + minColonne;
+        return minLine + minColumn;
     }
 
     /**
      * Trouve le minimum dans la ligne donnée en excluant la colonne actuelle.
      *
-     * @param indexLigne Index de la ligne.
-     * @param indexColonne Index de la colonne à exclure.
+     * @param indexLine   Index de la ligne.
+     * @param indexColumn Index de la colonne à exclure.
      * @return Valeur minimale dans la ligne.
      */
-    private int findMinInRow(int indexLigne, int indexColonne) {
-        int minColonne = Integer.MAX_VALUE;
+    private int findMinInRow(int indexLine, int indexColumn) {
+        int minColumn = Integer.MAX_VALUE;
         for (int i = 0; i < matrixContent.length; i++) {
-            if (i != indexColonne && matrixContent[indexLigne][i] < minColonne) {
-                minColonne = matrixContent[indexLigne][i];
+            if (i != indexColumn && matrixContent[indexLine][i] < minColumn) {
+                minColumn = matrixContent[indexLine][i];
             }
         }
-        return minColonne;
+        return minColumn;
     }
 
     /**
      * Trouve le minimum dans la colonne donnée en excluant la ligne actuelle.
      *
-     * @param indexColonne Index de la colonne.
-     * @param indexLigne Index de la ligne à exclure.
+     * @param indexColumn Index de la colonne.
+     * @param indexLine   Index de la ligne à exclure.
      * @return Valeur minimale dans la colonne.
      */
-    private int findMinInColumn(int indexColonne, int indexLigne) {
+    private int findMinInColumn(int indexColumn, int indexLine) {
         int minLigne = Integer.MAX_VALUE;
         for (int i = 0; i < matrixContent.length; i++) {
-            if (i != indexLigne && matrixContent[i][indexColonne] < minLigne) {
-                minLigne = matrixContent[i][indexColonne];
+            if (i != indexLine && matrixContent[i][indexColumn] < minLigne) {
+                minLigne = matrixContent[i][indexColumn];
             }
         }
         return minLigne;
-    }
-
-    /**
-     * Retourne tous les nœuds sur la route.
-     * Cette méthode est utilisée pour obtenir la liste de tous les nœuds
-     * depuis le nœud courant jusqu'à la racine de l'arbre.
-     *
-     * @return Liste des nœuds sur la route.
-     */
-    public List<NodeV2> getAllNodesOnRoute() {
-        // Utilisation d'une LinkedList pour une opération addFirst efficace (O(1))
-        LinkedList<NodeV2> allNodes = new LinkedList<>();
-
-        // Commence à partir du nœud actuel et remonte jusqu'à la racine
-        NodeV2 current = this;
-        while (current != null) {
-            if (current.getStart() != null && current.getEnd() != null) {
-                // Ajoute au début pour maintenir l'ordre original (le plus ancien en premier)
-                allNodes.addFirst(current);
-            }
-            current = current.getParent();
-        }
-
-        return allNodes;
     }
 
     /**

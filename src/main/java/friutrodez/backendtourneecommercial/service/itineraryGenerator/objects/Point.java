@@ -94,9 +94,7 @@ public class Point {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Point other = (Point) obj;
-        return id.equals(other.id) &&
-                Double.compare(longitude, other.longitude) == 0 &&
-                Double.compare(latitude, other.latitude) == 0;
+        return id.equals(other.id);
     }
 
     @Override

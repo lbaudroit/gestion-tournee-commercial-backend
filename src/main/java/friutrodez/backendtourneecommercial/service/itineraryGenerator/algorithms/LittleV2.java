@@ -50,7 +50,7 @@ public class LittleV2 implements Algorithm {
         NodeV2 bestSoFar = null;
         int bestValueSoFar = Integer.MAX_VALUE;
 
-// Paramètres de surveillance de la mémoire
+        // Paramètres de surveillance de la mémoire
         int nodeCheckFrequency = 100;
         double memoryThreshold = 0.95; // 95% de la mémoire maximale
         Runtime runtime = Runtime.getRuntime();
@@ -63,13 +63,7 @@ public class LittleV2 implements Algorithm {
                     double memoryUsageRatio = (double) usedMemory / runtime.maxMemory();
 
                     if (memoryUsageRatio > memoryThreshold) {
-                        if (bestSoFar != null) {
-                            System.out.println("Memory threshold exceeded: " +
-                                    Math.round(memoryUsageRatio * 100) + "% used. Using best partial solution.");
-                            return getResult(bestSoFar, startEndGiven);
-                        } else {
-                            throw new IllegalStateException("Memory threshold exceeded before finding any solution");
-                        }
+                        throw new IllegalStateException("Memory threshold exceeded.");
                     }
                 }
 
@@ -83,7 +77,6 @@ public class LittleV2 implements Algorithm {
                     // Suivi de la meilleure solution incomplète trouvée jusqu'à présent
                     if (toExpand.getValue() < bestValueSoFar) {
                         bestValueSoFar = toExpand.getValue();
-                        bestSoFar = toExpand;
                     }
 
                     toExpand.expand();
@@ -95,12 +88,7 @@ public class LittleV2 implements Algorithm {
             assert bestNode != null;
             return getResult(bestNode, startEndGiven);
         } catch (OutOfMemoryError e) {
-            // Gestionnaire d'erreur de mémoire insuffisante
-            if (bestSoFar != null) {
-                System.out.println("Memory exhausted - returning best partial solution found so far");
-                return getResult(bestSoFar, startEndGiven);
-            }
-            throw new IllegalStateException("Out of memory before finding any solution", e);
+            throw new IllegalStateException("Memory threshold exceeded.");
         }
     }
 
