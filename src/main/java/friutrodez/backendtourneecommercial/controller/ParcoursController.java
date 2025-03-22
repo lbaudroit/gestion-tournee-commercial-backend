@@ -108,8 +108,8 @@ public class ParcoursController {
      * @param id L'id du parcours.
      * @return Le parcours correspondant à l'id.
      */
-    @GetMapping
-    public ResponseEntity<Parcours> getParcours(@RequestParam(name = "id") String id) {
+    @GetMapping("{id}")
+    public ResponseEntity<Parcours> getParcours(@PathVariable(name = "id") String id) {
         return ResponseEntity.ok().body(parcoursMongoTemplate.find("_id", id).getFirst());
     }
 
