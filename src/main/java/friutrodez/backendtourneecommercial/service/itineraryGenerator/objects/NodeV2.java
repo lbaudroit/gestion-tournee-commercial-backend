@@ -264,8 +264,7 @@ public class NodeV2 {
         List<NodeV2> allNodesOnRoute = getAllNodesOnRoute();
         boolean hasNewPoints;
         do {
-            hasNewPoints = false;
-            hasNewPoints = processNodesForCircuits(allNodesOnRoute, startSet, endSet, hasNewPoints);
+            hasNewPoints = processNodesForCircuits(allNodesOnRoute, startSet, endSet);
         } while (hasNewPoints);
 
         updateOriginalLists(starts, ends, startSet, endSet);
@@ -277,10 +276,10 @@ public class NodeV2 {
      * @param allNodesOnRoute Liste de tous les nœuds sur la route.
      * @param startSet        Ensemble des points de départ.
      * @param endSet          Ensemble des points d'arrivée.
-     * @param hasNewPoints    Indicateur de nouveaux points ajoutés.
      * @return True si de nouveaux points ont été ajoutés, sinon False.
      */
-    private boolean processNodesForCircuits(List<NodeV2> allNodesOnRoute, Set<Point> startSet, Set<Point> endSet, boolean hasNewPoints) {
+    private boolean processNodesForCircuits(List<NodeV2> allNodesOnRoute, Set<Point> startSet, Set<Point> endSet) {
+        boolean hasNewPoints = false;
         for (NodeV2 node : allNodesOnRoute) {
             Point nodeStart = node.getStart();
             Point nodeEnd = node.getEnd();

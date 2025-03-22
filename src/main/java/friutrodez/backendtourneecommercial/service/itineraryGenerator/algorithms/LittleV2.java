@@ -47,7 +47,6 @@ public class LittleV2 implements Algorithm {
         priorityQueue.add(root);
 
         NodeV2 bestNode = null;
-        NodeV2 bestSoFar = null;
         int bestValueSoFar = Integer.MAX_VALUE;
 
         // Paramètres de surveillance de la mémoire
