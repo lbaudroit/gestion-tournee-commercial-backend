@@ -9,10 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Classe de test pour la classe BestRoute.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 class BestRouteTest {
 
@@ -39,7 +36,7 @@ class BestRouteTest {
     }
 
     /**
-     * Teste si deux instances de BestRoute avec des distances différentes ne sont pas égales.
+     * Teste si deux instances de BestRoute avec différentes distances ne sont pas égales.
      */
     @Test
     void bestRouteNotEqualsDifferentDistance() {
@@ -62,7 +59,7 @@ class BestRouteTest {
     }
 
     /**
-     * Teste si deux instances de BestRoute avec les mêmes points mais dans un ordre différent ne sont pas égales.
+     * Teste si deux instances de BestRoute avec les mêmes points, mais dans un ordre différent ne sont pas égales.
      */
     @Test
     void bestRouteEqualsReversedPoints() {

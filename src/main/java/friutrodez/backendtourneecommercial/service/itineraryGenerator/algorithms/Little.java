@@ -10,17 +10,14 @@ import java.util.List;
 /**
  * Classe implémentant l'algorithme de Little pour générer le meilleur itinéraire.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 public class Little implements Algorithm {
 
     /**
      * Génère le meilleur itinéraire.
      *
-     * @param points liste de points sans startEnd
+     * @param points        liste de points sans startEnd
      * @param startEndGiven point de départ et d'arrivée
      * @return le meilleur itinéraire généré
      */
@@ -35,7 +32,7 @@ public class Little implements Algorithm {
     /**
      * Exécute l'algorithme de Little pour trouver le meilleur itinéraire.
      *
-     * @param points liste de points sans startEnd
+     * @param points        liste de points sans startEnd
      * @param startEndGiven point de départ et d'arrivée
      * @return le meilleur itinéraire trouvé
      */
@@ -57,10 +54,10 @@ public class Little implements Algorithm {
     }
 
     /**
-     * Récupère le résultat final de l'itinéraire à partir du meilleur noeud trouvé.
+     * Récupère le résultat final de l'itinéraire à partir du meilleur nœud trouvé.
      *
-     * @param bestRoute le meilleur noeud trouvé
-     * @param startEnd le point de départ et d'arrivée
+     * @param bestRoute le meilleur nœud trouvé
+     * @param startEnd  le point de départ et d'arrivée
      * @return le meilleur itinéraire sous forme d'objet BestRoute
      */
     private static BestRoute getResult(Node bestRoute, Point startEnd) {

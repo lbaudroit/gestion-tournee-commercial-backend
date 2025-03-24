@@ -1,0 +1,60 @@
+services:
+  server:
+    image: 'tournee-commercial:amd64-0.0.1'
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    ports:
+      - '9090:9090'
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/mydatabase
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_MONGODB=mongodb://dev:123P.1@mongodb:27017/mydatabase?authSource=admin
+      - SQL_USERNAME=dev
+      - GENERATE_DATA=false
+      - SQL_PASSWORD=123P.A
+      - MONGODB_USERNAME=dev
+      - MONGODB_PASSWORD=123P.1
+    depends_on:
+        mysql:
+          condition: service_healthy
+
+    networks:
+      - reseau-interne
+    restart: unless-stopped
+
+  mongodb:
+    image: 'mongo:latest'
+    ports:
+      - '27018:27017'
+    environment:
+      - 'MONGO_INITDB_DATABASE=mydatabase'
+      - 'MONGO_INITDB_ROOT_PASSWORD=123P.1'
+      - 'MONGO_INITDB_ROOT_USERNAME=dev'
+    volumes:
+      - ./mongoInits:/docker-entrypoint-initdb.d
+    networks:
+      - reseau-interne
+    restart: unless-stopped
+
+  mysql:
+    image: 'mysql:latest'
+    ports:
+      - '3307:3306'
+    environment:
+      - 'MYSQL_DATABASE=mydatabase'
+      - 'MYSQL_PASSWORD=123P.A'
+      - 'MYSQL_ROOT_PASSWORD=123P.A'
+      - 'MYSQL_USER=dev'
+    volumes:
+      - ./mysqlInits:/docker-entrypoint-initdb.d
+    networks:
+      - reseau-interne
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      retries: 5
+    restart: unless-stopped
+
+networks:
+  reseau-interne:
+    driver: bridge

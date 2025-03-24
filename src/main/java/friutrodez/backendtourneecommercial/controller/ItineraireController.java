@@ -10,6 +10,12 @@ import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplat
 import friutrodez.backendtourneecommercial.repository.mysql.AppartientRepository;
 import friutrodez.backendtourneecommercial.repository.mysql.ItineraireRepository;
 import friutrodez.backendtourneecommercial.service.ItineraireService;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,10 +26,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
 
 /**
  * Contrôleur pour gérer les itinéraires.
+ *
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @RequestMapping(path = "/itineraire/")
 @RestController
@@ -31,16 +38,11 @@ import java.util.*;
 public class ItineraireController {
 
     private static final Logger log = LoggerFactory.getLogger(ItineraireController.class);
-
-    ItineraireRepository itineraireRepository;
-
-    private AppartientRepository appartientRepository;
-
-    private ItineraireService itineraireService;
-
-    private ClientMongoTemplate clientMongoTemplate;
-
     private final static int PAGE_SIZE = 30;
+    ItineraireRepository itineraireRepository;
+    private AppartientRepository appartientRepository;
+    private ItineraireService itineraireService;
+    private ClientMongoTemplate clientMongoTemplate;
 
     /**
      * Récupère le nombre d'itinéraires pour l'utilisateur connecté.
@@ -51,7 +53,7 @@ public class ItineraireController {
     public ResponseEntity<Nombre> getItinerairesCount() {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        // Récupérer le nombre d'itinéraire
+        // Récupérer le nombre d'itinéraires
         long counted = itineraireRepository.countItineraireByUtilisateur(user);
         Nombre nombre = new Nombre((int) Math.ceil(counted / (double) PAGE_SIZE));
         return ResponseEntity.ok(nombre);
@@ -75,7 +77,7 @@ public class ItineraireController {
      * Récupère un itinéraire spécifique par son identifiant pour l'utilisateur connecté.
      *
      * @param id L'identifiant de l'itinéraire.
-     * @return ResponseEntity contenant l'itinéraire ou une réponse 404 si non trouvé.
+     * @return ResponseEntity contenant l'itinéraire ou une réponse 404 si non trouvée.
      */
     @GetMapping("{id}")
     public ResponseEntity<ItineraireDTO> getItineraire(@PathVariable("id") Long id) {
@@ -110,9 +112,9 @@ public class ItineraireController {
     @GetMapping(path = "generate")
     public ResponseEntity<ResultatOptimisation> generateOptimalItineraire(@RequestParam("clients") List<String> idClients) {
         Utilisateur user = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<Client> clients = clientMongoTemplate.getAllClientsIn(idClients,String.valueOf(user.getId()));
+        List<Client> clients = clientMongoTemplate.getAllClientsIn(idClients, String.valueOf(user.getId()));
 
-        if(idClients.size() != clients.size()) {
+        if (idClients.size() != clients.size()) {
             throw new DonneesInvalidesException("Un id donné est invalide.");
         }
         List<Client> clientsCopy = new ArrayList<>(clients);
@@ -136,7 +138,7 @@ public class ItineraireController {
     /**
      * Modifie un itinéraire existant.
      *
-     * @param id L'identifiant de l'itinéraire à modifier.
+     * @param id  L'identifiant de l'itinéraire à modifier.
      * @param dto Les nouvelles données de l'itinéraire.
      * @return ResponseEntity contenant un message de confirmation.
      */

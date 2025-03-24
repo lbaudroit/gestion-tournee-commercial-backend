@@ -14,10 +14,7 @@ import lombok.Setter;
  * Cette classe contient les informations de base d'un contact telles que le nom, le prénom et le numéro de téléphone.
  * Utilise Lombok pour générer les constructeurs, getters et setters.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,6 +24,7 @@ public class Contact {
 
     @Transient
     public static final String PHONE_NUMBER_PATTERN = "[0-9]{10}";
+
     /**
      * Le nom du contact.
      */

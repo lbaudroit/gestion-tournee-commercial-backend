@@ -12,14 +12,11 @@ import lombok.*;
  * Cette classe est utilisée pour mapper la table `Itineraire` dans la base de données.
  * Utilise Lombok pour générer les constructeurs, getters, setters et le builder.
  * <p>
- * L'itineraire doit avoir :
- * - Un nom non vide
- * - Une distance non vide et non négative
+ * L'itineraire doit avoir
+ * – Un nom non vide
+ * – Une distance non vide et non négative
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @Entity
 @AllArgsConstructor

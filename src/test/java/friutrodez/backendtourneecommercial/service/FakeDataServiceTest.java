@@ -9,10 +9,7 @@ import java.util.List;
 /**
  * Classe de test pour FakeDataServiceTest.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 class FakeDataServiceTest {
 
@@ -28,7 +25,7 @@ class FakeDataServiceTest {
         Assertions.assertNotNull(client);
         Assertions.assertNotNull(client2);
 
-        Assertions.assertNotEquals(client,client2);
+        Assertions.assertNotEquals(client, client2);
     }
 
     /**
@@ -39,19 +36,20 @@ class FakeDataServiceTest {
         FakeDataService fakeDataService = new FakeDataService();
         List<Client> clientList = fakeDataService.generateFakeClients(5);
 
-        Assertions.assertEquals(5,clientList.size());
+        Assertions.assertEquals(5, clientList.size());
         Assertions.assertTrue(allNotEquals(clientList));
     }
 
     /**
      * Méthode pour vérifier que tous les clients ne sont pas égaux.
+     *
      * @param clientList La liste de clients à vérifier.
-     * @return           True si tous les clients ne sont pas égaux sinon false.
+     * @return True si tous les clients ne sont pas égaux sinon false.
      */
     private boolean allNotEquals(List<Client> clientList) {
-        for(int i = 0 ; i< clientList.size() ; i++) {
-            for(int j = 0 ; j < clientList.size() ; j++) {
-                if(i!= j && clientList.get(i).equals(clientList.get(j))) {
+        for (int i = 0; i < clientList.size(); i++) {
+            for (int j = 0; j < clientList.size(); j++) {
+                if (i != j && clientList.get(i).equals(clientList.get(j))) {
                     return false;
                 }
             }

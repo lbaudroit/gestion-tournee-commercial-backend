@@ -5,6 +5,7 @@ package friutrodez.backendtourneecommercial.model;
  *
  * @param latitude
  * @param longitude
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 public record Coordonnees(double latitude, double longitude) {
 

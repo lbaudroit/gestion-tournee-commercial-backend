@@ -5,32 +5,27 @@ import friutrodez.backendtourneecommercial.repository.mongodb.ClientMongoTemplat
 import friutrodez.backendtourneecommercial.repository.mysql.AppartientRepository;
 import friutrodez.backendtourneecommercial.repository.mysql.ItineraireRepository;
 import friutrodez.backendtourneecommercial.repository.mysql.UtilisateurRepository;
-import friutrodez.backendtourneecommercial.service.FakeDataService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Classe de configuration pour l'initialisation des données.
  * Cette classe initialise les données des utilisateurs, itinéraires, clients et appartenances
  * dans les bases de données MySQL et MongoDB au démarrage de l'application.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 @Configuration
-@AllArgsConstructor
 public class DataInitialization {
-
-    Environment environment;
 
     private UtilisateurRepository utilisateurRepository;
 
@@ -42,7 +37,18 @@ public class DataInitialization {
 
     private PasswordEncoder passwordEncoder;
 
-    private FakeDataService fakeDataService;
+    @Value("${dev.data.generate}")
+    private String dataGenerate;
+
+    @Autowired
+    public DataInitialization(PasswordEncoder passwordEncoder,ClientMongoTemplate clientMongoTemplate, AppartientRepository appartientRepository, ItineraireRepository itineraireRepository,UtilisateurRepository utilisateurRepository) {
+        this.passwordEncoder = passwordEncoder;
+        this.clientMongoTemplate = clientMongoTemplate;
+        this.utilisateurRepository = utilisateurRepository;
+        this.itineraireRepository = itineraireRepository;
+        this.appartientRepository = appartientRepository;
+    }
+
 
 
     /**
@@ -54,7 +60,12 @@ public class DataInitialization {
      */
     @Bean
     public CommandLineRunner init() {
-        return args -> {
+        return _ -> {
+
+            if(dataGenerate == null || !dataGenerate.equals("true")) {
+
+                return;
+            }
 
             // Initialisation des utilisateurs
             Utilisateur utilisateur1 = Utilisateur.builder()
@@ -115,6 +126,7 @@ public class DataInitialization {
                     .distance(30)
                     .build();
             itineraireRepository.saveAll(List.of(itineraire1, itineraire2));
+
             // Itinéraires supplémentaires
             List<Itineraire> itineraires = new ArrayList<>();
             String titreTemplate = "Itinéraire n°%d";

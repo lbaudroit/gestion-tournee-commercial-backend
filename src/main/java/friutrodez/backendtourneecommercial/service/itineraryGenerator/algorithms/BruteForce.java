@@ -10,10 +10,7 @@ import java.util.List;
  * Classe BruteForce implémentant l'interface Algorithm.
  * Utilise une approche de force brute pour générer le meilleur itinéraire.
  *
- * @author Benjamin NICOL
- * @author Enzo CLUZEL
- * @author Leïla BAUDROIT
- * @author Ahmed BRIBACH
+ * @author Benjamin NICOL, Enzo CLUZEL, Ahmed BRIBACH, Leïla BAUDROIT
  */
 public class BruteForce implements Algorithm {
 
@@ -22,7 +19,7 @@ public class BruteForce implements Algorithm {
     /**
      * Génère le meilleur itinéraire.
      *
-     * @param points liste de points sans startEnd
+     * @param points        liste de points sans startEnd
      * @param startEndGiven point de départ et d'arrivée
      * @return le meilleur itinéraire généré
      */
@@ -30,7 +27,7 @@ public class BruteForce implements Algorithm {
         BestRoute result = Algorithm.trivialCasesAndVerifyValidity(points, startEndGiven);
         if (result == null) {
             startEnd = startEndGiven;
-            result =  generateBruteForceRecursively(new ArrayList<>(points), startEnd, new ArrayList<>(), 0);
+            result = generateBruteForceRecursively(new ArrayList<>(points), startEnd, new ArrayList<>(), 0);
         }
         return result;
     }
@@ -43,9 +40,9 @@ public class BruteForce implements Algorithm {
      * Alors, on ajoute ce point à l'itinéraire actuel et on calcule la distance totale.
      * Sinon, on explore toutes les possibilités de points suivants.
      *
-     * @param points liste de points restants à visiter
-     * @param currentPoint point actuel dans l'itinéraire
-     * @param route itinéraire actuel
+     * @param points           liste de points restants à visiter
+     * @param currentPoint     point actuel dans l'itinéraire
+     * @param route            itinéraire actuel
      * @param distanceOfBranch distance totale de l'itinéraire actuel
      * @return le meilleur itinéraire trouvé
      */
